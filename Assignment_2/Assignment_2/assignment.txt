@@ -1,0 +1,15 @@
+﻿Assignment 2
+Objective: basic familiarity with call stack structure and how to obtain full (managed + native) call stacks with stack-placed parameters from CLRMD
+ 
+· Read one or more of the following explanations of how the stack works on x86, especially around where parameters are placed on the stack: 
+	o http://duartes.org/gustavo/blog/post/journey-to-the-stack/ 
+	o http://unixwiz.net/techtips/win32-callconv-asm.html 
+	o http://wiki.osdev.org/Stack#Stack_example_on_the_X86_architecture 
+· Write code that will print a combined managed + unmanaged stack trace of a given thread using CLRMD. 
+	o You can use the UnifiedStackTrace class from here: https://github.com/goldshtn/msos/blob/cdc095d66dc2b08ab400d2d9de6af005e3ee7f05/msos/MixedStack.cs#L173 
+· Add a feature that prints the first four 32-bit sized parameters of each unmanaged method on the stack trace, assuming that they were passed on the stack. 
+	o Basically, grab the FrameOffset field from DEBUG_STACK_FRAME and print the 32-bit values pointed to by FrameOffset+8, FrameOffset+12, FrameOffset+16, and FrameOffset+20. 
+	o You can use ClrRuntime.ReadVirtual to read the memory of the target process. 
+	o Some functions don't actually have four 32-bit sized parameters, and that's fine -- just print whatever is on the stack. 
+ 
+In the next assignment, we will use this information to determine which synchronization objects a thread is waiting for. Stay tuned! :-)
