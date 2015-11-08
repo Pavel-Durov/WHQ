@@ -17,28 +17,31 @@ namespace Assignment_3.PrintHandles
         /// Iterates over thread Stack and searches fot two Windows API calls - 
         /// WaitForSingleObject(Ex), WaitForMultipleObjects(Ex). 
         /// </summary>
-        /// <param name="thread"></param>
-        private static bool InspectStackForWindowsApiCalls(IEnumerable<UnifiedStackFrame> stackTrace, ref IEnumerable<UnifiedStackFrame> list)
+        /// <param name="stackTrace"></param>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private static bool InspectStackForWindowsApiCalls(IEnumerable<UnifiedStackFrame> stackTrace,
+            ref IEnumerable<UnifiedStackFrame> list)
         {
 
             if (stackTrace != null)
             {
                 list = from c in stackTrace
-                           where CheckSome(c)
-                           select c;
+                       where CheckSome(c)
+                       select c;
             }
 
-            return list!= null && list.Any();
+            return list != null && list.Any();
         }
 
         private static bool CheckSome(UnifiedStackFrame c)
         {
-            return c != null 
-                && !String.IsNullOrEmpty(c.Method) 
-                && c.Method.Contains(key0) 
-                && c.Method.Contains(key1);
+            return c != null
+                && !String.IsNullOrEmpty(c.Method)
+                && c.Method != null && (c.Method.Contains(key0) || c.Method.Contains(key1));
         }
 
+        
         public static void PrintStackTrace(IEnumerable<UnifiedStackFrame> stackTrace, ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {
             bool hasBlockingObjects = false;
@@ -54,12 +57,28 @@ namespace Assignment_3.PrintHandles
                     hasBlockingObjects = thread?.BlockingObjects.Count > 0;
                 }
             }
+
             if (!hasBlockingObjects)
             {
                 IEnumerable<UnifiedStackFrame> list = null;
-                if(InspectStackForWindowsApiCalls(stackTrace,ref  list))
+                if (InspectStackForWindowsApiCalls(stackTrace, ref list))
                 {
+                    if (list != null)
+                    {
+                        foreach (var item in list)
+                        {
+                            var nativeParams = GetNativeParams(item, runtime);
+                            Console.WriteLine("-- Native method handles : ");
 
+                            var prevColor = Console.ForegroundColor;
+                            Console.ForegroundColor = ConsoleColor.Red;
+
+                            Console.WriteLine(" << {0} >> " , item.Method);
+
+                            PrintParams(nativeParams);
+                            Console.ForegroundColor = prevColor;
+                        }
+                    }
                 }
             }
 
@@ -86,11 +105,18 @@ namespace Assignment_3.PrintHandles
 
                 if (isNativeStack)
                 {
+                    var prevColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Green;
+       
                     List<byte[]> parms = GetNativeParams(frame, runtime);
                     PrintParams(parms);
-                }
 
+                    Console.ForegroundColor = prevColor;
+
+                }
             }
+
+            
         }
 
 
@@ -100,12 +126,13 @@ namespace Assignment_3.PrintHandles
             List<byte[]> result = new List<byte[]>();
 
             var offset = stackFrame.FrameOffset; //Base Pointer - % EBP
-            byte[] paramBuffer = new byte[4];
+            byte[] paramBuffer;
             int bytesRead = 0;
             offset += 4;
 
             for (int i = 0; i < 4; i++)
             {
+                paramBuffer = new byte[4];
                 offset += 4;
                 if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
                 {
@@ -170,16 +197,13 @@ namespace Assignment_3.PrintHandles
 
         private static void PrintParams(List<byte[]> nativeParams)
         {
-            var prevColor = Console.ForegroundColor;
-
-            Console.ForegroundColor = ConsoleColor.Green;
 
             for (int i = 0; i < nativeParams.Count; i++)
             {
-                string hexData = BitConverter.ToString(nativeParams[i]);
-                Console.Write("p{0}={1} ", i, hexData);
+                //string hexData = BitConverter.ToString(nativeParams[i]);
+                uint byteValue = BitConverter.ToUInt32(nativeParams[i], 0);
+                Console.Write("p{0}=0x{1:x}  ", i, byteValue);
             }
-            Console.ForegroundColor = prevColor;
             Console.WriteLine();
         }
 

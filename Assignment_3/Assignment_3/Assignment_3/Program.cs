@@ -10,7 +10,9 @@ namespace Assignment_3
 {
     class Program
     {
-        const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Kalsefer.dmp";
+        //const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Kalsefer.dmp";
+        const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Ass2.dmp";
+
         static void Main(string[] args)
         {
             ThreadStackHandler handler = new ThreadStackHandler();
