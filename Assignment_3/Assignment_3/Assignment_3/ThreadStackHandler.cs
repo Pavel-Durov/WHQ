@@ -47,8 +47,8 @@ class ThreadStackHandler
 
     private void Init(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
     {
-        Assignment_3.PrintHandles.ThreadStackAnalyzer.PrintStackTrace(managedStack, thread, _runtime);
-        Assignment_3.PrintHandles.ThreadStackAnalyzer.PrintStackTrace(unmanagedStack, thread, _runtime, true);
+        Assignment_3.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
+        Assignment_3.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
   
 
     }
