@@ -41,8 +41,8 @@ namespace Assignment_3.PrintHandles
                 && c.Method != null && (c.Method.Contains(key0) || c.Method.Contains(key1));
         }
 
-        
-        public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace, 
+
+        public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace,
             ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {
             bool hasBlockingObjects = false;
@@ -101,21 +101,58 @@ namespace Assignment_3.PrintHandles
                 {
                     foreach (var item in list)
                     {
-                        Console.WriteLine("-- Native method handles : ");
-                        Console.WriteLine(" << {0} >> ", item.Method);
-
-                        var nativeParams = GetNativeParams(item, runtime);
-                        PrintBytesAsHex(ConsoleColor.Red, GetNativeParams(item, runtime));
+                        PrintAwaitedHandlers(item, runtime);
                     }
                 }
             }
         }
 
+        private static void PrintAwaitedHandlers(UnifiedStackFrame item, ClrRuntime runtime)
+        {
+            Console.WriteLine("-- Native method handles : ");
+            Console.WriteLine(" << {0} >> ", item.Method);
+
+            var nativeParams = GetNativeParams(item, runtime);
+
+            ulong handlersCunt = BitConverter.ToUInt32(nativeParams[0], 0);
+            ulong handlerAddress = BitConverter.ToUInt32(nativeParams[1], 0);
+            bool waitallFlag = BitConverter.ToBoolean(nativeParams[2], 0);
+            ulong waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
+
+            if (handlersCunt > 0)
+            {//If waiting fot several handlers
+                if (waitallFlag)
+                {
+                    Print(handlerAddress, handlersCunt, runtime);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        private static void Print(ulong handlerAddress, ulong handlersCunt, ClrRuntime runtime)
+        {
+            //Reading n times from memmory, advansing by 4 bytes each time
+            byte[] readedBytes = null;
+            int count = 0;
+            for (ulong i = 0; i < handlersCunt; i += 4)
+            {
+                readedBytes = new byte[4];
+                if (runtime.ReadMemory(handlersCunt, readedBytes, 1, out count))
+                {
+                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
+                    Console.Write("handler {0}=0x{1:x}  ", i, byteValue);
+                }
+            }
+        }
+
         private static void PrintBytesAsHex(ConsoleColor color, List<byte[]> parms)
-        { 
+        {
             var prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
-      
+
             for (int i = 0; i < parms.Count; i++)
             {
                 //string hexData = BitConverter.ToString(nativeParams[i]);
