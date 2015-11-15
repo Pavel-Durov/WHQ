@@ -45,8 +45,11 @@ namespace Assignment_3.PrintHandles
         public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace,
             ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {
-            bool hasBlockingObjects = false;
-            if (!isNativeStack)
+            if (isNativeStack)
+            {
+                PrintBlockingWinApiCalls(stackTrace, runtime);
+            }
+            else
             {
                 if (thread.BlockingObjects != null && thread?.BlockingObjects?.Count > 0)
                 {
@@ -54,14 +57,7 @@ namespace Assignment_3.PrintHandles
                     {
                         Print(bObj);
                     }
-
-                    hasBlockingObjects = true;
                 }
-            }
-
-            if (!hasBlockingObjects)
-            {
-                PrintBlockingWinApiCalls(stackTrace, runtime);
             }
 
             foreach (var frame in stackTrace)
@@ -114,47 +110,66 @@ namespace Assignment_3.PrintHandles
 
             var nativeParams = GetNativeParams(item, runtime);
 
-            ulong handlersCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-            ulong handlerAddress = BitConverter.ToUInt32(nativeParams[1], 0);
-            bool waitallFlag = BitConverter.ToBoolean(nativeParams[2], 0);
-            ulong waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
-
-            if (handlersCunt > 0)
+            if (nativeParams != null && nativeParams.Count > 0)
             {
-                Print(handlerAddress, handlersCunt, runtime);
-            }
-        }
+                var handlersCunt = BitConverter.ToUInt32(nativeParams[0], 0);
+                var handlerAddress = BitConverter.ToUInt32(nativeParams[1], 0);
+                var waitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
+                var waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
 
-        private static void Print(ulong handlerAddress, ulong handlersCunt, ClrRuntime runtime)
-        {
-            //Reading n times from memmory, advansing by 4 bytes each time
-            byte[] readedBytes = null;
-            int count = 0;
-            for (ulong i = 0; i < handlersCunt; i += 4)
-            {
-                readedBytes = new byte[4];
-                if (runtime.ReadMemory(handlersCunt, readedBytes, 1, out count))
+                if (handlersCunt > 0)
                 {
-                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
-                    Console.Write("handler {0}=0x{1:x}  ", i, byteValue);
+                    Print(handlerAddress, handlersCunt, runtime);
                 }
             }
         }
 
-        private static void PrintBytesAsHex(ConsoleColor color, List<byte[]> parms)
+        private static void Print(UInt32 handlerAddress, UInt32 handlersCunt, ClrRuntime runtime)
+        {
+            //Reading n times from memmory, advansing by 4 bytes each time
+            byte[] readedBytes = null;
+            int count = 0;
+            for (int i = 0; i < handlersCunt; i += 4)
+            {
+                readedBytes = new byte[4];
+
+                if (runtime.ReadMemory(handlerAddress, readedBytes, 1, out count))
+                {
+                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
+                    Console.Write("handler {0}=0x{1:x}  ", i, byteValue);
+                }
+                else
+                {
+                    Print(ConsoleColor.Red, "Unreadable memorry");
+                }
+                //Advancing the pointer by 4 (32-bit system)
+                handlerAddress += 4;
+            }
+        }
+
+        private static void Print(ConsoleColor color, string toPrint)
         {
             var prevColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
 
-            for (int i = 0; i < parms.Count; i++)
-            {
-                //string hexData = BitConverter.ToString(nativeParams[i]);
-                uint byteValue = BitConverter.ToUInt32(parms[i], 0);
-                Console.Write("p{0}=0x{1:x}  ", i, byteValue);
-            }
-            Console.WriteLine();
+            Console.WriteLine(toPrint);
 
             Console.ForegroundColor = prevColor;
+        }
+
+        private static void PrintBytesAsHex(ConsoleColor color, List<byte[]> parms)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < parms.Count; i++)
+            {
+                int byteValue = BitConverter.ToInt32(parms[i], 0);
+
+                var msg = String.Format("p{0}= 0x{1:x}", i, byteValue);
+                sb.Append(msg);
+            }
+
+            Print(color, sb.ToString());
         }
 
         private static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime)
@@ -181,7 +196,6 @@ namespace Assignment_3.PrintHandles
 
             return result;
         }
-
 
         private static bool Print(BlockingObject bObj)
         {

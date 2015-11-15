@@ -11,17 +11,17 @@ namespace Assignment_3
     class Program
     {
         //const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Kalsefer.dmp";
-        const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Ass2.dmp";
+        const string SOME_86_DUMP = @"C:\temp\Dumps\__Assignment_3.dmp";
 
         static void Main(string[] args)
         {
             ThreadStackHandler handler = new ThreadStackHandler();
 
 
-            if (File.Exists(KALSEFER_86_DUMP))
+            if (File.Exists(SOME_86_DUMP))
             {
                 //Loading a crash dump
-                using (DataTarget target = DataTarget.LoadCrashDump(KALSEFER_86_DUMP))
+                using (DataTarget target = DataTarget.LoadCrashDump(SOME_86_DUMP))
                 {
                     var runtime = target.ClrVersions[0].CreateRuntime();
 

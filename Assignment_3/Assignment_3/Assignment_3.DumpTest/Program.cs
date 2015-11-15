@@ -17,31 +17,31 @@ namespace Assignment_3.DumpTest
         static void Main(string[] args)
         {
 
-            Console.WriteLine("Calling native methods... :)");
+            //Console.WriteLine("Calling native methods... :)");
 
             
-            //WaitHandle wh = new System.Threading.EventWaitHandle(true, EventResetMode.AutoReset);
+            ////WaitHandle wh = new System.Threading.EventWaitHandle(true, EventResetMode.AutoReset);
 
-            var autoEvent = new AutoResetEvent(false);
+            //var autoEvent = new AutoResetEvent(false);
 
-            //WaitForSingleObject
-            Console.WriteLine("Calling WaitForSingleObject");
-            int result = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
-            int result2 = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
+            ////WaitForSingleObject
+            //Console.WriteLine("Calling WaitForSingleObject");
+            //int result = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
+            //int result2 = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
 
-            //WaitForMultipleObjects
+            ////WaitForMultipleObjects
 
-            Console.WriteLine("Calling WaitForMultipleObjects");
+            ////Console.WriteLine("Calling WaitForMultipleObjects");
 
-            HANDLE[] arr = new HANDLE[3];
-            for (int i = 0; i < 3; i++)
-            {
-                var loopAutoEvent = new AutoResetEvent(false);
-                arr[i] = loopAutoEvent.Handle;
-            }
-            var mulRes = WaitForMultipleObjects(3, arr, true, 1000);
+            ////HANDLE[] arr = new HANDLE[3];
+            ////for (int i = 0; i < 3; i++)
+            ////{
+            ////    var loopAutoEvent = new AutoResetEvent(false);
+            ////    arr[i] = loopAutoEvent.Handle;
+            ////}
+            ////var mulRes = WaitForMultipleObjects(3, arr, true, 1000);
 
-
+            //Console.ReadKey();
         }
 
         private static void TestResetEvent()
