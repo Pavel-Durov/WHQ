@@ -13,6 +13,7 @@ namespace Assignment_3.PrintHandles
         const string key0 = "WaitForSingleObject";
         const string key1 = "WaitForMultipleObjects";
 
+
         /// <summary>
         /// Iterates over thread Stack and searches fot two Windows API calls - 
         /// WaitForSingleObject(Ex), WaitForMultipleObjects(Ex). 
@@ -97,13 +98,13 @@ namespace Assignment_3.PrintHandles
                 {
                     foreach (var item in list)
                     {
-                        PrintAwaitedHandlers(item, runtime);
+                        PrintAwaitedHandles(item, runtime);
                     }
                 }
             }
         }
 
-        private static void PrintAwaitedHandlers(UnifiedStackFrame item, ClrRuntime runtime)
+        private static void PrintAwaitedHandles(UnifiedStackFrame item, ClrRuntime runtime)
         {
             Console.WriteLine("-- Native method handles : ");
             Console.WriteLine(" << {0} >> ", item.Method);
@@ -112,38 +113,38 @@ namespace Assignment_3.PrintHandles
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
-                var handlersCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-                var handlerAddress = BitConverter.ToUInt32(nativeParams[1], 0);
+                var handlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
+                var handleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
                 var waitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
                 var waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
 
-                if (handlersCunt > 0)
+                if (handlesCunt > 0)
                 {
-                    Print(handlerAddress, handlersCunt, runtime);
+                    Print(handleAddress, handlesCunt, runtime);
                 }
             }
         }
 
-        private static void Print(UInt32 handlerAddress, UInt32 handlersCunt, ClrRuntime runtime)
+        private static void Print(UInt32 handleAddress, UInt32 handlesCunt, ClrRuntime runtime)
         {
             //Reading n times from memmory, advansing by 4 bytes each time
-            byte[] readedBytes = null;
+            byte[] readedBytes = null; 
             int count = 0;
-            for (int i = 0; i < handlersCunt; i += 4)
+            for (int i = 0; i < handlesCunt; i += 4)
             {
                 readedBytes = new byte[4];
 
-                if (runtime.ReadMemory(handlerAddress, readedBytes, 1, out count))
+                if (runtime.ReadMemory(handleAddress, readedBytes, 1, out count))
                 {
                     uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
-                    Console.Write("handler {0}=0x{1:x}  ", i, byteValue);
+                    Console.Write("hander {0}=0x{1:x}  ", i, byteValue);
                 }
                 else
                 {
                     Print(ConsoleColor.Red, "Unreadable memorry");
                 }
                 //Advancing the pointer by 4 (32-bit system)
-                handlerAddress += 4;
+                handleAddress += 4;
             }
         }
 
@@ -174,7 +175,6 @@ namespace Assignment_3.PrintHandles
 
         private static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime)
         {
-
             List<byte[]> result = new List<byte[]>();
 
             var offset = stackFrame.FrameOffset; //Base Pointer - % EBP
