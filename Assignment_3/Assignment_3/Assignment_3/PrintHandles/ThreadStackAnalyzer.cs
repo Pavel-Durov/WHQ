@@ -120,15 +120,8 @@ namespace Assignment_3.PrintHandles
             ulong waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
 
             if (handlersCunt > 0)
-            {//If waiting fot several handlers
-                if (waitallFlag)
-                {
-                    Print(handlerAddress, handlersCunt, runtime);
-                }
-                else
-                {
-
-                }
+            {
+                Print(handlerAddress, handlersCunt, runtime);
             }
         }
 
