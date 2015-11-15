@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assignment_3.msos;
+using Assignment_3.Exceptions;
 
 namespace Assignment_3.PrintHandles
 {
@@ -141,7 +142,8 @@ namespace Assignment_3.PrintHandles
                 }
                 else
                 {
-                    Print(ConsoleColor.Red, "Unreadable memorry");
+                    throw new AccessingToNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", handleAddress));
+                    //Print(ConsoleColor.Red, "Unreadable memorry");
                 }
                 //Advancing the pointer by 4 (32-bit system)
                 handleAddress += 4;
