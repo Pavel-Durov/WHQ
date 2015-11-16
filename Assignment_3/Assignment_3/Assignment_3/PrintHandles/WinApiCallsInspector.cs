@@ -47,7 +47,7 @@ namespace Assignment_3.PrintHandles
                 && c.Method != null && (c.Method.Contains(key0) || c.Method.Contains(key1));
         }
 
-        public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime)
+        public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -56,7 +56,7 @@ namespace Assignment_3.PrintHandles
             int bytesRead = 0;
             offset += 4;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < paramCount; i++)
             {
                 paramBuffer = new byte[4];
                 offset += 4;

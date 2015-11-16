@@ -55,7 +55,7 @@ namespace Assignment_3.PrintHandles
 
                 if (isNativeStack)
                 {
-                    PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime));
+                    PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime, 4));
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace Assignment_3.PrintHandles
 
         private static void PrintSingleWait(UnifiedStackFrame item, ClrRuntime runtime)
         {
-            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime);
+            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime, 2);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
@@ -105,7 +105,7 @@ namespace Assignment_3.PrintHandles
 
         private static void PrintMultiWaitHandles(UnifiedStackFrame item, ClrRuntime runtime)
         {
-            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime);
+            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime, 4);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
