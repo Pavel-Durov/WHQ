@@ -14,36 +14,6 @@ namespace Assignment_3.PrintHandles
         const string key0 = "WaitForSingleObject";
         const string key1 = "WaitForMultipleObjects";
 
-
-        /// <summary>
-        /// Iterates over thread Stack and searches fot two Windows API calls - 
-        /// WaitForSingleObject(Ex), WaitForMultipleObjects(Ex). 
-        /// </summary>
-        /// <param name="stackTrace"></param>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private static bool InspectStackForWindowsApiCalls(IEnumerable<UnifiedStackFrame> stackTrace,
-            ref IEnumerable<UnifiedStackFrame> list)
-        {
-
-            if (stackTrace != null)
-            {
-                list = from frame in stackTrace
-                       where CheckForWinApiCalls(frame)
-                       select frame;
-            }
-
-            return list != null && list.Any();
-        }
-
-        private static bool CheckForWinApiCalls(UnifiedStackFrame c)
-        {
-            return c != null
-                && !String.IsNullOrEmpty(c.Method)
-                && c.Method != null && (c.Method.Contains(key0) || c.Method.Contains(key1));
-        }
-
-
         public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace,
             ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {
@@ -85,32 +55,57 @@ namespace Assignment_3.PrintHandles
 
                 if (isNativeStack)
                 {
-                    PrintBytesAsHex(ConsoleColor.Green, GetNativeParams(frame, runtime));
+                    PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime));
                 }
             }
         }
 
+
         private static void PrintBlockingWinApiCalls(IEnumerable<UnifiedStackFrame> stackTrace, ClrRuntime runtime)
         {
-            IEnumerable<UnifiedStackFrame> list = null;
-            if (InspectStackForWindowsApiCalls(stackTrace, ref list))
+            IEnumerable<UnifiedStackFrame> singleList = null;
+            IEnumerable<UnifiedStackFrame> multipleList = null;
+
+            var any = WinApiCallsInspector.InspectStackForWindowsApiCalls(stackTrace, ref singleList, ref multipleList);
+            if (any)
             {
-                if (list != null && list.Count() > 0)
+                if (singleList?.Count() > 0)
                 {
-                    foreach (var item in list)
+                    foreach (var item in singleList)
                     {
-                        PrintAwaitedHandles(item, runtime);
+                        Console.WriteLine("-- Native method handles {0}: ", item.Method);
+                        PrintSingleWait(item, runtime);
+                    }
+                }
+
+                if (multipleList?.Count() > 0)
+                {
+                    foreach (var item in multipleList)
+                    {
+                        Console.WriteLine("-- Native method handles {0}: ", item.Method);
+                        PrintMultiWaitHandles(item, runtime);
                     }
                 }
             }
         }
 
-        private static void PrintAwaitedHandles(UnifiedStackFrame item, ClrRuntime runtime)
-        {
-            Console.WriteLine("-- Native method handles : ");
-            Console.WriteLine(" << {0} >> ", item.Method);
 
-            var nativeParams = GetNativeParams(item, runtime);
+        private static void PrintSingleWait(UnifiedStackFrame item, ClrRuntime runtime)
+        {
+            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime);
+
+            if (nativeParams != null && nativeParams.Count > 0)
+            {
+                var handleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
+                var dwMilliseconds = BitConverter.ToUInt32(nativeParams[1], 0);
+
+                Print(handleAddress, 1, runtime);
+            }
+        }
+
+        private static void PrintMultiWaitHandles(UnifiedStackFrame item, ClrRuntime runtime)
+        {
+            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
@@ -126,10 +121,12 @@ namespace Assignment_3.PrintHandles
             }
         }
 
+
+
         private static void Print(UInt32 handleAddress, UInt32 handlesCunt, ClrRuntime runtime)
         {
             //Reading n times from memmory, advansing by 4 bytes each time
-            byte[] readedBytes = null; 
+            byte[] readedBytes = null;
             int count = 0;
             for (int i = 0; i < handlesCunt; i += 4)
             {
@@ -142,7 +139,7 @@ namespace Assignment_3.PrintHandles
                 }
                 else
                 {
-                    throw new AccessingToNonReadableMemmory(string.Format("Accessing Unreadable memorry as {0}", handleAddress));
+                    throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", handleAddress));
                     //Print(ConsoleColor.Red, "Unreadable memorry");
                 }
                 //Advancing the pointer by 4 (32-bit system)
@@ -175,29 +172,7 @@ namespace Assignment_3.PrintHandles
             Print(color, sb.ToString());
         }
 
-        private static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime)
-        {
-            List<byte[]> result = new List<byte[]>();
-
-            var offset = stackFrame.FrameOffset; //Base Pointer - % EBP
-            byte[] paramBuffer;
-            int bytesRead = 0;
-            offset += 4;
-
-            for (int i = 0; i < 4; i++)
-            {
-                paramBuffer = new byte[4];
-                offset += 4;
-                if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
-                {
-                    result.Add(paramBuffer);
-                }
-            }
-
-            Console.WriteLine();
-
-            return result;
-        }
+       
 
         private static bool Print(BlockingObject bObj)
         {
@@ -227,7 +202,7 @@ namespace Assignment_3.PrintHandles
                 Console.WriteLine("Taken : {0}", bObj.Taken);
                 Console.WriteLine(" -- Witers List -- ");
 
-                
+
                 PrintThreadsIds(bObj.Waiters);
 
                 result = true;

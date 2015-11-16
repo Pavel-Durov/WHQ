@@ -68,15 +68,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\AccessingToNonReadableMemmory.cs" />
+    <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />
     <Compile Include="msos\Util.cs" />
     <Compile Include="PrintHandles\ThreadStackAnalyzer.cs" />
+    <Compile Include="PrintHandles\WinApiCallsInspector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scaches\SynchronizationEssentials.cs" />
+    <Compile Include="sketches\SynchronizationEssentials.cs" />
     <Compile Include="ThreadStackHandler.cs" />
   </ItemGroup>
   <ItemGroup>

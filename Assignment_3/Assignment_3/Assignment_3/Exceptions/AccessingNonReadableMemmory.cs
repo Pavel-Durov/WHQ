@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment_3.Exceptions
 {
-    class AccessingToNonReadableMemmory : Exception
+    class AccessingNonReadableMemmory : Exception
     {
-        public AccessingToNonReadableMemmory(string message) : base(message)
+        public AccessingNonReadableMemmory(string message) : base(message)
         {
         }
     }
