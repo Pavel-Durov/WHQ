@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignment_3.msos;
 using Assignment_3.Exceptions;
+using Assignment_3.PrintHandles.Factory;
 
 namespace Assignment_3.PrintHandles
 {
@@ -71,81 +72,27 @@ namespace Assignment_3.PrintHandles
             {
                 if (singleList?.Count() > 0)
                 {
+                    var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
                     foreach (var item in singleList)
                     {
                         Console.WriteLine("-- Native method handles {0}: ", item.Method);
-                        PrintSingleWait(item, runtime);
+                        multi.Print(item, runtime);
                     }
                 }
 
                 if (multipleList?.Count() > 0)
                 {
+                    var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
                     foreach (var item in multipleList)
                     {
                         Console.WriteLine("-- Native method handles {0}: ", item.Method);
-                        PrintMultiWaitHandles(item, runtime);
+                        single.Print(item, runtime);
                     }
                 }
             }
         }
 
 
-        private static void PrintSingleWait(UnifiedStackFrame item, ClrRuntime runtime)
-        {
-            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime, 2);
-
-            if (nativeParams != null && nativeParams.Count > 0)
-            {
-                var handleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
-                var dwMilliseconds = BitConverter.ToUInt32(nativeParams[1], 0);
-
-                Print(handleAddress, 1, runtime);
-            }
-        }
-
-        private static void PrintMultiWaitHandles(UnifiedStackFrame item, ClrRuntime runtime)
-        {
-            var nativeParams = WinApiCallsInspector.GetNativeParams(item, runtime, 4);
-
-            if (nativeParams != null && nativeParams.Count > 0)
-            {
-                var handlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-                var handleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
-                var waitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
-                var waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
-
-                if (handlesCunt > 0)
-                {
-                    Print(handleAddress, handlesCunt, runtime);
-                }
-            }
-        }
-
-
-
-        private static void Print(UInt32 handleAddress, UInt32 handlesCunt, ClrRuntime runtime)
-        {
-            //Reading n times from memmory, advansing by 4 bytes each time
-            byte[] readedBytes = null;
-            int count = 0;
-            for (int i = 0; i < handlesCunt; i += 4)
-            {
-                readedBytes = new byte[4];
-
-                if (runtime.ReadMemory(handleAddress, readedBytes, 4, out count))
-                {
-                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
-                    Console.Write("hander {0}=0x{1:x}  ", i, byteValue);
-                }
-                else
-                {
-                    throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", handleAddress));
-                    //Print(ConsoleColor.Red, "Unreadable memorry");
-                }
-                //Advancing the pointer by 4 (32-bit system)
-                handleAddress += 4;
-            }
-        }
 
         private static void Print(ConsoleColor color, string toPrint)
         {
@@ -171,8 +118,6 @@ namespace Assignment_3.PrintHandles
 
             Print(color, sb.ToString());
         }
-
-       
 
         private static bool Print(BlockingObject bObj)
         {

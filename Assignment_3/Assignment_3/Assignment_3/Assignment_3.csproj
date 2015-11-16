@@ -73,6 +73,10 @@
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />
     <Compile Include="msos\Util.cs" />
+    <Compile Include="PrintHandles\Factory\MultiWaitStackFrameHandler.cs" />
+    <Compile Include="PrintHandles\Factory\StackFrameHandler.cs" />
+    <Compile Include="PrintHandles\Factory\StackFrameHandlersFactory.cs" />
+    <Compile Include="PrintHandles\Factory\SingleWaitStackFrameHandler.cs" />
     <Compile Include="PrintHandles\ThreadStackAnalyzer.cs" />
     <Compile Include="PrintHandles\WinApiCallsInspector.cs" />
     <Compile Include="Program.cs" />
