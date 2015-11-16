@@ -135,14 +135,14 @@ namespace Assignment_3.PrintHandles
             {
                 readedBytes = new byte[4];
 
-                if (runtime.ReadMemory(handleAddress, readedBytes, 1, out count))
+                if (runtime.ReadMemory(handleAddress, readedBytes, 4, out count))
                 {
                     uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
                     Console.Write("hander {0}=0x{1:x}  ", i, byteValue);
                 }
                 else
                 {
-                    throw new AccessingToNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", handleAddress));
+                    throw new AccessingToNonReadableMemmory(string.Format("Accessing Unreadable memorry as {0}", handleAddress));
                     //Print(ConsoleColor.Red, "Unreadable memorry");
                 }
                 //Advancing the pointer by 4 (32-bit system)
@@ -226,7 +226,10 @@ namespace Assignment_3.PrintHandles
                 Console.WriteLine("Block Reason : {0}", bObj.Reason);
                 Console.WriteLine("Taken : {0}", bObj.Taken);
                 Console.WriteLine(" -- Witers List -- ");
-                PrintThreadsIds(bObj.Owners);
+
+                
+                PrintThreadsIds(bObj.Waiters);
+
                 result = true;
             }
             else
