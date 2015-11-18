@@ -12,9 +12,6 @@ namespace Assignment_3.PrintHandles
 {
     class ThreadStackAnalyzer
     {
-        const string key0 = "WaitForSingleObject";
-        const string key1 = "WaitForMultipleObjects";
-
         public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace,
             ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {

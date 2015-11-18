@@ -12,6 +12,7 @@ namespace Assignment_3.DumpTest
 {
     class Program
     {
+        private static AutoResetEvent AUTO_EVENT  =new AutoResetEvent(false);
         //Run this project in orer to take a dump
         //Wait functions -> https://msdn.microsoft.com/en-us/library/windows/desktop/ms687069(v=vs.85).aspx
         static void Main(string[] args)
@@ -22,24 +23,27 @@ namespace Assignment_3.DumpTest
             
             ////WaitHandle wh = new System.Threading.EventWaitHandle(true, EventResetMode.AutoReset);
 
-            //var autoEvent = new AutoResetEvent(false);
+            var autoEvent = new AutoResetEvent(false);
 
             ////WaitForSingleObject
             //Console.WriteLine("Calling WaitForSingleObject");
-            //int result = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
+            //int result = WaitForMultipleObjects(autoEvent.Handle, WAIT_TIMEOUT);
             //int result2 = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
 
             ////WaitForMultipleObjects
 
             ////Console.WriteLine("Calling WaitForMultipleObjects");
 
-            ////HANDLE[] arr = new HANDLE[3];
-            ////for (int i = 0; i < 3; i++)
-            ////{
-            ////    var loopAutoEvent = new AutoResetEvent(false);
-            ////    arr[i] = loopAutoEvent.Handle;
-            ////}
-            ////var mulRes = WaitForMultipleObjects(3, arr, true, 1000);
+            HANDLE[] arr = new HANDLE[3];
+            for (int i = 0; i < 3; i++)
+            {
+                var loopAutoEvent = new AutoResetEvent(false);
+                arr[i] = loopAutoEvent.Handle;
+            }
+            var mulRes = WaitForMultipleObjects(3, arr, true, 9999999);
+
+            var mulRes2 = WaitForMultipleObjects(1, new HANDLE[] { AUTO_EVENT.Handle }, true, 9999999);
+
 
             //Console.ReadKey();
         }

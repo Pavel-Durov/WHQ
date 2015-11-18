@@ -13,7 +13,6 @@ namespace Assignment_3.PrintHandles
         const string key0 = "WaitForSingleObject";
         const string key1 = "WaitForMultipleObjects";
 
-
         /// <summary>
         /// Iterates over thread Stack and searches fot two Windows API calls - 
         /// WaitForSingleObject(Ex), WaitForMultipleObjects(Ex). 
@@ -35,9 +34,6 @@ namespace Assignment_3.PrintHandles
                                    select frame;
 
             }
-
-            var l0 = singleObjectList.ToList();
-            var l1 = multipleObjectList.ToList();
 
             return (singleObjectList != null && singleObjectList.Any()
                 || (multipleObjectList != null && multipleObjectList.Any()));

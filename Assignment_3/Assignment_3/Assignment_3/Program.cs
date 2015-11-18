@@ -10,8 +10,8 @@ namespace Assignment_3
 {
     class Program
     {
-        //const string KALSEFER_86_DUMP = @"C:\temp\Dumps\Kalsefer.dmp";
-        const string SOME_86_DUMP = @"C:\temp\Dumps\__Assignment_3.dmp";
+    
+        const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
 
         static void Main(string[] args)
         {
