@@ -51,7 +51,7 @@ namespace Assignment_3.PrintHandles.Factory
                 if (runtime.ReadMemory(handleAddress, readedBytes, 4, out count))
                 {
                     uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
-                    Console.Write("hander {0}=0x{1:x}  ", i, byteValue);
+                    Console.Write("handle {0}=0x{1:x}  ", i, byteValue);
                 }
                 else
                 {
