@@ -27,7 +27,8 @@ namespace Assignment_3.PrintHandles
                     }
                 }
             }
-
+            //PrintBlockingWinApiCalls(stackTrace, runtime);
+            //return;
             var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
             var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
 
@@ -57,6 +58,7 @@ namespace Assignment_3.PrintHandles
                     PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime, 4));
 
                     DealWithNativeFrame(frame, runtime, multi, multi);
+                    Console.WriteLine();
                 }
             }
         }
@@ -67,9 +69,13 @@ namespace Assignment_3.PrintHandles
             {
                 singleHandler.Print(frame, runtime);
             }
-            else
+            else if(WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
             {
                 multiHandler.Print(frame, runtime);
+            }
+            else
+            {
+                //Do nothing...
             }
         }
 
