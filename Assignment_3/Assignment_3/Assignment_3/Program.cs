@@ -29,7 +29,7 @@ namespace Assignment_3
                     {
 
                         handler.Handle(target.DebuggerInterface, thread, runtime);
-
+                        break;
                     }
                 }
 

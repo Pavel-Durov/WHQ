@@ -44,7 +44,7 @@ namespace Assignment_3.PrintHandles.Factory
             //Reading n times from memmory, advansing by 4 bytes each time
             byte[] readedBytes = null;
             int count = 0;
-            for (int i = 0; i < handlesCunt; i += 4)
+            for (int i = 0; i < handlesCunt; i ++)
             {
                 readedBytes = new byte[4];
 
@@ -61,6 +61,7 @@ namespace Assignment_3.PrintHandles.Factory
                 //Advancing the pointer by 4 (32-bit system)
                 handleAddress += 4;
             }
+            Console.WriteLine();
         }
 
     }
