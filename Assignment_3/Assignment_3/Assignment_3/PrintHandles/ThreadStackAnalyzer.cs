@@ -15,11 +15,9 @@ namespace Assignment_3.PrintHandles
         public static void PrintSyncObjects(IEnumerable<UnifiedStackFrame> stackTrace,
             ClrThread thread, ClrRuntime runtime, bool isNativeStack = false)
         {
-            if (isNativeStack)
-            {
-                PrintBlockingWinApiCalls(stackTrace, runtime);
-            }
-            else
+
+
+            if (!isNativeStack)
             {
                 if (thread.BlockingObjects != null && thread?.BlockingObjects?.Count > 0)
                 {
@@ -29,6 +27,9 @@ namespace Assignment_3.PrintHandles
                     }
                 }
             }
+
+            var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
+            var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
 
             foreach (var frame in stackTrace)
             {
@@ -54,10 +55,23 @@ namespace Assignment_3.PrintHandles
                 if (isNativeStack)
                 {
                     PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime, 4));
+
+                    DealWithNativeFrame(frame, runtime, multi, multi);
                 }
             }
         }
 
+        private static void DealWithNativeFrame(UnifiedStackFrame frame,ClrRuntime runtime, StackFrameHandler multiHandler, StackFrameHandler singleHandler)
+        {
+            if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
+            {
+                singleHandler.Print(frame, runtime);
+            }
+            else
+            {
+                multiHandler.Print(frame, runtime);
+            }
+        }
 
         private static void PrintBlockingWinApiCalls(IEnumerable<UnifiedStackFrame> stackTrace, ClrRuntime runtime)
         {
@@ -75,7 +89,6 @@ namespace Assignment_3.PrintHandles
                     var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
                     foreach (var item in multipleList)
                     {
-                        Console.WriteLine("-- Native method handles {0}: ", item.Method);
                         multi.Print(item, runtime);
                     }
                 }
@@ -85,7 +98,6 @@ namespace Assignment_3.PrintHandles
                     var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
                     foreach (var item in singleList)
                     {
-                        Console.WriteLine("-- Native method handles {0}: ", item.Method);
                         single.Print(item, runtime);
                     }
                 }

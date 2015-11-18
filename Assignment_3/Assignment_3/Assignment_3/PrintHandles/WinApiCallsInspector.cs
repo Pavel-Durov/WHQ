@@ -10,8 +10,8 @@ namespace Assignment_3.PrintHandles
 {
     class WinApiCallsInspector
     {
-        const string key0 = "WaitForSingleObject";
-        const string key1 = "WaitForMultipleObjects";
+        public const string WAIT_FOR_SINGLE_OBJECT_KEY = "WaitForSingleObject";
+        public const string WAIT_FOR_MULTIPLE_OBJECTS_KEY = "WaitForMultipleObjects";
 
         /// <summary>
         /// Iterates over thread Stack and searches fot two Windows API calls - 
@@ -26,11 +26,11 @@ namespace Assignment_3.PrintHandles
             if (stackTrace != null)
             {
                 singleObjectList = from frame in stackTrace
-                       where CheckForWinApiCalls(frame, key0)
+                       where CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECT_KEY)
                        select frame;
 
                 multipleObjectList = from frame in stackTrace
-                                   where CheckForWinApiCalls(frame, key1)
+                                   where CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_KEY)
                                    select frame;
 
             }
@@ -39,7 +39,7 @@ namespace Assignment_3.PrintHandles
                 || (multipleObjectList != null && multipleObjectList.Any()));
         }
 
-        private static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
+        public static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
         {
             bool result = c != null
                 && !String.IsNullOrEmpty(c.Method)
