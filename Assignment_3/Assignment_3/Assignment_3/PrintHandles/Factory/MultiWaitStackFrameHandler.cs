@@ -20,7 +20,7 @@ namespace Assignment_3.PrintHandles.Factory
                 var handleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
                 var waitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
                 var waitTimeout = BitConverter.ToUInt32(nativeParams[3], 0);
-
+                 
                 if (handlesCunt > 0)
                 {
                     base.Print(handleAddress, handlesCunt, runtime);

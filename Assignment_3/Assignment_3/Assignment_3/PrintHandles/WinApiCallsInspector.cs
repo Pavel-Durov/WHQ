@@ -36,15 +36,20 @@ namespace Assignment_3.PrintHandles
 
             }
 
+            var l0 = singleObjectList.ToList();
+            var l1 = multipleObjectList.ToList();
+
             return (singleObjectList != null && singleObjectList.Any()
                 || (multipleObjectList != null && multipleObjectList.Any()));
         }
 
         private static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
         {
-            return c != null
+            bool result = c != null
                 && !String.IsNullOrEmpty(c.Method)
-                && c.Method != null && (c.Method.Contains(key0) || c.Method.Contains(key1));
+                && c.Method != null && c.Method.Contains(key);
+
+            return result;
         }
 
         public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)

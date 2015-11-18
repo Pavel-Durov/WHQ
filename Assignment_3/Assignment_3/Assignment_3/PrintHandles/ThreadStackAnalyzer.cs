@@ -70,25 +70,29 @@ namespace Assignment_3.PrintHandles
             var any = WinApiCallsInspector.InspectStackForWindowsApiCalls(stackTrace, ref singleList, ref multipleList);
             if (any)
             {
-                if (singleList?.Count() > 0)
+                var l0 = singleList.ToList();
+                var l1 = multipleList.ToList();
+
+                if (multipleList?.Count() > 0)
                 {
                     var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
-                    foreach (var item in singleList)
+                    foreach (var item in multipleList)
                     {
                         Console.WriteLine("-- Native method handles {0}: ", item.Method);
                         multi.Print(item, runtime);
                     }
                 }
 
-                if (multipleList?.Count() > 0)
+                if (singleList?.Count() > 0)
                 {
                     var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
-                    foreach (var item in multipleList)
+                    foreach (var item in singleList)
                     {
                         Console.WriteLine("-- Native method handles {0}: ", item.Method);
                         single.Print(item, runtime);
                     }
                 }
+
             }
         }
 
