@@ -1,9 +1,0 @@
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\FirstSteps.exe
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\FirstSteps.pdb
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\obj\Debug\FirstSteps.csprojResolveAssemblyReference.cache
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\obj\Debug\FirstSteps.exe
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\obj\Debug\FirstSteps.pdb
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\FirstSteps.exe.config
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\Microsoft.Diagnostics.Runtime.dll
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\Microsoft.Diagnostics.Runtime.pdb
-C:\VC\GIT\sasha-open-source-project\Clr-md-tutorials\FirstSteps\FirstSteps\bin\Debug\Microsoft.Diagnostics.Runtime.xml

@@ -1,0 +1,12 @@
+﻿Assignment 4
+In this assignment, you will augment your code's understanding of wait relationships using the Wait Chain Traversal API, which is available since Windows Vista.  Begin by reading the MSDN conceptual documentation and API reference for the WCT API. 
+ 
+As you can see, WCT can provide wait information for an arbitrary thread. The collected information includes waits for object types that we don't yet support, such as blocking window messages with SendMessage, COM cross-apartment calls, and others. On the other hand, WCT has three significant limitations (which is why it's not the only thing we're using):
+ 
+•	It doesn't recognize .NET synchronization objects 
+•	It doesn't recognize waiting for multiple objects 
+•	It doesn't work on a dump file -- only a process that is running on a live system 
+ 
+Still, the WCT information can be useful in diagnosing certain kinds of issues. Write a managed wrapper for the WCT API and collect the wait information about all the threads you are already looking at in Assignment 3. 
+ 
+This is also a good time to build an object model to represent the wait information (instead of just printing it to the console). You're free to do your own design, but I would suggest something similar to the CLRMD API (which has a ClrThread class with a BlockingObjects collection).
