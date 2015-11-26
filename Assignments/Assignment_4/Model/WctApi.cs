@@ -11,7 +11,7 @@ namespace Assignment_4.Model
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
     /// use: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
     /// </summary>
-    public class WctApiWrapper
+    public class WctApi
     {
         public WctApi()
         {
