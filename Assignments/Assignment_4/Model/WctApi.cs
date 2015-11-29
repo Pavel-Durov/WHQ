@@ -5,9 +5,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HANDLE = System.IntPtr;
-using DWORD = System.Double;
+using DWORD = System.UInt32;
+using LPBOOL = System.UInt32;
 using LARGE_INTEGER = System.UInt64;
-using BOOL = System.Boolean;
+using BOOL = System.UInt32;
+using LPDWORD = System.Boolean;
+using HWCT = System.IntPtr;
+using DWORD_PTR = System.UInt32;
+using PWAITCHAIN_NODE_INFO = System.UInt32;
 
 namespace Assignment_4.Model
 {
@@ -20,28 +25,12 @@ namespace Assignment_4.Model
         public WctApi()
         {
             //https://msdn.microsoft.com/en-us/library/cc308564.aspx
-            //Debugging with WTC 
+            //TODO: Debugging with WTC 
 
             //1.Create a WTC session.
             //2.Get the processes and threads to analyze.
             //3.Get the wait chain for each thread.
             //4.Close the WTC Session
-
-            DebuggingSteps();
-        }
-
-        private void DebuggingSteps()
-        {
-            var wctHandle = OpenThreadWaitChainSession(0, 0);
-            if (wctHandle == HANDLE.Zero)
-            {
-                //Error opening wait chain session
-            }
-            else
-            {
-
-            }
-
         }
 
 
@@ -66,52 +55,80 @@ namespace Assignment_4.Model
         #region External Advapi32 calls
 
 
-        //VOID WINAPI CloseThreadWaitChainSession(_In_ HWCT WctHandle);
+        /// <summary>
+        /// Original doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679282(v=vs.85).aspx
+        /// </summary>
+        /// <param name="WctHandle">A handle to the WCT session created by the OpenThreadWaitChainSession function.</param>
         [DllImport("Advapi32.dll")]
         public static extern void CloseThreadWaitChainSession(HANDLE WctHandle);
 
 
-        //HWCT WINAPI OpenThreadWaitChainSession(_In_ DWORD  Flags, _In_opt_ PWAITCHAINCALLBACK callback);
+
+        /// <summary>
+        /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms680543(v=vs.85).aspx
+        /// </summary>
+        /// <param name="Flags">The session type. This parameter can be one of the following values.</param>
+        /// <param name="callback">If the session is asynchronous, this parameter can be a pointer to a WaitChainCallback callback function.
+        /// </param>
+        /// <returns>If the function succeeds, the return value is a handle to the newly created session. If the function fails, the return value is NULL.To get extended error information, call GetLastError.
+        //</returns>
         [DllImport("Advapi32.dll")]
-        public static extern HANDLE OpenThreadWaitChainSession(double Flags, double callback);
+        public static extern HANDLE OpenThreadWaitChainSession(OpenThreadChainFlags Flags, DWORD callback);
+
+
+        /// <summary>
+        /// Original doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms680564(v=vs.85).aspx
+        /// </summary>
+        /// <param name="CallStateCallback">The address of the CoGetCallState function.</param>
+        /// <param name="ActivationStateCallback">The address of the CoGetActivationState function.</param>
+        [DllImport("Advapi32.dll")]
+        public static extern void RegisterWaitChainCOMCallback(UInt32 CallStateCallback, UInt32 ActivationStateCallback);
+
+
+        /// <summary>
+        /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
+        /// </summary>
+        /// <param name="WctHandle"></param>
+        /// <param name="Context"></param>
+        /// <param name="flags"></param>
+        /// <param name="ThreadId"></param>
+        /// <param name="NodeInfoArray"></param>
+        /// <param name="IsCycle"></param>
+        /// <returns></returns>
+        [DllImport("Advapi32.dll")]
+        public static extern BOOL GetThreadWaitChain(
+            HANDLE WctHandle,
+            DWORD Context,
+            GetThreadWaitChainFlags flags,
+            DWORD ThreadId,
+            WAITCHAIN_NODE_INFO NodeInfoArray,
+            LPBOOL IsCycle
+        );
 
 
 
-        //VOID WINAPI RegisterWaitChainCOMCallback(_In_ PCOGETCALLSTATE CallStateCallback,
-        //_In_ PCOGETACTIVATIONSTATE ActivationStateCallback);
 
+        /// <summary>
+        /// Original Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
+        /// </summary>
+        /// <param name="WctHandle">A handle to the WCT session created by the OpenThreadWaitChainSession function.</param>
+        /// <param name="Context">A optional pointer to an application-defined context structure specified by the GetThreadWaitChain function.</param>
+        /// <param name="CallbackStatus">The callback status. This parameter can be one of the following values, or one of the other system </param>
+        /// <param name="NodeCount">The number of nodes retrieved, up to WCT_MAX_NODE_COUNT. If the array cannot contain all the nodes of the wait chain, the function fails, CallbackStatus is ERROR_MORE_DATA, and this parameter receives the number of array elements required to contain all the nodes.</param>
+        /// <param name="NodeInfoArray">An array of WAITCHAIN_NODE_INFO structures that receives the wait chain.</param>
+        /// <param name="IsCycle">If the function detects a deadlock, this variable is set to TRUE; otherwise, it is set to FALSE.</param>
+        public static extern void WaitChainCallback(
+           HWCT WctHandle,
+           DWORD_PTR Context,
+           DWORD CallbackStatus,
+           LPDWORD NodeCount,
+           PWAITCHAIN_NODE_INFO NodeInfoArray,
+           LPBOOL IsCycle
+        );
 
-
-        enum WCT_OBJECT_TYPE
-        {
-            WctCriticalSectionType,
-            WctSendMessageType,
-            WctMutexType,
-            WctAlpcType,
-            WctComType,
-            WctThreadWaitType,
-            WctProcessWaitType,
-            WctThreadType,
-            WctComActivationType,
-            WctUnknownType
-        }
-
-        enum WCT_OBJECT_STATUS
-        {
-            WctStatusNoAccess,
-            WctStatusRunning,
-            WctStatusBlocked,
-            WctStatusPidOnly,
-            WctStatusPidOnlyRpcss,
-            WctStatusOwned,
-            WctStatusNotOwned,
-            WctStatusAbandoned,
-            WctStatusUnknown,
-            WctStatusError
-        }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct _WAITCHAIN_NODE_INFO
+        public struct WAITCHAIN_NODE_INFO
         {
             WCT_OBJECT_TYPE ObjectType;
             WCT_OBJECT_STATUS ObjectStatus;
@@ -141,20 +158,76 @@ namespace Assignment_4.Model
         }
 
 
-    
+
+
+        public enum CallbackStatus
+        {
+            /*The caller did not have sufficient privilege to open a target thread.*/
+            ERROR_ACCESS_DENIED,
+            /*The asynchronous session was canceled by a call to the CloseThreadWaitChainSession function.*/
+            ERROR_CANCELLED,
+            /*The NodeInfoArray buffer is not large enough to contain all the nodes in the wait chain. The NodeCount parameter contains the number of nodes in the chain. The wait chain returned is still valid.*/
+            ERROR_MORE_DATA,
+            /*The specified thread could not be located.*/
+            ERROR_OBJECT_NOT_FOUND,
+            /*The operation completed successfully.*/
+            ERROR_SUCCESS,
+            /*The number of nodes exceeds WCT_MAX_NODE_COUNT. The wait chain returned is still valid.*/
+            ERROR_TOO_MANY_THREADS
+        }
+
+        public enum OpenThreadChainFlags
+        {
+            WCT_OPEN_FLAG = 0,
+            WCT_ASYNC_OPEN_FLAG = 1
+        }
+
+        public enum GetThreadWaitChainFlags
+        {
+
+            /*Enumerates all threads of an out-of-proc MTA COM server 
+            to find the correct thread identifier.*/
+            WCT_OUT_OF_PROC_COM_FLAG,
+            /*Retrieves critical-section information from other processes.*/
+            WCT_OUT_OF_PROC_CS_FLAG,
+            /*Follows the wait chain into other processes. Otherwise, the function reports the first thread in a different process but does not retrieve additional information.*/
+            WCT_OUT_OF_PROC_FLAG
+        }
+
+        public enum WCT_OBJECT_TYPE
+        {
+            WctCriticalSectionType,
+            WctSendMessageType,
+            WctMutexType,
+            WctAlpcType,
+            WctComType,
+            WctThreadWaitType,
+            WctProcessWaitType,
+            WctThreadType,
+            WctComActivationType,
+            WctUnknownType
+        }
+
+        public enum WCT_OBJECT_STATUS
+        {
+            WctStatusNoAccess,
+            WctStatusRunning,
+            WctStatusBlocked,
+            WctStatusPidOnly,
+            WctStatusPidOnlyRpcss,
+            WctStatusOwned,
+            WctStatusNotOwned,
+            WctStatusAbandoned,
+            WctStatusUnknown,
+            WctStatusError
+        }
+
+
+
+
 
         #endregion
 
-        //BOOL WINAPI GetThreadWaitChain(
-        //_In_ HWCT                 WctHandle,
-        //_In_opt_ DWORD_PTR            Context,
-        //_In_ DWORD                Flags,
-        //_In_ DWORD                ThreadId,
-        //_Inout_ LPDWORD              NodeCount,
-        //_Out_ PWAITCHAIN_NODE_INFO NodeInfoArray,
-        //_Out_ LPBOOL               IsCycle
-
-        //);
 
 
     }
