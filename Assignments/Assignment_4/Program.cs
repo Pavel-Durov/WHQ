@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assignment_4.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ namespace Assignment_4
     {
         static void Main(string[] args)
         {
+            WctApi api = new WctApi();
+
+            api.TestRun();
+
+            Console.ReadKey();
         }
     }
 }

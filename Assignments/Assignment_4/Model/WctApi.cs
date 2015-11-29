@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
+//Maping native types to managed 
 using HANDLE = System.IntPtr;
 using DWORD = System.UInt32;
 using LPBOOL = System.UInt32;
@@ -33,7 +35,15 @@ namespace Assignment_4.Model
             //4.Close the WTC Session
         }
 
+        public void TestRun()
+        {
+            var handle = OpenSession();
 
+
+
+            //Finaly ...
+            CloseSession(handle);
+        }
         private HANDLE OpenSession()
         {
             var wctHandle = OpenThreadWaitChainSession(0, 0);
@@ -46,7 +56,7 @@ namespace Assignment_4.Model
             return wctHandle;
         }
 
-        private void ClosseSession(HANDLE wctHandle)
+        private void CloseSession(HANDLE wctHandle)
         {
             CloseThreadWaitChainSession(wctHandle);
         }
@@ -117,6 +127,7 @@ namespace Assignment_4.Model
         /// <param name="NodeCount">The number of nodes retrieved, up to WCT_MAX_NODE_COUNT. If the array cannot contain all the nodes of the wait chain, the function fails, CallbackStatus is ERROR_MORE_DATA, and this parameter receives the number of array elements required to contain all the nodes.</param>
         /// <param name="NodeInfoArray">An array of WAITCHAIN_NODE_INFO structures that receives the wait chain.</param>
         /// <param name="IsCycle">If the function detects a deadlock, this variable is set to TRUE; otherwise, it is set to FALSE.</param>
+        [DllImport("Advapi32.dll")]
         public static extern void WaitChainCallback(
            HWCT WctHandle,
            DWORD_PTR Context,
