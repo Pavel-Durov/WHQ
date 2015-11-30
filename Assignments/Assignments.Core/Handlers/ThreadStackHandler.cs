@@ -8,6 +8,8 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
 using Assignments.Core.msos;
+using Assignments.Core.PrintHandles;
+using Assignments.Core.Model;
 
 namespace Assignments.Core.Handlers
 {
@@ -17,7 +19,9 @@ namespace Assignments.Core.Handlers
         {
         }
 
-        IDebugClient _debugClient;
+        WctApi _wctApi;
+
+     IDebugClient _debugClient;
         private ClrRuntime _runtime;
 
         public IEnumerable<ThreadInfo> Threads { get; private set; }
@@ -49,8 +53,13 @@ namespace Assignments.Core.Handlers
 
         private void Init(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
-            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
-            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
+
+
+
+            _wctApi.CollectWaitInformation(thread);
+
+            ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
+            ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
 
 
         }
