@@ -39,11 +39,13 @@ namespace Assignment_4.Model
         {
             var handle = OpenSession();
 
+            var waitChain = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_OPEN_FLAG, 0);
 
 
             //Finaly ...
             CloseSession(handle);
         }
+
         private HANDLE OpenSession()
         {
             var wctHandle = OpenThreadWaitChainSession(0, 0);
