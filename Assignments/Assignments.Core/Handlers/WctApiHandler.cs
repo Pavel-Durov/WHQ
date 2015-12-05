@@ -138,8 +138,7 @@ namespace Assignments.Core.Handlers
                                     WCTP_GETINFO_ALL_FLAGS,
                                     threadID,
                                     Count,
-                                    0,
-                                    //IntPtr.Zero,
+                                    IntPtr.Zero,
                                     IsCycle);
 
             if (result == 0)
