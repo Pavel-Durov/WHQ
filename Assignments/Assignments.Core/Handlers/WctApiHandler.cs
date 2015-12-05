@@ -17,15 +17,15 @@ using DWORD_PTR = System.UInt32;
 using PWAITCHAIN_NODE_INFO = System.UInt32;
 using Microsoft.Diagnostics.Runtime;
 
-namespace Assignments.Core.Model
+namespace Assignments.Core.Handlers
 {
     /// <summary>
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
     /// use: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
     /// </summary>
-    public class WctApi
+    public class WctApiHandler
     {
-        public WctApi()
+        public WctApiHandler()
         {
             //https://msdn.microsoft.com/en-us/library/cc308564.aspx
             //TODO: Debugging with WTC 

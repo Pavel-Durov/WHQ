@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Assignments.Core.msos;
 using Assignments.Core.PrintHandles;
-using Assignments.Core.Model;
+using Assignments.Core.Handlers;
 
 namespace Assignments.Core.Handlers
 {
@@ -20,16 +20,16 @@ namespace Assignments.Core.Handlers
 
         }
 
-        WctApi _wctApi;
+        WctApiHandler _wctApi;
 
 
-        public WctApi WctApi
+        public WctApiHandler WctApi
         {
             get
             {
                 if (_wctApi == null)
                 {
-                    _wctApi = new WctApi();
+                    _wctApi = new WctApiHandler();
                 }
                 return _wctApi;
             }

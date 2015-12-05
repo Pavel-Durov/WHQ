@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
-    <Compile Include="Model\WctApi.cs" />
+    <Compile Include="Handlers\WctApiHandler.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />
