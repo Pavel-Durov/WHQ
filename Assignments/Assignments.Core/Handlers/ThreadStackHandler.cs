@@ -15,13 +15,28 @@ namespace Assignments.Core.Handlers
 {
     public class ThreadStackHandler
     {
-        public static void Handle(ClrThread thread)
+        public void Handle(ClrThread thread)
         {
+
         }
 
         WctApi _wctApi;
 
-     IDebugClient _debugClient;
+
+        public WctApi WctApi
+        {
+            get
+            {
+                if (_wctApi == null)
+                {
+                    _wctApi = new WctApi();
+                }
+                return _wctApi;
+            }
+            set { _wctApi = value; }
+        }
+
+        IDebugClient _debugClient;
         private ClrRuntime _runtime;
 
         public IEnumerable<ThreadInfo> Threads { get; private set; }
@@ -48,6 +63,7 @@ namespace Assignments.Core.Handlers
 
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+
             Init(thread, managedStack, unmanagedStack);
         }
 
@@ -56,7 +72,7 @@ namespace Assignments.Core.Handlers
 
 
 
-            _wctApi.CollectWaitInformation(thread);
+            WctApi.CollectWaitInformation(thread);
 
             ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
             ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);

@@ -40,38 +40,25 @@ namespace Assignments.Core.Model
         {
             var wctHandle = OpenThreadWaitChainSession(0, 0);
 
-            var threadID = thread.OSThreadId;
-
-            WAITCHAIN_NODE_INFO info = new WAITCHAIN_NODE_INFO();
-
-            var result =  GetThreadWaitChain(wctHandle, 0,
-                GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, info , 0);
-        }
-
-        public void TestRun()
-        {
-            var handle = OpenSession();
-
-            var waitChain = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_OPEN_FLAG, 0);
-
-            
-
-            //Finaly ...
-            CloseSession(handle);
-        }
-
-        private HANDLE OpenSession()
-        {
-            var wctHandle = OpenThreadWaitChainSession(0, 0);
-
             if (wctHandle == HANDLE.Zero)
             {
                 //Error opening wait chain session
             }
 
-            return wctHandle;
+            var threadID = thread.OSThreadId;
+
+            WAITCHAIN_NODE_INFO info = new WAITCHAIN_NODE_INFO();
+
+            var result = GetThreadWaitChain
+                (wctHandle, 0,
+                GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG,
+                threadID, info, 0);
+
+            //Finaly ...
+            CloseSession(wctHandle);
         }
 
+       
         private void CloseSession(HANDLE wctHandle)
         {
             CloseThreadWaitChainSession(wctHandle);

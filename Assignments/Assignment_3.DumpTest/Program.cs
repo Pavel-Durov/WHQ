@@ -34,18 +34,28 @@ namespace Assignment_3.DumpTest
 
             ////Console.WriteLine("Calling WaitForMultipleObjects");
 
+            Console.WriteLine("Test started");
             HANDLE[] arr = new HANDLE[3];
             for (int i = 0; i < 3; i++)
             {
                 var loopAutoEvent = new AutoResetEvent(false);
                 arr[i] = loopAutoEvent.Handle;
             }
-            var mulRes = WaitForMultipleObjects(3, arr, true, 9999999);
 
-            var mulRes2 = WaitForMultipleObjects(1, new HANDLE[] { AUTO_EVENT.Handle }, true, 9999999);
+            var proc = Process.GetCurrentProcess();
+            Console.WriteLine("PID : " + proc.Id);
+          
+            //Loop forever inorder to debig
+            //TODO : Add dead lock in te future
+            while (true)
+            {
+                Console.WriteLine("WaitForMultipleObjects - 3 HANDLES");
+                var mulRes = WaitForMultipleObjects(3, arr, true, uint.MaxValue);
 
-
-            //Console.ReadKey();
+                Console.WriteLine("WaitForMultipleObjects - 1 HANDLE");
+                var mulRes2 = WaitForMultipleObjects(1, new HANDLE[] { AUTO_EVENT.Handle }, true, 9999999);
+            }
+          
         }
 
         private static void TestResetEvent()
