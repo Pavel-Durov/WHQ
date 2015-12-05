@@ -15,8 +15,9 @@ using LPDWORD = System.Boolean;
 using HWCT = System.IntPtr;
 using DWORD_PTR = System.UInt32;
 using PWAITCHAIN_NODE_INFO = System.UInt32;
+using Microsoft.Diagnostics.Runtime;
 
-namespace Assignment_4.Model
+namespace Assignments.Core.Model
 {
     /// <summary>
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
@@ -35,15 +36,30 @@ namespace Assignment_4.Model
             //4.Close the WTC Session
         }
 
+        internal void CollectWaitInformation(ClrThread thread)
+        {
+            var wctHandle = OpenThreadWaitChainSession(0, 0);
+
+            var threadID = thread.OSThreadId;
+
+            WAITCHAIN_NODE_INFO info = new WAITCHAIN_NODE_INFO();
+
+            var result =  GetThreadWaitChain(wctHandle, 0,
+                GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, info , 0);
+        }
+
         public void TestRun()
         {
             var handle = OpenSession();
 
+            var waitChain = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_OPEN_FLAG, 0);
 
+            
 
             //Finaly ...
             CloseSession(handle);
         }
+
         private HANDLE OpenSession()
         {
             var wctHandle = OpenThreadWaitChainSession(0, 0);
@@ -141,11 +157,11 @@ namespace Assignment_4.Model
         [StructLayout(LayoutKind.Sequential)]
         public struct WAITCHAIN_NODE_INFO
         {
-            WCT_OBJECT_TYPE ObjectType;
-            WCT_OBJECT_STATUS ObjectStatus;
+            public WCT_OBJECT_TYPE ObjectType;
+            public WCT_OBJECT_STATUS ObjectStatus;
 
 
-            struct LockObject
+            public struct LockObject
             {
                 /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
                 string ObjectName;
@@ -155,7 +171,7 @@ namespace Assignment_4.Model
                 BOOL Alertable;
             }
 
-            struct ThreadObject
+            public struct ThreadObject
             {
                 /*The process identifier.*/
                 DWORD ProcessId;

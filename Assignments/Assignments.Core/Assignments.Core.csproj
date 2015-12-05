@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{781F8806-1885-44D9-A8AF-F46704A5DAB8}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{F31C3F13-5C5E-4512-B3C7-A16F8FA6518B}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Assignment_4</RootNamespace>
-    <AssemblyName>Assignment_4</AssemblyName>
+    <RootNamespace>Assignments.Core</RootNamespace>
+    <AssemblyName>Assignments.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -47,23 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
+    <Compile Include="Handlers\ThreadStackHandler.cs" />
+    <Compile Include="Model\WctApi.cs" />
+    <Compile Include="msos\SymbolCache.cs" />
+    <Compile Include="msos\ThreadInfo.cs" />
+    <Compile Include="msos\UnifiedStackFrame.cs" />
+    <Compile Include="msos\Util.cs" />
+    <Compile Include="PrintHandles\Factory\MultiWaitStackFrameHandler.cs" />
+    <Compile Include="PrintHandles\Factory\SingleWaitStackFrameHandler.cs" />
+    <Compile Include="PrintHandles\Factory\StackFrameHandler.cs" />
+    <Compile Include="PrintHandles\Factory\StackFrameHandlersFactory.cs" />
+    <Compile Include="PrintHandles\ThreadStackAnalyzer.cs" />
+    <Compile Include="PrintHandles\WinApiCallsInspector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Task\Samples\SampleForWaitChainTraversal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Task\wctAPI.txt" />
-    <Content Include="Task\assignment.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Assignments.Core\Assignments.Core.csproj">
-      <Project>{f31c3f13-5c5e-4512-b3c7-a16f8fa6518b}</Project>
-      <Name>Assignments.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

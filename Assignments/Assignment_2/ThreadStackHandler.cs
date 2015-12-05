@@ -8,9 +8,9 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace Assignment_2.Handlers
+namespace Assignments.Core.Handlers
 {
-    class ThreadStackHandler
+    public class ThreadStackHandler
     {
         public static void Handle(ClrThread thread)
         {
