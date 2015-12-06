@@ -16,6 +16,7 @@ using HWCT = System.IntPtr;
 using DWORD_PTR = System.UInt32;
 using PWAITCHAIN_NODE_INFO = System.UInt32;
 using Microsoft.Diagnostics.Runtime;
+using System.Diagnostics;
 
 namespace Assignments.Core.Handlers
 {
@@ -39,6 +40,8 @@ namespace Assignments.Core.Handlers
         //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
         const uint WCT_MAX_NODE_COUNT = 16;
         const uint WCTP_GETINFO_ALL_FLAGS = 7;
+
+        public object Debbuger { get; private set; }
 
 
         #region CollectWaitInformation C++ implementation
@@ -117,11 +120,17 @@ namespace Assignments.Core.Handlers
                 //Error opening wait chain session
             }
 
-            var threadID = thread.OSThreadId;
+            uint threadID = thread.OSThreadId;
 
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
-            DWORD Count = 0;
-            BOOL IsCycle = 0;
+            
+            //byte[] array = null;
+            //IntPtr intPtr = Marshal.AllocHGlobal(Marshal.SizeOf(NodeInfoArray));
+            //Marshal.Copy(byteArray, 0, intPtr, Marshal.SizeOf(NodeInfoArray));
+
+            //Func(intPtr);
+
+            //Marshal.FreeHGlobal(intPtr);
 
 
             //HANDLE unmanagedPointer = Marshal.AllocHGlobal(NodeInfoArray.Length);
@@ -130,21 +139,24 @@ namespace Assignments.Core.Handlers
             //Marshal.FreeHGlobal(unmanagedPointer);
 
 
-            Count = WCT_MAX_NODE_COUNT;
+            
+            int isCycle = 0;
+            int count = 0;
 
             // Make a synchronous WCT call to retrieve the wait chain.
-            uint result = GetThreadWaitChain(g_WctHandle,
-                                    0,
-                                    WCTP_GETINFO_ALL_FLAGS,
-                                    threadID,
-                                    Count,
+            bool result = GetThreadWaitChain(g_WctHandle,
                                     IntPtr.Zero,
-                                    IsCycle);
+                                    WCTP_GETINFO_ALL_FLAGS,
+                                    threadID, ref count, NodeInfoArray, out isCycle);
 
-            if (result == 0)
+            if (result)
             {
 
                 //error
+            }
+            else
+            {
+                //OK
             }
 
             //Finaly ...
@@ -203,17 +215,17 @@ namespace Assignments.Core.Handlers
         /// <param name="IsCycle"></param>
         /// <returns></returns>
         [DllImport("Advapi32.dll")]
-        public static extern BOOL GetThreadWaitChain(
-            HANDLE WctHandle,
-            DWORD Context,
-            /*GetThreadWaitChainFlags*/
-            DWORD flags,
-            DWORD ThreadId,
-            LPDWORD NodeCount,
-            HANDLE NodeInfoArray,
-            LPBOOL IsCycle
+        public static extern bool GetThreadWaitChain(
+            IntPtr WctHandle,
+            IntPtr Context,
+            UInt32 Flags,
+            uint ThreadId,
+            ref int NodeCount,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]
+            [In, Out]
+            WAITCHAIN_NODE_INFO[] NodeInfoArray,
+            out int IsCycle
         );
-
 
 
         /// <summary>

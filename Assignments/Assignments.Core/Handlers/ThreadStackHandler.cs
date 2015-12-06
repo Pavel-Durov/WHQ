@@ -10,6 +10,7 @@ using System.IO;
 using Assignments.Core.msos;
 using Assignments.Core.PrintHandles;
 using Assignments.Core.Handlers;
+using System.Diagnostics;
 
 namespace Assignments.Core.Handlers
 {
@@ -71,7 +72,7 @@ namespace Assignments.Core.Handlers
         {
 
 
-
+            Debugger.Break();
             WctApi.CollectWaitInformation(thread);
 
             ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
