@@ -38,14 +38,16 @@ namespace Assignments.Core.Model
 
         internal void CollectWaitInformation(ClrThread thread)
         {
-            var wctHandle = OpenThreadWaitChainSession(0, 0);
+            //var wctHandle = OpenThreadWaitChainSession(0, 0);
 
-            var threadID = thread.OSThreadId;
+            //var threadID = thread.OSThreadId;
 
-            WAITCHAIN_NODE_INFO info = new WAITCHAIN_NODE_INFO();
+            //WAITCHAIN_NODE_INFO[] data = new WAITCHAIN_NODE_INFO[16];
 
-            var result =  GetThreadWaitChain(wctHandle, 0,
-                GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, info , 0);
+            //int count = 16;
+            //int isCycle = 0;
+            //var result = GetThreadWaitChain(wctHandle, 0,
+            //    GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, ref count, data, ref isCycle);
         }
 
         public void TestRun()
@@ -54,7 +56,7 @@ namespace Assignments.Core.Model
 
             var waitChain = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_OPEN_FLAG, 0);
 
-            
+
 
             //Finaly ...
             CloseSession(handle);
@@ -114,21 +116,17 @@ namespace Assignments.Core.Model
         /// <summary>
         /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
         /// </summary>
-        /// <param name="WctHandle"></param>
-        /// <param name="Context"></param>
-        /// <param name="flags"></param>
-        /// <param name="ThreadId"></param>
-        /// <param name="NodeInfoArray"></param>
-        /// <param name="IsCycle"></param>
-        /// <returns></returns>
-        [DllImport("Advapi32.dll")]
-        public static extern BOOL GetThreadWaitChain(
-            HANDLE WctHandle,
-            DWORD Context,
-            GetThreadWaitChainFlags flags,
-            DWORD ThreadId,
-            WAITCHAIN_NODE_INFO NodeInfoArray,
-            LPBOOL IsCycle
+        /// [DllImport("Advapi32.dll")]
+        public static extern bool GetThreadWaitChain(
+            IntPtr WctHandle,
+            IntPtr Context,
+            UInt32 Flags,
+            int ThreadId,
+            ref int NodeCount,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]
+            [In, Out]
+            WAITCHAIN_NODE_INFO[] NodeInfoArray,
+            out int IsCycle
         );
 
 
