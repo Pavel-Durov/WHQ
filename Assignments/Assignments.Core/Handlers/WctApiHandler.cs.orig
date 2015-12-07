@@ -113,6 +113,19 @@ namespace Assignments.Core.Handlers
 
         internal void CollectWaitInformation(ClrThread thread)
         {
+<<<<<<< HEAD:Assignments/Assignments.Core/Model/WctApi.cs
+            //var wctHandle = OpenThreadWaitChainSession(0, 0);
+
+            //var threadID = thread.OSThreadId;
+
+            //WAITCHAIN_NODE_INFO[] data = new WAITCHAIN_NODE_INFO[16];
+
+            //int count = 16;
+            //int isCycle = 0;
+            //var result = GetThreadWaitChain(wctHandle, 0,
+            //    GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, ref count, data, ref isCycle);
+        }
+=======
             var g_WctHandle = OpenThreadWaitChainSession(0, 0);
 
             if (g_WctHandle == HANDLE.Zero)
@@ -124,8 +137,29 @@ namespace Assignments.Core.Handlers
 
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
             
+            //byte[] array = null;
+            //IntPtr intPtr = Marshal.AllocHGlobal(Marshal.SizeOf(NodeInfoArray));
+            //Marshal.Copy(byteArray, 0, intPtr, Marshal.SizeOf(NodeInfoArray));
+
+            //Func(intPtr);
+>>>>>>> 7eb4b47da9003043b2cebe5a83119f0474ff9779:Assignments/Assignments.Core/Handlers/WctApiHandler.cs
+
+            //Marshal.FreeHGlobal(intPtr);
+
+
+            //HANDLE unmanagedPointer = Marshal.AllocHGlobal(NodeInfoArray.Length);
+
+            // Call unmanaged code
+            //Marshal.FreeHGlobal(unmanagedPointer);
+
+
+<<<<<<< HEAD:Assignments/Assignments.Core/Model/WctApi.cs
+
+=======
+            
             int isCycle = 0;
             int count = 0;
+>>>>>>> 7eb4b47da9003043b2cebe5a83119f0474ff9779:Assignments/Assignments.Core/Handlers/WctApiHandler.cs
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool result = GetThreadWaitChain(g_WctHandle,
@@ -136,11 +170,11 @@ namespace Assignments.Core.Handlers
             if (result)
             {
 
-                //OK
+                //error
             }
             else
             {
-                //error
+                //OK
             }
 
             //Finaly ...
@@ -190,6 +224,9 @@ namespace Assignments.Core.Handlers
         /// <summary>
         /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
         /// </summary>
+<<<<<<< HEAD:Assignments/Assignments.Core/Model/WctApi.cs
+        /// [DllImport("Advapi32.dll")]
+=======
         /// <param name="WctHandle"></param>
         /// <param name="Context"></param>
         /// <param name="flags"></param>
@@ -199,11 +236,16 @@ namespace Assignments.Core.Handlers
         /// <param name="IsCycle"></param>
         /// <returns></returns>
         [DllImport("Advapi32.dll")]
+>>>>>>> 7eb4b47da9003043b2cebe5a83119f0474ff9779:Assignments/Assignments.Core/Handlers/WctApiHandler.cs
         public static extern bool GetThreadWaitChain(
             IntPtr WctHandle,
             IntPtr Context,
             UInt32 Flags,
+<<<<<<< HEAD:Assignments/Assignments.Core/Model/WctApi.cs
+            int ThreadId,
+=======
             uint ThreadId,
+>>>>>>> 7eb4b47da9003043b2cebe5a83119f0474ff9779:Assignments/Assignments.Core/Handlers/WctApiHandler.cs
             ref int NodeCount,
             [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]
             [In, Out]
