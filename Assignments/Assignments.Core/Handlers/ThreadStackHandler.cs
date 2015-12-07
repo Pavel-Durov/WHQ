@@ -9,19 +9,35 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Assignments.Core.msos;
 using Assignments.Core.PrintHandles;
-using Assignments.Core.Model;
+using Assignments.Core.Handlers;
+using System.Diagnostics;
 
 namespace Assignments.Core.Handlers
 {
     public class ThreadStackHandler
     {
-        public static void Handle(ClrThread thread)
+        public void Handle(ClrThread thread)
         {
+
         }
 
-        WctApi _wctApi;
+        WctApiHandler _wctApi;
 
-     IDebugClient _debugClient;
+
+        public WctApiHandler WctApi
+        {
+            get
+            {
+                if (_wctApi == null)
+                {
+                    _wctApi = new WctApiHandler();
+                }
+                return _wctApi;
+            }
+            set { _wctApi = value; }
+        }
+
+        IDebugClient _debugClient;
         private ClrRuntime _runtime;
 
         public IEnumerable<ThreadInfo> Threads { get; private set; }
@@ -48,6 +64,7 @@ namespace Assignments.Core.Handlers
 
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+
             Init(thread, managedStack, unmanagedStack);
         }
 
@@ -55,8 +72,8 @@ namespace Assignments.Core.Handlers
         {
 
 
-
-            _wctApi.CollectWaitInformation(thread);
+            Debugger.Break();
+            WctApi.CollectWaitInformation(thread);
 
             ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
             ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);

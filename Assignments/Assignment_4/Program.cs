@@ -1,4 +1,4 @@
-﻿
+﻿//#define DUMP_AS_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,8 @@ using Assignments.Core;
 using System.IO;
 using Assignments.Core.Handlers;
 using Microsoft.Diagnostics.Runtime;
-using Assignments.Core.Model;
+
+
 
 namespace Assignment_4
 {
@@ -16,14 +17,12 @@ namespace Assignment_4
     {
         const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
 
-
-        const int PID = 0;
-        const int ATTACH_TO_PPROCESS_TIMEOUT = 0;
+        const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
         static void Main(string[] args)
         {
 
-
+#if DUMP_AS_SOURCE
             if (File.Exists(SOME_86_DUMP))
             {
                 //Loading a crash dump
@@ -33,16 +32,20 @@ namespace Assignment_4
                 }
 
             }
-            else
+#else
+            
+            Console.WriteLine("Please enter a PID: ");
+
+            var pid = int.Parse(Console.ReadLine());
+            using (DataTarget target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT))
             {
-                using (DataTarget target = DataTarget.AttachToProcess(PID, ATTACH_TO_PPROCESS_TIMEOUT))
-                {
-                    DoAnaytics(target);
-                }
+                DoAnaytics(target);
             }
 
+#endif
             Console.ReadKey();
         }
+
 
         private static void DoAnaytics(DataTarget target)
         {

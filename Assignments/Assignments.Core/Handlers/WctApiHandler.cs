@@ -11,21 +11,22 @@ using DWORD = System.UInt32;
 using LPBOOL = System.UInt32;
 using LARGE_INTEGER = System.UInt64;
 using BOOL = System.UInt32;
-using LPDWORD = System.Boolean;
+using LPDWORD = System.UInt32;
 using HWCT = System.IntPtr;
 using DWORD_PTR = System.UInt32;
 using PWAITCHAIN_NODE_INFO = System.UInt32;
 using Microsoft.Diagnostics.Runtime;
+using System.Diagnostics;
 
-namespace Assignments.Core.Model
+namespace Assignments.Core.Handlers
 {
     /// <summary>
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
     /// use: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
     /// </summary>
-    public class WctApi
+    public class WctApiHandler
     {
-        public WctApi()
+        public WctApiHandler()
         {
             //https://msdn.microsoft.com/en-us/library/cc308564.aspx
             //TODO: Debugging with WTC 
@@ -36,43 +37,132 @@ namespace Assignments.Core.Model
             //4.Close the WTC Session
         }
 
+        //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
+        const uint WCT_MAX_NODE_COUNT = 16;
+        const uint WCTP_GETINFO_ALL_FLAGS = 7;
+
+        public object Debbuger { get; private set; }
+
+
+        #region CollectWaitInformation C++ implementation
+        //Source: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
+
+        /*            
+         WAITCHAIN_NODE_INFO NodeInfoArray[WCT_MAX_NODE_COUNT];
+         DWORD Count, i;
+         BOOL IsCycle;
+
+         printf("%d: ", ThreadId);
+
+         Count = WCT_MAX_NODE_COUNT;
+
+         // Make a synchronous WCT call to retrieve the wait chain.
+         if (!GetThreadWaitChain(g_WctHandle,NULL,WCTP_GETINFO_ALL_FLAGS,ThreadId,&Count,NodeInfoArray,&IsCycle))
+         {
+             printf("Error (0X%x)\n", GetLastError());
+             return;
+         }
+
+         // Check if the wait chain is too big for the array we passed in.
+         if (Count > WCT_MAX_NODE_COUNT)
+         {
+             printf("Found additional nodes %d\n", Count);
+             Count = WCT_MAX_NODE_COUNT;
+         }
+
+         // Loop over all the nodes returned and print useful information.
+         for (i = 0; i < Count; i++)
+         {
+             switch (NodeInfoArray[i].ObjectType)
+             {
+                 case WctThreadType:
+                     // A thread node contains process and thread ID.
+                     printf("[%x:%x:%s]->",
+                            NodeInfoArray[i].ThreadObject.ProcessId,
+                            NodeInfoArray[i].ThreadObject.ThreadId,
+                            ((NodeInfoArray[i].ObjectStatus == WctStatusBlocked) ? "b" : "r"));
+                     break;
+
+                 default:
+                     // A synchronization object.
+
+                     // Some objects have names...
+                     if (NodeInfoArray[i].LockObject.ObjectName[0] != L'\0')
+         {
+             printf("[%s:%S]->",
+                    STR_OBJECT_TYPE[NodeInfoArray[i].ObjectType - 1].Desc,
+                    NodeInfoArray[i].LockObject.ObjectName);
+         }
+         else
+         {
+             printf("[%s]->",
+                    STR_OBJECT_TYPE[NodeInfoArray[i].ObjectType - 1].Desc);
+         }
+         if (NodeInfoArray[i].ObjectStatus == WctStatusAbandoned)
+         {
+             printf("<abandoned>");
+         }
+         break;
+     }
+ }
+
+
+*/
+
+        #endregion
+
         internal void CollectWaitInformation(ClrThread thread)
         {
-            //var wctHandle = OpenThreadWaitChainSession(0, 0);
+            var g_WctHandle = OpenThreadWaitChainSession(0, 0);
 
-            //var threadID = thread.OSThreadId;
-
-            //WAITCHAIN_NODE_INFO[] data = new WAITCHAIN_NODE_INFO[16];
-
-            //int count = 16;
-            //int isCycle = 0;
-            //var result = GetThreadWaitChain(wctHandle, 0,
-            //    GetThreadWaitChainFlags.WCT_OUT_OF_PROC_COM_FLAG, threadID, ref count, data, ref isCycle);
-        }
-
-        public void TestRun()
-        {
-            var handle = OpenSession();
-
-            var waitChain = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_OPEN_FLAG, 0);
-
-
-
-            //Finaly ...
-            CloseSession(handle);
-        }
-
-        private HANDLE OpenSession()
-        {
-            var wctHandle = OpenThreadWaitChainSession(0, 0);
-
-            if (wctHandle == HANDLE.Zero)
+            if (g_WctHandle == HANDLE.Zero)
             {
                 //Error opening wait chain session
             }
 
-            return wctHandle;
+            uint threadID = thread.OSThreadId;
+
+            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
+            
+            //byte[] array = null;
+            //IntPtr intPtr = Marshal.AllocHGlobal(Marshal.SizeOf(NodeInfoArray));
+            //Marshal.Copy(byteArray, 0, intPtr, Marshal.SizeOf(NodeInfoArray));
+
+            //Func(intPtr);
+
+            //Marshal.FreeHGlobal(intPtr);
+
+
+            //HANDLE unmanagedPointer = Marshal.AllocHGlobal(NodeInfoArray.Length);
+
+            // Call unmanaged code
+            //Marshal.FreeHGlobal(unmanagedPointer);
+
+
+            
+            int isCycle = 0;
+            int count = 0;
+
+            // Make a synchronous WCT call to retrieve the wait chain.
+            bool result = GetThreadWaitChain(g_WctHandle,
+                                    IntPtr.Zero,
+                                    WCTP_GETINFO_ALL_FLAGS,
+                                    threadID, ref count, NodeInfoArray, out isCycle);
+
+            if (result)
+            {
+
+                //error
+            }
+            else
+            {
+                //OK
+            }
+
+            //Finaly ...
+            CloseSession(g_WctHandle);
         }
+
 
         private void CloseSession(HANDLE wctHandle)
         {
@@ -116,20 +206,26 @@ namespace Assignments.Core.Model
         /// <summary>
         /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
         /// </summary>
-        /// [DllImport("Advapi32.dll")]
+        /// <param name="WctHandle"></param>
+        /// <param name="Context"></param>
+        /// <param name="flags"></param>
+        /// <param name="ThreadId"></param>
+        /// <param name="NodeCount"></param>
+        /// <param name="NodeInfoArray"></param>
+        /// <param name="IsCycle"></param>
+        /// <returns></returns>
+        [DllImport("Advapi32.dll")]
         public static extern bool GetThreadWaitChain(
             IntPtr WctHandle,
             IntPtr Context,
             UInt32 Flags,
-            int ThreadId,
+            uint ThreadId,
             ref int NodeCount,
             [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]
             [In, Out]
             WAITCHAIN_NODE_INFO[] NodeInfoArray,
             out int IsCycle
         );
-
-
 
 
         /// <summary>
