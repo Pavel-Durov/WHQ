@@ -38,7 +38,7 @@ namespace Assignments.Core.Handlers
         }
 
         //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
-        const uint WCT_MAX_NODE_COUNT = 16;
+        const int WCT_MAX_NODE_COUNT = 16;
         const uint WCTP_GETINFO_ALL_FLAGS = 7;
 
         public object Debbuger { get; private set; }
@@ -125,7 +125,7 @@ namespace Assignments.Core.Handlers
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
             
             int isCycle = 0;
-            int count = 0;
+            int count = WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool result = GetThreadWaitChain(g_WctHandle,
@@ -135,14 +135,13 @@ namespace Assignments.Core.Handlers
 
             //int error = Marshal.GetLastWin32Error();
 
-            uint wpiError = GetLastError();
+            uint wctError = GetLastError();
 
-            if(wpiError == 87)
+            if(wctError != 0)
             {
-                //ERROR_INVALID_PARAMETER
+                //Some Error has been accured
             }
-
-            //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
+                //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
             if (result)
             {
 
