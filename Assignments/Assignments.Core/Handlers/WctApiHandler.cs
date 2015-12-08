@@ -133,6 +133,16 @@ namespace Assignments.Core.Handlers
                                     WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref count, NodeInfoArray, out isCycle);
 
+            //int error = Marshal.GetLastWin32Error();
+
+            uint wpiError = GetLastError();
+
+            if(wpiError == 87)
+            {
+                //ERROR_INVALID_PARAMETER
+            }
+
+            //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
             if (result)
             {
 
@@ -155,6 +165,14 @@ namespace Assignments.Core.Handlers
 
 
         #region External Advapi32 calls
+
+        /// <summary>
+        ///  Original Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679360(v=vs.85).aspx
+        ///  System errr codes: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681381(v=vs.85).aspx
+        /// </summary>
+        /// <returns>The return value is the calling thread's last-error code.</returns>
+        [DllImport("Kernel32.dll")]
+        public static extern DWORD GetLastError();
 
 
         /// <summary>
