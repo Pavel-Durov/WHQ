@@ -144,7 +144,11 @@ namespace Assignments.Core.Handlers
                 //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
             if (result)
             {
-
+                for (int i = 0; i < count; i++)
+                {
+                    var wctInfo = NodeInfoArray[i];
+                    
+                }
                 //OK
             }
             else
@@ -256,27 +260,31 @@ namespace Assignments.Core.Handlers
             public WCT_OBJECT_STATUS ObjectStatus;
 
 
-            public struct LockObject
-            {
-                /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
-                string ObjectName;
-                /*This member is reserved for future use.*/
-                LARGE_INTEGER Timeout;
-                /*This member is reserved for future use.*/
-                BOOL Alertable;
-            }
+            LockObject InfoLockObject;
+            ThreadObject InfoThreadObject;
 
-            public struct ThreadObject
-            {
-                /*The process identifier.*/
-                DWORD ProcessId;
-                /*The thread identifier. For COM and ALPC, this member can be 0.*/
-                DWORD ThreadId;
-                /*The wait time.*/
-                DWORD WaitTime;
-                /*The number of context switches.*/
-                DWORD ContextSwitches;
-            }
+        }
+
+        public struct LockObject
+        {
+            /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
+            string ObjectName;
+            /*This member is reserved for future use.*/
+            LARGE_INTEGER Timeout;
+            /*This member is reserved for future use.*/
+            BOOL Alertable;
+        }
+
+        public struct ThreadObject
+        {
+            /*The process identifier.*/
+            DWORD ProcessId;
+            /*The thread identifier. For COM and ALPC, this member can be 0.*/
+            DWORD ThreadId;
+            /*The wait time.*/
+            DWORD WaitTime;
+            /*The number of context switches.*/
+            DWORD ContextSwitches;
         }
 
 
