@@ -17,8 +17,9 @@ using DWORD_PTR = System.UInt32;
 using PWAITCHAIN_NODE_INFO = System.UInt32;
 using Microsoft.Diagnostics.Runtime;
 using System.Diagnostics;
+using Assignments.Core.Model;
 
-namespace Assignments.Core.Handlers
+namespace Assignments.Core.Handlers.WCT
 {
     /// <summary>
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
@@ -111,8 +112,10 @@ namespace Assignments.Core.Handlers
 
         #endregion
 
-        internal void CollectWaitInformation(ClrThread thread)
+        internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
         {
+            ThreadWaitInfo result = null;
+
             var g_WctHandle = OpenThreadWaitChainSession(0, 0);
 
             if (g_WctHandle == HANDLE.Zero)
@@ -123,41 +126,43 @@ namespace Assignments.Core.Handlers
             uint threadID = thread.OSThreadId;
 
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
-            
+
             int isCycle = 0;
             int count = WCT_MAX_NODE_COUNT;
 
-            // Make a synchronous WCT call to retrieve the wait chain.
-            bool result = GetThreadWaitChain(g_WctHandle,
-                                    IntPtr.Zero,
-                                    WCTP_GETINFO_ALL_FLAGS,
-                                    threadID, ref count, NodeInfoArray, out isCycle);
+            bool getWaitChainResult = GetThreadWaitChain(g_WctHandle,
+                              IntPtr.Zero,
+                              WCTP_GETINFO_ALL_FLAGS,
+                              threadID, ref count, NodeInfoArray, out isCycle);
 
-            //int error = Marshal.GetLastWin32Error();
 
-            uint wctError = GetLastError();
 
-            if(wctError != 0)
+            //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
+            if (getWaitChainResult)
             {
-                //Some Error has been accured
-            }
-                //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
-            if (result)
-            {
+                result = new ThreadWaitInfo(thread);
+
                 for (int i = 0; i < count; i++)
                 {
                     var wctInfo = NodeInfoArray[i];
-                    
+                    result.AddInfo(wctInfo);
                 }
                 //OK
             }
             else
-            {
-                //error
+            {//TODO: Deal with error...
+
+                uint wctError = GetLastError();
+                if (wctError != 0)
+                {
+                    //Some Error has been accured
+                }
             }
 
             //Finaly ...
             CloseSession(g_WctHandle);
+
+            return result;
         }
 
 
@@ -251,113 +256,6 @@ namespace Assignments.Core.Handlers
            PWAITCHAIN_NODE_INFO NodeInfoArray,
            LPBOOL IsCycle
         );
-
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct WAITCHAIN_NODE_INFO
-        {
-            public WCT_OBJECT_TYPE ObjectType;
-            public WCT_OBJECT_STATUS ObjectStatus;
-
-
-            LockObject InfoLockObject;
-            ThreadObject InfoThreadObject;
-
-        }
-
-        public struct LockObject
-        {
-            /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
-            string ObjectName;
-            /*This member is reserved for future use.*/
-            LARGE_INTEGER Timeout;
-            /*This member is reserved for future use.*/
-            BOOL Alertable;
-        }
-
-        public struct ThreadObject
-        {
-            /*The process identifier.*/
-            DWORD ProcessId;
-            /*The thread identifier. For COM and ALPC, this member can be 0.*/
-            DWORD ThreadId;
-            /*The wait time.*/
-            DWORD WaitTime;
-            /*The number of context switches.*/
-            DWORD ContextSwitches;
-        }
-
-
-
-
-        public enum CallbackStatus
-        {
-            /*The caller did not have sufficient privilege to open a target thread.*/
-            ERROR_ACCESS_DENIED,
-            /*The asynchronous session was canceled by a call to the CloseThreadWaitChainSession function.*/
-            ERROR_CANCELLED,
-            /*The NodeInfoArray buffer is not large enough to contain all the nodes in the wait chain. The NodeCount parameter contains the number of nodes in the chain. The wait chain returned is still valid.*/
-            ERROR_MORE_DATA,
-            /*The specified thread could not be located.*/
-            ERROR_OBJECT_NOT_FOUND,
-            /*The operation completed successfully.*/
-            ERROR_SUCCESS,
-            /*The number of nodes exceeds WCT_MAX_NODE_COUNT. The wait chain returned is still valid.*/
-            ERROR_TOO_MANY_THREADS
-        }
-
-        public enum OpenThreadChainFlags
-        {
-            WCT_OPEN_FLAG = 0,
-            WCT_ASYNC_OPEN_FLAG = 1
-        }
-
-        public enum GetThreadWaitChainFlags
-        {
-
-            /*Enumerates all threads of an out-of-proc MTA COM server 
-            to find the correct thread identifier.*/
-            WCT_OUT_OF_PROC_COM_FLAG,
-            /*Retrieves critical-section information from other processes.*/
-            WCT_OUT_OF_PROC_CS_FLAG,
-            /*Follows the wait chain into other processes. Otherwise, the function reports the first thread in a different process but does not retrieve additional information.*/
-            WCT_OUT_OF_PROC_FLAG
-        }
-
-        public enum WCT_OBJECT_TYPE
-        {
-            WctCriticalSectionType,
-            WctSendMessageType,
-            WctMutexType,
-            WctAlpcType,
-            WctComType,
-            WctThreadWaitType,
-            WctProcessWaitType,
-            WctThreadType,
-            WctComActivationType,
-            WctUnknownType
-        }
-
-        public enum WCT_OBJECT_STATUS
-        {
-            WctStatusNoAccess,
-            WctStatusRunning,
-            WctStatusBlocked,
-            WctStatusPidOnly,
-            WctStatusPidOnlyRpcss,
-            WctStatusOwned,
-            WctStatusNotOwned,
-            WctStatusAbandoned,
-            WctStatusUnknown,
-            WctStatusError
-        }
-
-
-
-
-
-        #endregion
-
 
 
     }
