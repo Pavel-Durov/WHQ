@@ -129,11 +129,9 @@ namespace Assignments.Core.Handlers.WCT
                                     WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref count, NodeInfoArray, out isCycle);
 
-            if (!waitChainResult)
+            if (waitChainResult)
             {
                 result = new ThreadWaitInfo(thread);
-
-                //error
                 for (int i = 0; i < count; i++)
                 {
                     result.AddInfo(NodeInfoArray[i]);
