@@ -132,18 +132,15 @@ namespace Assignments.Core.Handlers.WCT
             if (!result)
             {
                 //error
+                for (int i = 0; i < count; i++)
+                {
+
+                }
             }
 
             //Finaly ...
-            CloseSession(g_WctHandle);
+            CloseThreadWaitChainSession(g_WctHandle);
         }
-
-
-        private void CloseSession(HANDLE wctHandle)
-        {
-            CloseThreadWaitChainSession(wctHandle);
-        }
-
 
         #region External Advapi32 calls
 
