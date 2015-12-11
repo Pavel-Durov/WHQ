@@ -117,16 +117,16 @@ namespace Assignments.Core.Handlers.WCT
 
             uint threadID = thread.OSThreadId;
 
-            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[16];
+            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
 
 
             int isCycle = 0;
-            int count = 16;
+            int count = WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool result = GetThreadWaitChain(g_WctHandle,
                                     IntPtr.Zero,
-                                    2,
+                                    WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref count, NodeInfoArray, out isCycle);
 
             if (!result)
