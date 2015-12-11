@@ -1,0 +1,5 @@
+﻿1>------ Rebuild All started: Project: Assignment_3.DumpTest, Configuration: Debug Any CPU ------
+1>C:\VC\GIT\Multithreading-Debugging-Asignments\Assignments\Assignment_3.DumpTest\Program.cs(42,26,42,46): warning CS0618: 'WaitHandle.Handle' is obsolete: 'Use the SafeWaitHandle property instead.'
+1>C:\VC\GIT\Multithreading-Debugging-Asignments\Assignments\Assignment_3.DumpTest\Program.cs(62,13,62,20): warning CS0162: Unreachable code detected
+1>  Assignment_3.DumpTest -> C:\VC\GIT\Multithreading-Debugging-Asignments\Assignments\Assignment_3.DumpTest\bin\Debug\Assignment_3.DumpTest.exe
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
