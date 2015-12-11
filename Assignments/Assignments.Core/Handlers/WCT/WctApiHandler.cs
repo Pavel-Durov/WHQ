@@ -4,14 +4,14 @@ using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model;
 using Assignments.Core.Handlers.WCT;
 
-namespace Assignments.Core.IntPtrrs.WCT
+namespace Assignments.Core.Handlers.WCT
 {
     /// <summary>
     /// //https://msdn.microsoft.com/en-us/library/cc308564.aspx
     /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
     /// use: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
     /// </summary>
-    public class WctApiIntPtrr
+    public class WctApiHandler
     {
         //Consts doc:
         //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
