@@ -38,14 +38,12 @@ namespace Assignments.Core.Handlers.WCT
             //4.Close the WTC Session
         }
 
+        //Consts doc:
         //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
         const int WCT_MAX_NODE_COUNT = 16;
         const uint WCTP_GETINFO_ALL_FLAGS = 7;
 
-        public object Debbuger { get; private set; }
-
-
-        #region CollectWaitInformation C++ implementation
+        #region GetThreadWaitChain C++ implementation
         //Source: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
 
         /*            
@@ -111,8 +109,10 @@ namespace Assignments.Core.Handlers.WCT
 */
 
         #endregion
-        internal void CollectWaitInformation(ClrThread thread)
+        internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
         {
+            ThreadWaitInfo result = null;
+
             var g_WctHandle = OpenThreadWaitChainSession(0, 0);
 
             uint threadID = thread.OSThreadId;
@@ -124,22 +124,30 @@ namespace Assignments.Core.Handlers.WCT
             int count = WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
-            bool result = GetThreadWaitChain(g_WctHandle,
+            bool waitChainResult = GetThreadWaitChain(g_WctHandle,
                                     IntPtr.Zero,
                                     WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref count, NodeInfoArray, out isCycle);
 
-            if (!result)
+            if (!waitChainResult)
             {
+                result = new ThreadWaitInfo(thread);
+
                 //error
                 for (int i = 0; i < count; i++)
                 {
-
+                    result.AddInfo(NodeInfoArray[i]);
                 }
+            }
+            else
+            {
+                var lastErrorCode = GetLastError();
+                //TODO : Ifdentify code error and responce accordingly
             }
 
             //Finaly ...
             CloseThreadWaitChainSession(g_WctHandle);
+            return result;
         }
 
         #region External Advapi32 calls
