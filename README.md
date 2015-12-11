@@ -1,8 +1,5 @@
-# Clr-md-tutorials
-A repository with ClrMd POC/Tutorials
 
 
-I've created this repository, so I could keep track of my steps as I dive in to ClrMD librtary. 
+* I've created this repository, so I could keep track of my steps as I dive in to ClrMD librtary and other multithreading diagnostic libraries. 
 
-Current Issues: 
-1. 
+
