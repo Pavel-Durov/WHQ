@@ -29,7 +29,7 @@ namespace Assignments.Core.Model
 
         #endregion
 
-        internal void AddInfo(WctApiHandler.WAITCHAIN_NODE_INFO wctInfo)
+        internal void AddInfo(WAITCHAIN_NODE_INFO wctInfo)
         {
             
         }

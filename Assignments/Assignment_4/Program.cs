@@ -9,7 +9,7 @@ using System.IO;
 using Assignments.Core.Handlers;
 using Microsoft.Diagnostics.Runtime;
 
-
+//TODO: post build -> start ../../../Assignment_3.DumpTest\bin\x86\Debug\Assignment_3.DumpTest.exe
 
 namespace Assignment_4
 {

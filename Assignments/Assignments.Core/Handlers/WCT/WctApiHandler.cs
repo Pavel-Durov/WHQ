@@ -111,58 +111,31 @@ namespace Assignments.Core.Handlers.WCT
 */
 
         #endregion
-
-        internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
+        internal void CollectWaitInformation(ClrThread thread)
         {
-            ThreadWaitInfo result = null;
-
             var g_WctHandle = OpenThreadWaitChainSession(0, 0);
-
-            if (g_WctHandle == HANDLE.Zero)
-            {
-                //Error opening wait chain session
-            }
 
             uint threadID = thread.OSThreadId;
 
-            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
+            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[16];
+
 
             int isCycle = 0;
-            int count = WCT_MAX_NODE_COUNT;
+            int count = 16;
 
-            bool getWaitChainResult = GetThreadWaitChain(g_WctHandle,
-                              IntPtr.Zero,
-                              WCTP_GETINFO_ALL_FLAGS,
-                              threadID, ref count, NodeInfoArray, out isCycle);
+            // Make a synchronous WCT call to retrieve the wait chain.
+            bool result = GetThreadWaitChain(g_WctHandle,
+                                    IntPtr.Zero,
+                                    2,
+                                    threadID, ref count, NodeInfoArray, out isCycle);
 
-
-
-            //Maybe use FormatMessage function : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
-            if (getWaitChainResult)
+            if (!result)
             {
-                result = new ThreadWaitInfo(thread);
-
-                for (int i = 0; i < count; i++)
-                {
-                    var wctInfo = NodeInfoArray[i];
-                    result.AddInfo(wctInfo);
-                }
-                //OK
-            }
-            else
-            {//TODO: Deal with error...
-
-                uint wctError = GetLastError();
-                if (wctError != 0)
-                {
-                    //Some Error has been accured
-                }
+                //error
             }
 
             //Finaly ...
             CloseSession(g_WctHandle);
-
-            return result;
         }
 
 
@@ -257,6 +230,6 @@ namespace Assignments.Core.Handlers.WCT
            LPBOOL IsCycle
         );
 
-
+        #endregion
     }
 }

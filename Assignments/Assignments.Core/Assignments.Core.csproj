@@ -49,6 +49,8 @@
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
+    <Compile Include="Handlers\WCT\WctApiStructs.cs" />
+    <Compile Include="Handlers\WCT\WctApiStructsEnums.cs" />
     <Compile Include="Model\ThreadWaitInfo.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />

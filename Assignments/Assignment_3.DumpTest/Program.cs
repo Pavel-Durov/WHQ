@@ -44,7 +44,7 @@ namespace Assignment_3.DumpTest
 
             var proc = Process.GetCurrentProcess();
             Console.WriteLine("PID : " + proc.Id);
-          
+
             //Loop forever inorder to debig
             //TODO : Add dead lock in te future
             while (true)
@@ -52,10 +52,14 @@ namespace Assignment_3.DumpTest
                 Console.WriteLine("WaitForMultipleObjects - 3 HANDLES");
                 var mulRes = WaitForMultipleObjects(3, arr, true, uint.MaxValue);
 
-                Console.WriteLine("WaitForMultipleObjects - 1 HANDLE");
-                var mulRes2 = WaitForMultipleObjects(1, new HANDLE[] { AUTO_EVENT.Handle }, true, 9999999);
+
             }
-          
+
+            //Console.WriteLine("WaitForMultipleObjects - 1 HANDLE");
+            //var mulRes2 = WaitForSingleObject(AUTO_EVENT.Handle , int.MaxValue);
+            //Console.ReadKey();
+
+            Console.WriteLine("Not waiting anymore...");
         }
 
         private static void TestResetEvent()
