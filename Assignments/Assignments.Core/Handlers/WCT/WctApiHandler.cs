@@ -23,7 +23,8 @@ namespace Assignments.Core.Handlers.WCT
         {
             ThreadWaitInfo result = null;
 
-            var g_WctIntPtr = OpenThreadWaitChainSession(OpenThreadChainFlags.WCT_ASYNC_OPEN_FLAG, 0);
+            //OpenThreadChainFlags.WCT_ASYNC_OPEN_FLAG
+            var g_WctIntPtr = OpenThreadWaitChainSession(0, 0);
 
             uint threadID = thread.OSThreadId;
 
@@ -81,13 +82,13 @@ namespace Assignments.Core.Handlers.WCT
         /// <summary>
         /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms680543(v=vs.85).aspx
         /// </summary>
-        /// <param name="Flags">The session type. This parameter can be one of the following values.</param>
+        /// <param name="Flags">The session type. This parameter can be one of the following values. (OpenThreadChainFlags)</param>
         /// <param name="callback">If the session is asynchronous, this parameter can be a pointer to a WaitChainCallback callback function.
         /// </param>
         /// <returns>If the function succeeds, the return value is a IntPtr to the newly created session. If the function fails, the return value is NULL.To get extended error information, call GetLastError.
         //</returns>
         [DllImport("Advapi32.dll")]
-        public static extern IntPtr OpenThreadWaitChainSession(OpenThreadChainFlags Flags, UInt32 callback);
+        public static extern IntPtr OpenThreadWaitChainSession(UInt32 Flags, UInt32 callback);
 
 
         /// <summary>

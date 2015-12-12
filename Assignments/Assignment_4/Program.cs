@@ -33,7 +33,8 @@ namespace Assignment_4
 
             }
 #else
-            
+
+            Console.WriteLine("--- Assignment_4 C# project ----");
             Console.WriteLine("Please enter a PID: ");
 
             var pid = int.Parse(Console.ReadLine());
