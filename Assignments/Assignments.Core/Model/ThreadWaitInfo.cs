@@ -48,15 +48,7 @@ namespace Assignments.Core.Model
 
         #endregion
 
-        void AddInfo(WAITCHAIN_NODE_INFO wctInfo)
-        {
-            BlockingObject temp = new BlockingObject();
-            //item.Union.LockObject
 
-
-
-            BlockingObjects.Add(temp);
-        }
 
         internal void SetInfo(WAITCHAIN_NODE_INFO[] info)
         {
@@ -64,7 +56,7 @@ namespace Assignments.Core.Model
             {
                 foreach (var item in info)
                 {
-                    AddInfo(item);
+                    BlockingObjects.Add(new BlockingObject(item));
                 }
             }
         }

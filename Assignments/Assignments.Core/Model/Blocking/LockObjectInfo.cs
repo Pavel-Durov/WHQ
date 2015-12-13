@@ -19,6 +19,7 @@ namespace Assignments.Core.Model.Blocking
             TimeOut = lockObject.Timeout;
             AlertTable = lockObject.Alertable;
         }
+
         /// <summary>
         ///The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string
         /// </summary>
