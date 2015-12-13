@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model;
 using Assignments.Core.Handlers.WCT;
+using System.Linq;
 
 namespace Assignments.Core.Handlers.WCT
 {
@@ -37,11 +38,12 @@ namespace Assignments.Core.Handlers.WCT
             if (waitChainResult)
             {
                 result = new ThreadWaitInfo(thread);
-                for (int i = 0; i < count; i++)
-                {
-                    var info = NodeInfoArray[i];
-                    result.AddInfo(info);
-                }
+
+                WAITCHAIN_NODE_INFO[] info = null;
+
+                Array.Copy(NodeInfoArray, info, count);
+
+                result.SetInfo(info);
             }
             else
             {
