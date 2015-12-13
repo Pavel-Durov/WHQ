@@ -24,7 +24,5 @@ namespace Assignments.Core.Model
         public ThreadObjectInfo ThreadObject { get; private set; }
         public WCT_OBJECT_STATUS ObjectStatus { get; private set; }
         public WCT_OBJECT_TYPE ObjectType { get; private set; }
-
-
     }
 }
