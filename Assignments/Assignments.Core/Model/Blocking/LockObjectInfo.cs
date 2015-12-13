@@ -9,8 +9,6 @@ namespace Assignments.Core.Model.Blocking
 {
     public class LockObjectInfo
     {
-        private _WAITCHAIN_NODE_INFO_LOCK_OBJECT lockObject;
-
         public LockObjectInfo(_WAITCHAIN_NODE_INFO_LOCK_OBJECT lockObject)
         {
 
