@@ -16,24 +16,19 @@ namespace Assignments.Core.Model
 
         }
 
-        public InfoLockObject LockObject { get;private  set; }
+        public LockObjectInfo LockObject { get;private  set; }
+        public ThreadObjectInfo ThreadObject { get; set; }
 
         public BlockingObject(WAITCHAIN_NODE_INFO item)
         {
 
-            LockObject = new InfoLockObject(item.Union.LockObject)
+            LockObject = new LockObjectInfo(item.Union.LockObject);
+            ThreadObject = new ThreadObjectInfo(item.Union.ThreadObject);
+           
         }
 
 
-        public unsafe struct _WAITCHAIN_NODE_INFO_LOCK_OBJECT
-        {
-            /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
-            public fixed ushort ObjectName[WctApiConst.WCT_OBJNAME_LENGTH];
-            /*This member is reserved for future use.*/
-            UInt64 Timeout;
-            /*This member is reserved for future use.*/
-            UInt32 Alertable;
-        }
+      
 
     }
 }

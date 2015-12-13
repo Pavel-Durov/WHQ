@@ -34,13 +34,13 @@ namespace Assignments.Core.Handlers.WCT
     public struct _WAITCHAIN_NODE_INFO_THREAD_OBJECT
     {
         /*The process identifier.*/
-        UInt32 ProcessId;
+        public UInt32 ProcessId;
         /*The thread identifier. For COM and ALPC, this member can be 0.*/
-        UInt32 ThreadId;
+        public UInt32 ThreadId;
         /*The wait time.*/
-        UInt32 WaitTime;
+        public UInt32 WaitTime;
         /*The number of context switches.*/
-        UInt32 ContextSwitches;
+        public UInt32 ContextSwitches;
     }
 
 }

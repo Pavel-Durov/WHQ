@@ -7,11 +7,11 @@ using Assignments.Core.Handlers.WCT;
 
 namespace Assignments.Core.Model.Blocking
 {
-    public class InfoLockObject
+    public class LockObjectInfo
     {
         private _WAITCHAIN_NODE_INFO_LOCK_OBJECT lockObject;
 
-        public InfoLockObject(_WAITCHAIN_NODE_INFO_LOCK_OBJECT lockObject)
+        public LockObjectInfo(_WAITCHAIN_NODE_INFO_LOCK_OBJECT lockObject)
         {
 
             //TODO deal with the ushort convertion...
