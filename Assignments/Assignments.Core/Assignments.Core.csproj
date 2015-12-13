@@ -48,11 +48,14 @@
   <ItemGroup>
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
-    <Compile Include="Handlers\WCT\WctApiConst.cs" />
+    <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
-    <Compile Include="Handlers\WCT\WctApiStructs.cs" />
-    <Compile Include="Handlers\WCT\WctApiStructsEnums.cs" />
+    <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
+    <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
+    <Compile Include="Model\Blocking\LockObjectInfo.cs" />
+    <Compile Include="Model\Blocking\ThreadObjectInfo.cs" />
     <Compile Include="Model\ThreadWaitInfo.cs" />
+    <Compile Include="Model\Blocking\BlockingObject.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />

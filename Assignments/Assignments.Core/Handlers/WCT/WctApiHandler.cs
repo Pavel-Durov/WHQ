@@ -39,8 +39,8 @@ namespace Assignments.Core.Handlers.WCT
             {
                 result = new ThreadWaitInfo(thread);
 
-                WAITCHAIN_NODE_INFO[] info = null;
-
+                WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[count];
+            
                 Array.Copy(NodeInfoArray, info, count);
 
                 result.SetInfo(info);
