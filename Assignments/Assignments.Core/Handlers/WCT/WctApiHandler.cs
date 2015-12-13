@@ -13,12 +13,6 @@ namespace Assignments.Core.Handlers.WCT
     /// </summary>
     public class WctApiHandler
     {
-        //Consts doc:
-        //http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-module.html
-        const int WCT_MAX_NODE_COUNT = 16;
-        const uint WCTP_GETINFO_ALL_FLAGS = 7;
-
-       
         internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
         {
             ThreadWaitInfo result = null;
@@ -28,16 +22,16 @@ namespace Assignments.Core.Handlers.WCT
 
             uint threadID = thread.OSThreadId;
 
-            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WCT_MAX_NODE_COUNT];
+            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WctApiConst.WCT_MAX_NODE_COUNT];
 
 
             int isCycle = 0;
-            int count = WCT_MAX_NODE_COUNT;
+            int count = WctApiConst.WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool waitChainResult = GetThreadWaitChain(g_WctIntPtr,
                                     IntPtr.Zero,
-                                    WCTP_GETINFO_ALL_FLAGS,
+                                    WctApiConst.WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref count, NodeInfoArray, out isCycle);
 
             if (waitChainResult)

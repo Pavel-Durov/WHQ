@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
+    <Compile Include="Handlers\WCT\WctApiConst.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\WctApiStructsEnums.cs" />

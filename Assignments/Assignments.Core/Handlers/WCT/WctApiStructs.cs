@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assignments.Core.Handlers.WCT
 {
@@ -12,24 +8,30 @@ namespace Assignments.Core.Handlers.WCT
     {
         public WCT_OBJECT_TYPE ObjectType;
         public WCT_OBJECT_STATUS ObjectStatus;
-
-
-        LockObject InfoLockObject;
-        ThreadObject InfoThreadObject;
-
+        public _WAITCHAIN_NODE_INFO_UNION Union;
     }
 
-    public struct LockObject
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct _WAITCHAIN_NODE_INFO_UNION
+    {
+        [FieldOffset(0)]
+        public _WAITCHAIN_NODE_INFO_LOCK_OBJECT LockObject;
+        [FieldOffset(0)]
+        public _WAITCHAIN_NODE_INFO_THREAD_OBJECT ThreadObject;
+    }
+
+    public struct _WAITCHAIN_NODE_INFO_LOCK_OBJECT
     {
         /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
-        string ObjectName;
+        object ObjectName;//[WctApiConst.WCT_OBJNAME_LENGTH];// = ushort[WctApiConst.WCT_OBJNAME_LENGTH];
         /*This member is reserved for future use.*/
         UInt64 Timeout;
         /*This member is reserved for future use.*/
         UInt32 Alertable;
     }
 
-    public struct ThreadObject
+    public struct _WAITCHAIN_NODE_INFO_THREAD_OBJECT
     {
         /*The process identifier.*/
         UInt32 ProcessId;
