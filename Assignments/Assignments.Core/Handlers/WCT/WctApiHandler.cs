@@ -39,7 +39,8 @@ namespace Assignments.Core.Handlers.WCT
                 result = new ThreadWaitInfo(thread);
                 for (int i = 0; i < count; i++)
                 {
-                    result.AddInfo(NodeInfoArray[i]);
+                    var info = NodeInfoArray[i];
+                    result.AddInfo(info);
                 }
             }
             else

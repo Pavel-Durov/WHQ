@@ -21,6 +21,7 @@ namespace Assignments.Core.Handlers.WCT
         public _WAITCHAIN_NODE_INFO_THREAD_OBJECT ThreadObject;
     }
 
+    //[StructLayout(LayoutKind.Sequential, CharsSetCharSet.Unicode)]
     public unsafe struct _WAITCHAIN_NODE_INFO_LOCK_OBJECT
     {
         /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
