@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assignments.Core.Handlers.WCT;
-using Assignments.Core.Model.Blocking;
+using Assignments.Core.Utils;
 
 namespace Assignments.Core.Model
 {
@@ -12,17 +12,49 @@ namespace Assignments.Core.Model
     {
         public BlockingObject(WAITCHAIN_NODE_INFO item)
         {
-
-            LockObject = new LockObjectInfo(item.Union.LockObject);
-            ThreadObject = new ThreadObjectInfo(item.Union.ThreadObject);
             ObjectStatus = item.ObjectStatus;
             ObjectType = item.ObjectType;
+
+            //ThreadObject data
+            this.ThreadId = item.Union.ThreadObject.ThreadId;
+            this.ProcessId = item.Union.ThreadObject.ProcessId;
+            this.ContextSwitches = item.Union.ThreadObject.ContextSwitches;
+            this.WaitTime = item.Union.ThreadObject.WaitTime;
+
+
+            //LockObject data
+            TimeOut = item.Union.LockObject.Timeout;
+            AlertTable = item.Union.LockObject.Alertable;
+            unsafe
+            {
+                ObjectName = StringUtil.MarshalUnsafeCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
+            }
+
         }
 
-
-        public LockObjectInfo LockObject { get; private set; }
-        public ThreadObjectInfo ThreadObject { get; private set; }
         public WCT_OBJECT_STATUS ObjectStatus { get; private set; }
         public WCT_OBJECT_TYPE ObjectType { get; private set; }
+
+        public bool IsBlocked { get { return ObjectStatus == WCT_OBJECT_STATUS.WctStatusBlocked; } }
+
+        public uint ThreadId { get; private set; }
+        public uint ProcessId { get; private set; }
+        public string ObjectName { get; private set; }
+        public uint WaitTime { get; private set; }
+        public uint ContextSwitches { get; private set; }
+
+        /// <summary>
+        /// This member is reserved for future use.
+        /// </summary>
+        public ulong TimeOut { get; private set; }
+        /// <summary>
+        /// This member is reserved for future use.
+        /// </summary>
+        public uint AlertTable { get; private set; }
+
+
     }
+
+
+
 }

@@ -27,21 +27,28 @@ namespace Assignments.Core.Handlers.WCT
 
 
             int isCycle = 0;
-            int count = WctApiConst.WCT_MAX_NODE_COUNT;
+            int Count = WctApiConst.WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool waitChainResult = GetThreadWaitChain(g_WctIntPtr,
                                     IntPtr.Zero,
                                     WctApiConst.WCTP_GETINFO_ALL_FLAGS,
-                                    threadID, ref count, NodeInfoArray, out isCycle);
+                                    threadID, ref Count, NodeInfoArray, out isCycle);
+
+            // Check if the wait chain is too big for the array we passed in.
+            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
+            {
+                //Found additional nodes 
+                Count = WctApiConst.WCT_MAX_NODE_COUNT;
+            }
 
             if (waitChainResult)
             {
                 result = new ThreadWaitInfo(thread);
 
-                WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[count];
+                WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
             
-                Array.Copy(NodeInfoArray, info, count);
+                Array.Copy(NodeInfoArray, info, Count);
 
                 result.SetInfo(info);
             }

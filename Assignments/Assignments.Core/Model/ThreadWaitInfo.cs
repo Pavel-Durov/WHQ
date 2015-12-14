@@ -10,37 +10,18 @@ namespace Assignments.Core.Model
 {
     public class ThreadWaitInfo
     {
-        //Task :
-        //  This is also a good time to build an object model to represent the wait information 
-        //  (instead of just printing it to the console). You're free to do your own design, 
-        //  but I would suggest something similar to the CLRMD API (which has a ClrThread class with a BlockingObjects collection).
-
         public ThreadWaitInfo(ClrThread thread)
         {
-            if (thread != null)
-            {
-                ThreadOsId = thread.OSThreadId;
-                Address = thread.Address;
-                AppDomain = thread.AppDomain;
-            }
+            Thread = thread;
         }
 
         #region Properties + Data members
 
-        /// <summary>
-        /// The OS thread id for the thread.
-        /// </summary>
-        public uint ThreadOsId { get; private set; }
-        /// <summary>
-        ///The address of the underlying datastructure which makes up the Thread object. This serves as a unique identifier.
-        /// </summary>
-        public ulong Address { get; private set; }
-        /// <summary>
-        ///The AppDomain the thread is running in.
-        /// </summary>
-        public ulong AppDomain { get; private set; }
+       public  ClrThread Thread { get; private set; }
 
         List<BlockingObject> _blockingObjects;
+
+        //public abstract IList<uint> Waiters { get; }
 
         public List<BlockingObject> WctBlockingObjects
         {
@@ -66,9 +47,13 @@ namespace Assignments.Core.Model
             {
                 foreach (var item in info)
                 {
-                    WctBlockingObjects.Add(new BlockingObject(item));
+                    var block = new BlockingObject(item);
+                    WctBlockingObjects.Add(block);
                 }
             }
+            //TODO: Fill the relevant information 
+
+            //WctBlockingObjects.
         }
     }
 }

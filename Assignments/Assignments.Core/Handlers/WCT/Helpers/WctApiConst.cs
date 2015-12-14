@@ -13,6 +13,5 @@ namespace Assignments.Core.Handlers.WCT
         public const int WCT_MAX_NODE_COUNT = 16;
         public const uint WCTP_GETINFO_ALL_FLAGS = 7;
         public const int WCT_OBJNAME_LENGTH = 128;
-
     }
 }
