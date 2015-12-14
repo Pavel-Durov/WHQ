@@ -47,13 +47,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
+    <Compile Include="Handlers\ThreadStackAnalyzer.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
+    <Compile Include="Model\ThreadStack\Base\AnalyzedStack.cs" />
+    <Compile Include="Model\ThreadStack\AnalyzedUnManagedStack.cs" />
+    <Compile Include="Model\ThreadStack\AnalyzedManagedStack.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
     <Compile Include="Model\ThreadWaitInfo.cs" />
-    <Compile Include="Model\Blocking\BlockingObject.cs" />
+    <Compile Include="Model\Blocking\WaitChainInfoObject.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />

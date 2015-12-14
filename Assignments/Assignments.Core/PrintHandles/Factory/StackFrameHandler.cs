@@ -15,7 +15,7 @@ namespace Assignments.Core.PrintHandles.Factory
     public abstract class StackFrameHandler
     {
         
-        public abstract void Print(UnifiedStackFrame item, ClrRuntime runtime);
+        //public abstract void Print(UnifiedStackFrame item, ClrRuntime runtime);
        
 
         public virtual List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
@@ -36,8 +36,6 @@ namespace Assignments.Core.PrintHandles.Factory
                     result.Add(paramBuffer);
                 }
             }
-
-            Console.WriteLine();
 
             return result;
         }

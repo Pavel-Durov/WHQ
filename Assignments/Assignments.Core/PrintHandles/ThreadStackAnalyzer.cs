@@ -27,10 +27,6 @@ namespace Assignments.Core.PrintHandles
                     }
                 }
             }
-            //PrintBlockingWinApiCalls(stackTrace, runtime);
-            //return;
-            var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
-            var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
 
             foreach (var frame in stackTrace)
             {
@@ -57,21 +53,23 @@ namespace Assignments.Core.PrintHandles
                 {
                     PrintBytesAsHex(ConsoleColor.Green, WinApiCallsInspector.GetNativeParams(frame, runtime, 4));
 
-                    DealWithNativeFrame(frame, runtime, multi, multi);
+                    DealWithNativeFrame(frame, runtime);
                     Console.WriteLine();
                 }
             }
         }
 
-        private static void DealWithNativeFrame(UnifiedStackFrame frame,ClrRuntime runtime, StackFrameHandler multiHandler, StackFrameHandler singleHandler)
+        private static void DealWithNativeFrame(UnifiedStackFrame frame,ClrRuntime runtime)
         {
             if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
             {
-                singleHandler.Print(frame, runtime);
+                SingleWaitStackFrameHandler singleHandler = new SingleWaitStackFrameHandler();
+                singleHandler.GetStackFrameParams(frame, runtime);
             }
             else if(WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
             {
-                multiHandler.Print(frame, runtime);
+                MultiWaitStackFrameHandler multiHandler = new MultiWaitStackFrameHandler();
+                multiHandler.GetStackFrameParams(frame, runtime);
             }
             else
             {
@@ -79,37 +77,37 @@ namespace Assignments.Core.PrintHandles
             }
         }
 
-        private static void PrintBlockingWinApiCalls(IEnumerable<UnifiedStackFrame> stackTrace, ClrRuntime runtime)
-        {
-            IEnumerable<UnifiedStackFrame> singleList = null;
-            IEnumerable<UnifiedStackFrame> multipleList = null;
+        //private static void PrintBlockingWinApiCalls(IEnumerable<UnifiedStackFrame> stackTrace, ClrRuntime runtime)
+        //{
+        //    IEnumerable<UnifiedStackFrame> singleList = null;
+        //    IEnumerable<UnifiedStackFrame> multipleList = null;
 
-            var any = WinApiCallsInspector.InspectStackForWindowsApiCalls(stackTrace, ref singleList, ref multipleList);
-            if (any)
-            {
-                var l0 = singleList.ToList();
-                var l1 = multipleList.ToList();
+        //    var any = WinApiCallsInspector.InspectStackForWindowsApiCalls(stackTrace, ref singleList, ref multipleList);
+        //    if (any)
+        //    {
+        //        var l0 = singleList.ToList();
+        //        var l1 = multipleList.ToList();
 
-                if (multipleList?.Count() > 0)
-                {
-                    var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
-                    foreach (var item in multipleList)
-                    {
-                        multi.Print(item, runtime);
-                    }
-                }
+        //        if (multipleList?.Count() > 0)
+        //        {
+        //            var multi = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForMultipleObjects);
+        //            foreach (var item in multipleList)
+        //            {
+        //                multi.Print(item, runtime);
+        //            }
+        //        }
 
-                if (singleList?.Count() > 0)
-                {
-                    var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
-                    foreach (var item in singleList)
-                    {
-                        single.Print(item, runtime);
-                    }
-                }
+        //        if (singleList?.Count() > 0)
+        //        {
+        //            var single = StackFrameHandlersFactory.GetHandler(StackFrameHandlerTypes.WaitForSingleObject);
+        //            foreach (var item in singleList)
+        //            {
+        //                single.Print(item, runtime);
+        //            }
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
 
 

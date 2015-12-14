@@ -17,8 +17,7 @@ namespace Assignments.Core.Handlers.WCT
         internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
         {
             ThreadWaitInfo result = null;
-
-            //OpenThreadChainFlags.WCT_ASYNC_OPEN_FLAG
+            
             var g_WctIntPtr = OpenThreadWaitChainSession(0, 0);
 
             uint threadID = thread.OSThreadId;
@@ -35,33 +34,51 @@ namespace Assignments.Core.Handlers.WCT
                                     WctApiConst.WCTP_GETINFO_ALL_FLAGS,
                                     threadID, ref Count, NodeInfoArray, out isCycle);
 
-            // Check if the wait chain is too big for the array we passed in.
-            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
-            {
-                //Found additional nodes 
-                Count = WctApiConst.WCT_MAX_NODE_COUNT;
-            }
-
+            CheckCount(ref Count);
+         
             if (waitChainResult)
             {
-                result = new ThreadWaitInfo(thread);
-
-                WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
-            
-                Array.Copy(NodeInfoArray, info, Count);
-
-                result.SetInfo(info);
+                result = HandleGetThreadWaitChainRsult(thread, Count, NodeInfoArray, isCycle);
             }
             else
             {
-                var lastErrorCode = GetLastError();
-                //TODO : Ifdentify code error and responce accordingly
+                HandleWctRequestError();
             }
 
             //Finaly ...
             CloseThreadWaitChainSession(g_WctIntPtr);
             return result;
         }
+
+        private ThreadWaitInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
+        {
+            var isDeadLocked = isCycle == 1;
+            ThreadWaitInfo result = new ThreadWaitInfo(thread, isDeadLocked);
+            WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
+            Array.Copy(NodeInfoArray, info, Count);
+
+            result.SetInfo(info);
+
+            return result;
+        }
+
+        private void HandleWctRequestError()
+        {
+            var lastErrorCode = GetLastError();
+            //TODO : Ifdentify code error and responce accordingly
+        }
+
+        private void CheckCount(ref int Count)
+        {
+            // Check if the wait chain is too big for the array we passed in.
+            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
+            {
+                //Found additional nodes 
+                Count = WctApiConst.WCT_MAX_NODE_COUNT;
+            }
+        }
+
+
 
         #region External Advapi32 calls
 

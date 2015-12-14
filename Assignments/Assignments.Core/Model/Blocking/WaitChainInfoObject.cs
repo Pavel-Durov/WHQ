@@ -8,9 +8,9 @@ using Assignments.Core.Utils;
 
 namespace Assignments.Core.Model
 {
-    public class BlockingObject
+    public class WaitChainInfoObject
     {
-        public BlockingObject(WAITCHAIN_NODE_INFO item)
+        public WaitChainInfoObject(WAITCHAIN_NODE_INFO item)
         {
             ObjectStatus = item.ObjectStatus;
             ObjectType = item.ObjectType;
@@ -21,7 +21,6 @@ namespace Assignments.Core.Model
             this.ContextSwitches = item.Union.ThreadObject.ContextSwitches;
             this.WaitTime = item.Union.ThreadObject.WaitTime;
 
-
             //LockObject data
             TimeOut = item.Union.LockObject.Timeout;
             AlertTable = item.Union.LockObject.Alertable;
@@ -29,7 +28,6 @@ namespace Assignments.Core.Model
             {
                 ObjectName = StringUtil.MarshalUnsafeCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
             }
-
         }
 
         public WCT_OBJECT_STATUS ObjectStatus { get; private set; }

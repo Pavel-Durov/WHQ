@@ -75,10 +75,11 @@ namespace Assignments.Core.Handlers
             //Debugger.Break();
             WctApi.CollectWaitInformation(thread);
 
-            ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
-            ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
+            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
+            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
 
-
+            object resultManaged = ThreadStackAnalyzer.DealWithManagedFrame(managedStack, thread, _runtime, thread);
+            object resultUnmanaged = ThreadStackAnalyzer.DealWithNativeFrame(unmanagedStack, thread, _runtime);
         }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)

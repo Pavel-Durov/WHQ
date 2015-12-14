@@ -73,20 +73,4 @@ namespace Assignments.Core.PrintHandles
         }
 
     }
-
-    /*
-        DWORD WINAPI WaitForSingleObject(
-          _In_ HANDLE hHandle,
-          _In_ DWORD  dwMilliseconds
-        );
-
-
-        DWORD WINAPI WaitForMultipleObjects(
-          _In_       DWORD  nCount,
-          _In_ const HANDLE *lpHandles,
-          _In_       BOOL   bWaitAll,
-          _In_       DWORD  dwMilliseconds
-        );
-    
-    */
 }
