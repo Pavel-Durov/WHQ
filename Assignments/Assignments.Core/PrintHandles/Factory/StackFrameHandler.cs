@@ -14,11 +14,7 @@ namespace Assignments.Core.PrintHandles.Factory
 
     public abstract class StackFrameHandler
     {
-        
-        //public abstract void Print(UnifiedStackFrame item, ClrRuntime runtime);
-       
-
-        public virtual List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
+        public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -37,6 +33,34 @@ namespace Assignments.Core.PrintHandles.Factory
                 }
             }
 
+            return result;
+        }
+
+
+
+        public static uint[] GetParams(UInt32 handleAddress, UInt32 handlesCunt, ClrRuntime runtime)
+        {
+            uint[] result = new uint[handlesCunt];
+            //Reading n times from memmory, advansing by 4 bytes each time
+            byte[] readedBytes = null;
+            int count = 0;
+            for (int i = 0; i < handlesCunt; i++)
+            {
+                readedBytes = new byte[4];
+
+                if (runtime.ReadMemory(handleAddress, readedBytes, 4, out count))
+                {
+                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
+                    result[i] = byteValue;
+                }
+                else
+                {
+                    throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", handleAddress));
+                    //Print(ConsoleColor.Red, "Unreadable memorry");
+                }
+                //Advancing the pointer by 4 (32-bit system)
+                handleAddress += 4;
+            }
             return result;
         }
 

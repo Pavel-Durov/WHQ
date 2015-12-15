@@ -52,8 +52,7 @@ namespace Assignments.Core.Handlers.WCT
 
         private ThreadWaitInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
         {
-            var isDeadLocked = isCycle == 1;
-            ThreadWaitInfo result = new ThreadWaitInfo(thread, isDeadLocked);
+            ThreadWaitInfo result = new ThreadWaitInfo(isCycle == 1);
             WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
             Array.Copy(NodeInfoArray, info, Count);
 

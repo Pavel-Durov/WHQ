@@ -10,13 +10,11 @@ namespace Assignments.Core.Model
 {
     public class ThreadWaitInfo
     {
-        public ThreadWaitInfo(ClrThread thread, bool isDeadLock)
+        public ThreadWaitInfo(bool isDeadLock)
         {
-            Thread = thread;
             IsDeadLocked = isDeadLock;
         }
 
-        public ClrThread Thread { get; private set; }
         public bool IsDeadLocked { get; private set; }
 
         List<WaitChainInfoObject> _blockingObjects;
@@ -42,6 +40,13 @@ namespace Assignments.Core.Model
                     WctBlockingObjects.Add(block);
                 }
             }
+        }
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder();
+
+
+            return result.ToString();
         }
     }
 }

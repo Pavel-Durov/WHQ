@@ -11,6 +11,7 @@ using Assignments.Core.msos;
 using Assignments.Core.PrintHandles;
 using Assignments.Core.Handlers.WCT;
 using System.Diagnostics;
+using Assignments.Core.Model.Analyze;
 
 namespace Assignments.Core.Handlers
 {
@@ -65,21 +66,17 @@ namespace Assignments.Core.Handlers
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            Init(thread, managedStack, unmanagedStack);
+            ThreadAnalyzeResult result = Analyze(thread, managedStack, unmanagedStack);
         }
 
-        private void Init(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
+        private ThreadAnalyzeResult Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
+            var wctThreadInfo = WctApi.CollectWaitInformation(thread);
 
+            var managedStackList = ThreadStackAnalyzer.DealWithManagedFrame(managedStack, _runtime, thread);
+            var nativeStackList = ThreadStackAnalyzer.DealWithNativeFrame(unmanagedStack, _runtime, thread);
 
-            //Debugger.Break();
-            WctApi.CollectWaitInformation(thread);
-
-            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(managedStack, thread, _runtime);
-            Assignments.Core.PrintHandles.ThreadStackAnalyzer.PrintSyncObjects(unmanagedStack, thread, _runtime, true);
-
-            object resultManaged = ThreadStackAnalyzer.DealWithManagedFrame(managedStack, thread, _runtime, thread);
-            object resultUnmanaged = ThreadStackAnalyzer.DealWithNativeFrame(unmanagedStack, thread, _runtime);
+            return new ThreadAnalyzeResult(thread, wctThreadInfo, managedStackList, nativeStackList);
         }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)

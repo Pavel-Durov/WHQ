@@ -7,34 +7,38 @@ using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.PrintHandles.Factory;
 using Assignments.Core.PrintHandles;
-using Assignments.Core.Model.ThreadStack;
-using Assignments.Core.Model.StackFrame;
+using Assignments.Core.Model.Stack;
+using Assignments.Core.Model.Stack.Clr;
 
 namespace Assignments.Core.Handlers
 {
     public class ThreadStackAnalyzer
     {
-
-        public static void DealWithNativeFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
+        public static List<WinApiStackFrame> DealWithNativeFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
         {
-
-            SingleWaitStackFrameHandler singleHandler = new SingleWaitStackFrameHandler();
-            MultiWaitStackFrameHandler multiHandler = new MultiWaitStackFrameHandler();
+            List<WinApiStackFrame> result = new List<WinApiStackFrame>();
 
             foreach (var frame in list)
             {
                 if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
                 {
-                    WinApiSingleWaitStackFrame singleParams = singleHandler.GetStackFrameParams(frame, runtime);
+                    WinApiSingleWaitStackFrame singleParams = SingleWaitStackFrameHandler.GetStackFrameParams(frame, runtime);
+                    result.Add(singleParams);
                 }
                 else if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
                 {
-                    WinApiMultiWaitStackFrame multiParams = multiHandler.GetStackFrameParams(frame, runtime);
+                    WinApiMultiWaitStackFrame multiParams = MultiWaitStackFrameHandler.GetStackFrameParams(frame, runtime);
+                    result.Add(multiParams);
                 }
             }
+
+            return result;
         }
-        public static void DealWithManagedFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
+
+        public static List<ClrWaitStackFrame> DealWithManagedFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
         {
+            List<ClrWaitStackFrame>  result = new List<ClrWaitStackFrame>();
+
             //Checks wheather current thread has blocking objects
             if (thread.BlockingObjects != null && thread?.BlockingObjects?.Count > 0)
             {
@@ -47,8 +51,10 @@ namespace Assignments.Core.Handlers
             foreach (var frame in list)
             {
                 //TODO: Continue
-                object result = DealWithFrame(frame);
+                object res = DealWithFrame(frame);
             }
+
+            return result;
         }
 
         private static object DealWithFrame(UnifiedStackFrame frame)

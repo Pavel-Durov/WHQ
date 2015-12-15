@@ -64,12 +64,12 @@ namespace Assignments.Core.PrintHandles
             if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
             {
                 SingleWaitStackFrameHandler singleHandler = new SingleWaitStackFrameHandler();
-                singleHandler.GetStackFrameParams(frame, runtime);
+               // singleHandler.GetStackFrameParams(frame, runtime);
             }
             else if(WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
             {
                 MultiWaitStackFrameHandler multiHandler = new MultiWaitStackFrameHandler();
-                multiHandler.GetStackFrameParams(frame, runtime);
+                //multiHandler.GetStackFrameParams(frame, runtime);
             }
             else
             {
