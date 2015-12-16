@@ -56,23 +56,17 @@
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
     <Compile Include="Model\Analyze\ThreadAnalyzeResult.cs" />
-    <Compile Include="Model\Stack\Clr\ClrWaitStackFrame.cs" />
     <Compile Include="Model\Stack\Native\WinApiStackFrame.cs" />
-    <Compile Include="Model\ThreadWCTInfo.cs" />
-    <Compile Include="Model\Blocking\WaitChainInfoObject.cs" />
+    <Compile Include="Model\WCT\ThreadWCTInfo.cs" />
+    <Compile Include="Model\WCT\WaitChainInfoObject.cs" />
     <Compile Include="Model\Stack\Native\WinApiMultiWaitStackFrame.cs" />
     <Compile Include="Model\Stack\Native\WinApiSingleWaitStackFrame.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\UnifiedStackFrame.cs" />
     <Compile Include="msos\Util.cs" />
-    <Compile Include="PrintHandles\Factory\MultiWaitStackFrameHandler.cs" />
-    <Compile Include="PrintHandles\Factory\SingleWaitStackFrameHandler.cs" />
-    <Compile Include="PrintHandles\Factory\StackFrameHandler.cs" />
-    <Compile Include="PrintHandles\ThreadStackAnalyzer.cs" />
-    <Compile Include="PrintHandles\WinApiCallsInspector.cs" />
+    <Compile Include="Handlers\WinApiCallsInspector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\HexUtil.cs" />
     <Compile Include="Utils\StringUtil.cs" />
   </ItemGroup>
   <ItemGroup>

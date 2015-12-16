@@ -11,7 +11,7 @@ namespace Assignment_3
     class Program
     {
     
-        const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
+        const string SOME_86_DUMP = @"C:\temp\dumps\Assignment_3.dmp";
 
         static void Main(string[] args)
         {

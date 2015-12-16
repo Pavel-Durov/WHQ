@@ -50,8 +50,7 @@ namespace Assignments.Core.Extentions
         }
 
 
-
-        private static String BytesAsHexString(this List<byte[]> parms)
+        private static String AsString(this List<byte[]> parms)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -65,7 +64,6 @@ namespace Assignments.Core.Extentions
 
             return sb.ToString();
         }
-
 
 
         public static String AsString(this UnifiedStackFrame frame)
@@ -95,7 +93,6 @@ namespace Assignments.Core.Extentions
         }
 
 
-
         public static String AsString(this IList<BlockingObject> blockingObjects)
         {
             StringBuilder result = new StringBuilder();
@@ -109,7 +106,6 @@ namespace Assignments.Core.Extentions
             }
             return result.ToString();
         }
-
 
 
         public static String AsString(this BlockingObject bObj)
@@ -145,7 +141,6 @@ namespace Assignments.Core.Extentions
             
             return result.ToString();
         }
-
 
 
         public static string AsString(this IList<ClrThread> list)

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Assignments.Core.Handlers.WCT;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Extentions;
+using Assignments.Core.Model.WCT;
 
-namespace Assignments.Core.Model
+namespace Assignments.Core.Model.WCT
 {
     public class ThreadWCTInfo
     {

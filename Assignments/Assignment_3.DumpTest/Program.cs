@@ -17,22 +17,7 @@ namespace Assignment_3.DumpTest
         //Wait functions -> https://msdn.microsoft.com/en-us/library/windows/desktop/ms687069(v=vs.85).aspx
         static void Main(string[] args)
         {
-
-            //Console.WriteLine("Calling native methods... :)");
-
-            
-            ////WaitHandle wh = new System.Threading.EventWaitHandle(true, EventResetMode.AutoReset);
-
             var autoEvent = new AutoResetEvent(false);
-
-            ////WaitForSingleObject
-            //Console.WriteLine("Calling WaitForSingleObject");
-            //int result = WaitForMultipleObjects(autoEvent.Handle, WAIT_TIMEOUT);
-            //int result2 = WaitForSingleObject(autoEvent.Handle, WAIT_TIMEOUT);
-
-            ////WaitForMultipleObjects
-
-            ////Console.WriteLine("Calling WaitForMultipleObjects");
 
             Console.WriteLine("Test started");
             HANDLE[] arr = new HANDLE[3];
@@ -47,19 +32,28 @@ namespace Assignment_3.DumpTest
 
             //Loop forever inorder to debig
             //TODO : Add dead lock in te future
+            uint waitParam = 100;
+
+            ConsoleColor defaultColor = Console.ForegroundColor;
+
             while (true)
             {
-                Console.WriteLine("WaitForMultipleObjects - 3 HANDLES");
-                var mulRes = WaitForMultipleObjects(3, arr, true, uint.MaxValue);
+                Console.WriteLine($"WaitForMultipleObjects - 3 HANDLES with waitParam {waitParam}");
 
+                var mulRes = WaitForMultipleObjects(3, arr, true, waitParam);
+                waitParam += waitParam;
+
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                Console.WriteLine($"WaitForSingleObject - waitParam {waitParam}");
+                var singleRes = WaitForSingleObject(arr[0], waitParam);
+
+                Console.ForegroundColor = defaultColor;
 
             }
 
-            //Console.WriteLine("WaitForMultipleObjects - 1 HANDLE");
-            //var mulRes2 = WaitForSingleObject(AUTO_EVENT.Handle , int.MaxValue);
-            //Console.ReadKey();
 
-            Console.WriteLine("Not waiting anymore...");
+           //Console.WriteLine("Not waiting anymore...");
         }
 
         private static void TestResetEvent()
@@ -94,7 +88,7 @@ namespace Assignment_3.DumpTest
 
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern Int32 WaitForSingleObject(IntPtr Handle, Int32 Wait);
+        public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 
         public const Int32 INFINITE = -1;
         public const Int32 WAIT_ABANDONED = 0x80;

@@ -9,7 +9,7 @@ namespace Assignments.Core.Utils
     public class StringUtil
     {
 
-        public static unsafe String MarshalUnsafeCStringToString(ushort* ptr, Encoding encoding)
+        public static unsafe String ConvertUnsafeCStringToString(ushort* ptr, Encoding encoding)
         {
 
             if (ptr == null) return "";

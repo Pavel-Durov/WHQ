@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model;
+using Assignments.Core.Model.WCT;
 using Assignments.Core.Handlers.WCT;
 using System.Linq;
 

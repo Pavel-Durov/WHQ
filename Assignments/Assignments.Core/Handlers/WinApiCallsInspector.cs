@@ -47,30 +47,5 @@ namespace Assignments.Core.PrintHandles
 
             return result;
         }
-
-        public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
-        {
-            List<byte[]> result = new List<byte[]>();
-
-            var offset = stackFrame.FrameOffset; //Base Pointer - % EBP
-            byte[] paramBuffer;
-            int bytesRead = 0;
-            offset += 4;
-
-            for (int i = 0; i < paramCount; i++)
-            {
-                paramBuffer = new byte[4];
-                offset += 4;
-                if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
-                {
-                    result.Add(paramBuffer);
-                }
-            }
-
-            Console.WriteLine();
-
-            return result;
-        }
-
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assignments.Core.Model.Stack;
-using Assignments.Core.Model.Stack.Clr;
+using Assignments.Core.Model.WCT;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Extentions;
 using Assignments.Core.msos;
@@ -14,11 +14,6 @@ namespace Assignments.Core.Model.Analyze
 {
     public class ThreadAnalyzeResult
     {
-        public  List<UnifiedStackFrame> ManagedStackList;
-        public  List<WinApiStackFrame> NativeStackList;
-        public  ClrThread Thread;
-        public  ThreadWCTInfo WctThreadInfo;
-
         public ThreadAnalyzeResult(ClrThread thread, ThreadWCTInfo wctThreadInfo, List<UnifiedStackFrame> managedStackList, List<WinApiStackFrame> nativeStackList)
         {
             this.Thread = thread;
@@ -27,7 +22,15 @@ namespace Assignments.Core.Model.Analyze
             this.NativeStackList = nativeStackList;
         }
 
+        #region Properties
+
+        public List<UnifiedStackFrame> ManagedStackList { get; private set; }
+        public List<WinApiStackFrame> NativeStackList { get; private set; }
+        public ClrThread Thread { get; private set; }
+        public ThreadWCTInfo WctThreadInfo { get; private set; }
         public bool HasBlockingObjects { get { return Thread?.BlockingObjects != null && Thread?.BlockingObjects?.Count > 0; } }
+
+        #endregion
 
 
 

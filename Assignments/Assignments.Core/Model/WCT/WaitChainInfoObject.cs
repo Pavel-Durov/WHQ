@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Utils;
 
-namespace Assignments.Core.Model
+namespace Assignments.Core.Model.WCT
 {
     public class WaitChainInfoObject
     {
@@ -26,7 +26,7 @@ namespace Assignments.Core.Model
             AlertTable = item.Union.LockObject.Alertable;
             unsafe
             {
-                ObjectName = StringUtil.MarshalUnsafeCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
+                ObjectName = StringUtil.ConvertUnsafeCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
             }
         }
 
