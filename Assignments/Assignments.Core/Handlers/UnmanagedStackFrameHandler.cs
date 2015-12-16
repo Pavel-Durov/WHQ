@@ -26,12 +26,22 @@ namespace Assignments.Core.Handlers
                 if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
                 {
                     frameParams = GetSingleStackFrameParams(frame, runtime);
-
+                    frameParams.Params = GetNativeParams(frame, runtime, 2);
                 }
                 else if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
                 {
                     frameParams = GetMultipleStackFrameParams(frame, runtime);
+
                 }
+
+                frameParams = new WinApiStackFrame();
+
+                frameParams.Frame = frame;
+                if (frameParams.Params == null)
+                {
+                    frameParams.Params = GetNativeParams(frame, runtime, 4);
+                }
+
 
                 if (frameParams != null)
                 {
@@ -57,15 +67,16 @@ namespace Assignments.Core.Handlers
             Console.WriteLine(sb.ToString());
         }
 
-        public static WinApiMultiWaitStackFrame GetMultipleStackFrameParams(UnifiedStackFrame item, ClrRuntime runtime)
+        public static WinApiMultiWaitStackFrame GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             //TODO : Check if GetNativeParams and ReadFromMemmory functions are identical
 
             WinApiMultiWaitStackFrame result = new WinApiMultiWaitStackFrame();
-            var nativeParams = GetNativeParams(item, runtime, 4);
+            var nativeParams = GetNativeParams(frame, runtime, 4);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
+                result.Frame = frame;
                 result.HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
                 result.HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
                 result.WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
@@ -76,14 +87,15 @@ namespace Assignments.Core.Handlers
         }
 
 
-        public static WinApiSingleWaitStackFrame GetSingleStackFrameParams(UnifiedStackFrame item, ClrRuntime runtime)
+        public static WinApiSingleWaitStackFrame GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             WinApiSingleWaitStackFrame result = new WinApiSingleWaitStackFrame();
 
-            var nativeParams = GetNativeParams(item, runtime, 2);
+            var nativeParams = GetNativeParams(frame, runtime, 2);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
+                result.Frame = frame;
                 result.HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
                 result.Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
             }

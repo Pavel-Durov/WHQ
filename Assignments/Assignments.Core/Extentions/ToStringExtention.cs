@@ -50,7 +50,7 @@ namespace Assignments.Core.Extentions
         }
 
 
-        private static String AsString(this List<byte[]> parms)
+        public static String AsString(this List<byte[]> parms)
         {
             StringBuilder sb = new StringBuilder();
 

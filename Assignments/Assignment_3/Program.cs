@@ -10,29 +10,39 @@ namespace Assignment_3
 {
     class Program
     {
-    
-        const string SOME_86_DUMP = @"C:\temp\dumps\Assignment_3.dmp";
 
+        const string SOME_86_DUMP = @"_C:\temp\dumps\Assignment_3.dmp";
+        const int ATTACH_TO_PPROCESS_TIMEOUT = int.MaxValue;
         static void Main(string[] args)
         {
             ThreadStackHandler handler = new ThreadStackHandler();
 
-
+            DataTarget target = null;
             if (File.Exists(SOME_86_DUMP))
             {
                 //Loading a crash dump
-                using (DataTarget target = DataTarget.LoadCrashDump(SOME_86_DUMP))
-                {
-                    var runtime = target.ClrVersions[0].CreateRuntime();
+                target = DataTarget.LoadCrashDump(SOME_86_DUMP);
 
-                    foreach (ClrThread thread in runtime.Threads)
-                    {
+            }
+            else
+            {
+                Console.WriteLine("--- Assignment_3 ----");
+                Console.WriteLine("Please enter a PID: ");
 
-                        handler.Handle(target.DebuggerInterface, thread, runtime);
-                        break;
-                    }
-                }
 
+                var pid = int.Parse(Console.ReadLine());
+
+                target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT);
+            }
+
+
+
+            var runtime = target.ClrVersions[0].CreateRuntime();
+
+            foreach (ClrThread thread in runtime.Threads)
+            {
+                handler.Handle(target.DebuggerInterface, thread, runtime);
+                break;
             }
 
             Console.ReadKey();
