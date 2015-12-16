@@ -7,13 +7,12 @@ using Assignments.Core.Extentions;
 using Assignments.Core.msos;
 using Assignments.Core.Handlers;
 
-namespace Assignments.Core.Model.Stack
+namespace Assignments.Core.Model.StackFrames.UnManaged
 {
     public class WinApiStackFrame
     {
         public UnifiedStackFrame Frame{get; set;}
         public uint HandleAddress { get; internal set; }
-
         public List<byte[]> Params { get; set; }
         /// <summary>
         /// Timeout in milliseconds

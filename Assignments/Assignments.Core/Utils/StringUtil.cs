@@ -9,7 +9,15 @@ namespace Assignments.Core.Utils
     public class StringUtil
     {
 
-        public static unsafe String ConvertUnsafeCStringToString(ushort* ptr, Encoding encoding)
+        public static unsafe String ConvertCStringToString(ushort* ptr, Encoding encoding)
+        {
+            if (ptr == null) return "";
+
+            char* unsafeCString = (char*)ptr;
+            return ConvertCStringToString(unsafeCString, encoding);
+        }
+
+        public static unsafe String ConvertCStringToString(char* ptr, Encoding encoding)
         {
 
             if (ptr == null) return "";
@@ -34,6 +42,8 @@ namespace Assignments.Core.Utils
             // now get the string
             return encoding.GetString(asByteArray);
         }
+
+
 
     }
 }

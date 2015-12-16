@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using Assignments.Core.Model.Stack;
+using Assignments.Core.Model.StackFrames.UnManaged;
 using Assignments.Core.Model.WCT;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Extentions;
@@ -12,9 +9,9 @@ using Assignments.Core.msos;
 
 namespace Assignments.Core.Model.Analyze
 {
-    public class ThreadAnalyzeResult
+    public class AnalyzedThreadStack
     {
-        public ThreadAnalyzeResult(ClrThread thread, ThreadWCTInfo wctThreadInfo, List<UnifiedStackFrame> managedStackList, List<WinApiStackFrame> nativeStackList)
+        public AnalyzedThreadStack(ClrThread thread, ThreadWCTInfo wctThreadInfo, List<UnifiedStackFrame> managedStackList, List<WinApiStackFrame> nativeStackList)
         {
             this.Thread = thread;
             this.WctThreadInfo = wctThreadInfo;

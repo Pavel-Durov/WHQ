@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignments.Core.Extentions;
 
-namespace Assignments.Core.Model.Stack
+namespace Assignments.Core.Model.StackFrames.UnManaged
 {
     public class WinApiMultiWaitStackFrame : WinApiStackFrame
     {
-        public uint[] ByteParams { get; internal set; }
+        public const string FUNCTION_NAME = "WaitForMultipleObjects";
+
         public uint HandlesCunt { get; internal set; }
         public uint WaitallFlag { get; internal set; }
 
@@ -22,11 +23,7 @@ namespace Assignments.Core.Model.Stack
             sb.AppendWithNewLine($"WaitallFlag : {WaitallFlag}");
             sb.AppendWithNewLine($"HandlesCunt : {HandlesCunt}");
 
-            for (int i = 0; i < ByteParams.Length; i++)
-            {
-                sb.AppendWithNewLine($"param {1} : {ByteParams[i]}");
-            }
-
+            sb.AppendWithNewLine($"Params: { Params.AsString()}");
             return sb.ToString();
 
         }

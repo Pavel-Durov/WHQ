@@ -8,7 +8,6 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
 using Assignments.Core.msos;
-using Assignments.Core.PrintHandles;
 using Assignments.Core.Handlers.WCT;
 using System.Diagnostics;
 using Assignments.Core.Model.Analyze;
@@ -66,19 +65,19 @@ namespace Assignments.Core.Handlers
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            ThreadAnalyzeResult result = Analyze(thread, managedStack, unmanagedStack);
+            AnalyzedThreadStack result = Analyze(thread, managedStack, unmanagedStack);
 
             //Printing result
             Console.WriteLine(result.ToString());
         }
 
-        private ThreadAnalyzeResult Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
+        private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
             var wctThreadInfo = WctApi.CollectWaitInformation(thread);
 
             var nativeStackList = UnmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
 
-            return new ThreadAnalyzeResult(thread, wctThreadInfo, managedStack, nativeStackList);
+            return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
         }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)

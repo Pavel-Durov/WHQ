@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
-using Assignments.Core.Model.Stack;
+using Assignments.Core.Model.StackFrames.UnManaged;
 using Assignments.Core.Exceptions;
-using Assignments.Core.PrintHandles;
 
 namespace Assignments.Core.Handlers
 {
@@ -23,12 +22,12 @@ namespace Assignments.Core.Handlers
             {
                 WinApiStackFrame frameParams = null;
 
-                if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_SINGLE_OBJECT_KEY))
+                if (CheckForWinApiCalls(frame, WinApiSingleWaitStackFrame.FUNCTION_NAME))
                 {
                     frameParams = GetSingleStackFrameParams(frame, runtime);
                     frameParams.Params = GetNativeParams(frame, runtime, 2);
                 }
-                else if (WinApiCallsInspector.CheckForWinApiCalls(frame, WinApiCallsInspector.WAIT_FOR_MULTIPLE_OBJECTS_KEY))
+                else if (CheckForWinApiCalls(frame, WinApiMultiWaitStackFrame.FUNCTION_NAME))
                 {
                     frameParams = GetMultipleStackFrameParams(frame, runtime);
 
@@ -48,6 +47,15 @@ namespace Assignments.Core.Handlers
                     result.Add(frameParams);
                 }
             }
+            return result;
+        }
+
+        public static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
+        {
+            bool result = c != null
+                && !String.IsNullOrEmpty(c.Method)
+                && c.Method != null && c.Method.Contains(key);
+
             return result;
         }
 
@@ -81,7 +89,7 @@ namespace Assignments.Core.Handlers
                 result.HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
                 result.WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
                 result.Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
-                result.ByteParams = ReadFromMemmory(result.HandleAddress, result.HandlesCunt, runtime);
+                result.Params = ReadFromMemmory(result.HandleAddress, result.HandlesCunt, runtime);
             }
             return result;
         }
@@ -141,9 +149,9 @@ namespace Assignments.Core.Handlers
         /// <param name="handlesCunt"></param>
         /// <param name="runtime"></param>
         /// <returns>Array with memmory fetched parameters</returns>
-        public static uint[] ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
+        public static List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
         {
-            uint[] result = new uint[count];
+            List<byte[]> result = new List<byte[]>();
             int sum = 0;
             //TODO: Check if dfor can be inserted into the REadMemmory result (seems to be..)
             for (int i = 0; i < count; i++)
@@ -151,8 +159,7 @@ namespace Assignments.Core.Handlers
                 byte[] readedBytes = new byte[4];
                 if (runtime.ReadMemory(startAddress, readedBytes, 4, out sum))
                 {
-                    uint byteValue = BitConverter.ToUInt32(readedBytes, 0);
-                    result[i] = byteValue;
+                    result.Add(readedBytes);
                 }
                 else
                 {

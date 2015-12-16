@@ -57,7 +57,7 @@ namespace Assignments.Core.Extentions
             {
                 int byteValue = BitConverter.ToInt32(parms[i], 0);
 
-                var msg = String.Format("p{0}= 0x{1:x}", i, byteValue);
+                var msg = String.Format("[{0}]= 0x{1:x} ", i, byteValue);
                 sb.Append(msg);
             }
 

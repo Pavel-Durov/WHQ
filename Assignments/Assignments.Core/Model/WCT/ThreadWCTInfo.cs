@@ -18,7 +18,13 @@ namespace Assignments.Core.Model.WCT
             ThreadId = threadId;
         }
 
+        /// <summary>
+        /// Specifies whether the Wait Chain is Cyclic - Deadlock
+        /// </summary>
         public bool IsDeadLocked { get; private set; }
+        /// <summary>
+        /// OS Id of the thread
+        /// </summary>
         public uint ThreadId { get; private set; }
 
         List<WaitChainInfoObject> _blockingObjects;
