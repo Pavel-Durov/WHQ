@@ -14,9 +14,9 @@ namespace Assignments.Core.Handlers.WCT
     /// </summary>
     public class WctApiHandler
     {
-        internal ThreadWaitInfo CollectWaitInformation(ClrThread thread)
+        internal ThreadWCTInfo CollectWaitInformation(ClrThread thread)
         {
-            ThreadWaitInfo result = null;
+            ThreadWCTInfo result = null;
             
             var g_WctIntPtr = OpenThreadWaitChainSession(0, 0);
 
@@ -50,9 +50,9 @@ namespace Assignments.Core.Handlers.WCT
             return result;
         }
 
-        private ThreadWaitInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
+        private ThreadWCTInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
         {
-            ThreadWaitInfo result = new ThreadWaitInfo(isCycle == 1);
+            ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, thread.OSThreadId);
             WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
             Array.Copy(NodeInfoArray, info, Count);
 

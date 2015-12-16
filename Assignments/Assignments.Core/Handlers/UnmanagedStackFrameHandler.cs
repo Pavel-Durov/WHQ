@@ -12,9 +12,9 @@ using Assignments.Core.Model.Stack.Clr;
 
 namespace Assignments.Core.Handlers
 {
-    public class ThreadStackAnalyzer
+    public class UnmanagedStackFrameHandler
     {
-        public static List<WinApiStackFrame> DealWithNativeFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
+        public static List<WinApiStackFrame> Analyze(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
         {
             List<WinApiStackFrame> result = new List<WinApiStackFrame>();
 
@@ -31,36 +31,7 @@ namespace Assignments.Core.Handlers
                     result.Add(multiParams);
                 }
             }
-
             return result;
-        }
-
-        public static List<ClrWaitStackFrame> DealWithManagedFrame(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
-        {
-            List<ClrWaitStackFrame>  result = new List<ClrWaitStackFrame>();
-
-            //Checks wheather current thread has blocking objects
-            if (thread.BlockingObjects != null && thread?.BlockingObjects?.Count > 0)
-            {
-                foreach (var bObj in thread.BlockingObjects)
-                {
-                    //TODO: Deal with BlockingObjects collection
-                }
-            }
-
-            foreach (var frame in list)
-            {
-                //TODO: Continue
-                object res = DealWithFrame(frame);
-            }
-
-            return result;
-        }
-
-        private static object DealWithFrame(UnifiedStackFrame frame)
-        {
-            //TODO: Implementations
-            return null;
         }
     }
 }

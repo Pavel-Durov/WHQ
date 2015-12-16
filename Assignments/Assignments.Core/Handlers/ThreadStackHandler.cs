@@ -67,16 +67,18 @@ namespace Assignments.Core.Handlers
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
             ThreadAnalyzeResult result = Analyze(thread, managedStack, unmanagedStack);
+
+            //Printing result
+            Console.WriteLine(result.ToString());
         }
 
         private ThreadAnalyzeResult Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
             var wctThreadInfo = WctApi.CollectWaitInformation(thread);
 
-            var managedStackList = ThreadStackAnalyzer.DealWithManagedFrame(managedStack, _runtime, thread);
-            var nativeStackList = ThreadStackAnalyzer.DealWithNativeFrame(unmanagedStack, _runtime, thread);
+            var nativeStackList = UnmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
 
-            return new ThreadAnalyzeResult(thread, wctThreadInfo, managedStackList, nativeStackList);
+            return new ThreadAnalyzeResult(thread, wctThreadInfo, managedStack, nativeStackList);
         }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)

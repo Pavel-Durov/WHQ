@@ -7,25 +7,27 @@ using Assignments.Core.Model.Stack;
 using Assignments.Core.Model.Stack.Clr;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Extentions;
+using Assignments.Core.msos;
+
 
 namespace Assignments.Core.Model.Analyze
 {
     public class ThreadAnalyzeResult
     {
-        private List<ClrWaitStackFrame> managedStackList;
-        private List<WinApiStackFrame> nativeStackList;
-        private ClrThread thread;
-        private ThreadWaitInfo wctThreadInfo;
+        public  List<UnifiedStackFrame> ManagedStackList;
+        public  List<WinApiStackFrame> NativeStackList;
+        public  ClrThread Thread;
+        public  ThreadWCTInfo WctThreadInfo;
 
-        public ThreadAnalyzeResult(ClrThread thread, ThreadWaitInfo wctThreadInfo, List<ClrWaitStackFrame> managedStackList, List<WinApiStackFrame> nativeStackList)
+        public ThreadAnalyzeResult(ClrThread thread, ThreadWCTInfo wctThreadInfo, List<UnifiedStackFrame> managedStackList, List<WinApiStackFrame> nativeStackList)
         {
-            this.thread = thread;
-            this.wctThreadInfo = wctThreadInfo;
-            this.managedStackList = managedStackList;
-            this.nativeStackList = nativeStackList;
+            this.Thread = thread;
+            this.WctThreadInfo = wctThreadInfo;
+            this.ManagedStackList = managedStackList;
+            this.NativeStackList = nativeStackList;
         }
 
-        public bool HasBlockingObjects { get { return thread?.BlockingObjects != null && thread?.BlockingObjects?.Count > 0; } }
+        public bool HasBlockingObjects { get { return Thread?.BlockingObjects != null && Thread?.BlockingObjects?.Count > 0; } }
 
 
 
@@ -34,19 +36,25 @@ namespace Assignments.Core.Model.Analyze
             //TODO: Consider moving this implementation from ToString Overide to some outside handler 
             StringBuilder result = new StringBuilder();
 
-            //TODO: Append thread data
+            //Appending thread data
+
+            result.AppendWithNewLine(Thread.AsString());
 
             if (HasBlockingObjects)
             {
                 //Appending Blcking objects ie Extentions method
-                result.Append(thread.BlockingObjects.GetAsString());
+                result.Append(Thread.BlockingObjects.AsString());
             }
 
-            result.Append(wctThreadInfo.ToString());
+            result.AppendWithNewLine(WctThreadInfo.ToString());
 
-            //TODO: Append Managed Stak List string
-            //TODO: Append Native Stack LIst to String
-                        return result.ToString();
+            ///Appending Managed Stack frame list string
+            result.AppendWithNewLine(ManagedStackList.AsString());
+
+            ///Appending UnManaged Stack frame list string
+            result.AppendWithNewLine(NativeStackList.AsString<WinApiStackFrame>());
+
+            return result.ToString();
         }
 
         

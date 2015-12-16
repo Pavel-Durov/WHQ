@@ -49,7 +49,7 @@
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
-    <Compile Include="Handlers\ThreadStackAnalyzer.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
@@ -58,7 +58,7 @@
     <Compile Include="Model\Analyze\ThreadAnalyzeResult.cs" />
     <Compile Include="Model\Stack\Clr\ClrWaitStackFrame.cs" />
     <Compile Include="Model\Stack\Native\WinApiStackFrame.cs" />
-    <Compile Include="Model\ThreadWaitInfo.cs" />
+    <Compile Include="Model\ThreadWCTInfo.cs" />
     <Compile Include="Model\Blocking\WaitChainInfoObject.cs" />
     <Compile Include="Model\Stack\Native\WinApiMultiWaitStackFrame.cs" />
     <Compile Include="Model\Stack\Native\WinApiSingleWaitStackFrame.cs" />

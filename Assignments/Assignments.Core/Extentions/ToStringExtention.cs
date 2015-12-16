@@ -1,4 +1,5 @@
-﻿using Assignments.Core.msos;
+﻿using Assignments.Core.Model;
+using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,47 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Assignments.Core.Extentions
-{
-    public static class ToStringExtention
+{ 
+
+    public static class ToStringExtentions
     {
+
+        public static String AsString(this ClrThread thread)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendWithNewLine("++++++++++++++++++++++++++++++");
+            sb.AppendWithNewLine($"Thread Id: {thread.OSThreadId}");
+            sb.AppendWithNewLine($"IsAlive: {thread.IsAlive}");
+            //TODO : Complete string logic with relevant data
+            return sb.ToString();
+        }
+
+        public static String AsString<T>(this List<T> list) 
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var frame in list)
+            {
+                sb.AppendWithNewLine(frame.ToString());
+            }
+
+            return sb.ToString();
+        }
+
+        
+        public static String AsString(this List<UnifiedStackFrame> list) 
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var frame in list)
+            {
+                sb.AppendWithNewLine(frame.AsString());
+            }
+
+            return sb.ToString();
+        }
+
 
 
         private static String BytesAsHexString(this List<byte[]> parms)
@@ -27,7 +66,9 @@ namespace Assignments.Core.Extentions
             return sb.ToString();
         }
 
-        public static String GetAsString(this UnifiedStackFrame frame)
+
+
+        public static String AsString(this UnifiedStackFrame frame)
         {
             StringBuilder result = new StringBuilder();
 
@@ -53,7 +94,9 @@ namespace Assignments.Core.Extentions
             return result.ToString();
         }
 
-        public static String GetAsString(this IList<BlockingObject> blockingObjects)
+
+
+        public static String AsString(this IList<BlockingObject> blockingObjects)
         {
             StringBuilder result = new StringBuilder();
 
@@ -61,13 +104,15 @@ namespace Assignments.Core.Extentions
             {
                 foreach (var bObj in blockingObjects)
                 {
-                    result.AppendWithNewLine(bObj.GetAsString());
+                    result.AppendWithNewLine(bObj.AsString());
                 }
             }
             return result.ToString();
         }
 
-        public static String GetAsString(this BlockingObject bObj)
+
+
+        public static String AsString(this BlockingObject bObj)
         {
             StringBuilder result = new StringBuilder();
 
@@ -83,7 +128,7 @@ namespace Assignments.Core.Extentions
                 {
                     int ownerCounter = 0;
                     result.AppendWithNewLine("-- Owners -- ");
-                    result.AppendWithNewLine($"{ThreadsIds(bObj.Waiters)}");
+                    result.AppendWithNewLine(bObj.Waiters.AsString());
 
                     foreach (var owner in bObj.Owners)
                     {
@@ -95,13 +140,15 @@ namespace Assignments.Core.Extentions
                 result.AppendWithNewLine($"Taken : {0}{bObj.Taken}");
                 result.AppendWithNewLine(" -- Witers List -- ");
             
-                result.AppendWithNewLine(ThreadsIds(bObj.Waiters));                
+                result.AppendWithNewLine(bObj.Waiters.AsString());                
             }
             
             return result.ToString();
         }
 
-        private static string ThreadsIds(IList<ClrThread> list)
+
+
+        public static string AsString(this IList<ClrThread> list)
         {
             StringBuilder result = new StringBuilder();
 
