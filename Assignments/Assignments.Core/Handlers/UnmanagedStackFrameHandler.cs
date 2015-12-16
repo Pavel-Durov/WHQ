@@ -37,11 +37,11 @@ namespace Assignments.Core.Handlers
                 frameParams = new WinApiStackFrame();
 
                 frameParams.Frame = frame;
+
                 if (frameParams.Params == null)
                 {
                     frameParams.Params = GetNativeParams(frame, runtime, 4);
                 }
-
 
                 if (frameParams != null)
                 {

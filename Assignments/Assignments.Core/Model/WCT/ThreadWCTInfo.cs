@@ -50,14 +50,19 @@ namespace Assignments.Core.Model.WCT
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendWithNewLine();
             sb.AppendWithNewLine($"ThreadId: { ThreadId}");
             sb.AppendWithNewLine($"Is DeadLocked : {IsDeadLocked}");
 
             for (int i = 0; i < WctBlockingObjects.Count; i++)
             {
                 var item = WctBlockingObjects[i];
-                sb.AppendWithNewLine($" -- {i} -- ");
+
+                sb.AppendWithNewLine();
+
+                sb.AppendWithNewLine($"WCT WAITCHAIN NODES INFO");
+                sb.AppendWithNewLine();
+                sb.AppendWithNewLine($"i = {i}) ");
                 sb.AppendWithNewLine($"Context Switches: { item.ContextSwitches}");
                 sb.AppendWithNewLine($"WaitTime: { item.WaitTime}");
                 sb.AppendWithNewLine($"TimeOut: { item.TimeOut}");

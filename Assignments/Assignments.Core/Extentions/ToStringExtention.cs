@@ -17,7 +17,6 @@ namespace Assignments.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendWithNewLine("++++++++++++++++++++++++++++++");
             sb.AppendWithNewLine($"Thread Id: {thread.OSThreadId}");
             sb.AppendWithNewLine($"IsAlive: {thread.IsAlive}");
             //TODO : Complete string logic with relevant data
