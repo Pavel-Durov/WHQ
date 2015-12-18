@@ -7,7 +7,7 @@ using Assignments.Core.Extentions;
 using Assignments.Core.msos;
 
 
-namespace Assignments.Core.Model.Analyze
+namespace Assignments.Core.Model.StackFrames
 {
     public class AnalyzedThreadStack
     {

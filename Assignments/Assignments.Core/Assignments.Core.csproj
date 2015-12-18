@@ -55,7 +55,7 @@
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
-    <Compile Include="Model\Analyze\AnalyzedThreadStack.cs" />
+    <Compile Include="Model\StackFrames\AnalyzedThreadStack.cs" />
     <Compile Include="Model\StackFrames\UnManaged\WinApiStackFrame.cs" />
     <Compile Include="Model\WCT\ThreadWCTInfo.cs" />
     <Compile Include="Model\WCT\WaitChainInfoObject.cs" />

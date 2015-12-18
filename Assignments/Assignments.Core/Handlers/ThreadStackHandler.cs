@@ -10,7 +10,7 @@ using System.IO;
 using Assignments.Core.msos;
 using Assignments.Core.Handlers.WCT;
 using System.Diagnostics;
-using Assignments.Core.Model.Analyze;
+using Assignments.Core.Model.StackFrames;
 
 namespace Assignments.Core.Handlers
 {
