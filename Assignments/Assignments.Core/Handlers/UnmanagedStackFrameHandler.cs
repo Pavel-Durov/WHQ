@@ -12,12 +12,9 @@ namespace Assignments.Core.Handlers
 {
     public class UnmanagedStackFrameHandler
     {
-        public UnmanagedStackFrameHandler()
-        {
 
-        }
 
-        public List<WinApiStackFrame> Analyze(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
+        public static List<WinApiStackFrame> Analyze(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
         {
             List<WinApiStackFrame> result = new List<WinApiStackFrame>();
 
@@ -33,6 +30,7 @@ namespace Assignments.Core.Handlers
                 else if (CheckForWinApiCalls(frame, WinApiMultiWaitStackFrame.FUNCTION_NAME))
                 {
                     frameParams = GetMultipleStackFrameParams(frame, runtime);
+
                 }
 
                 frameParams = new WinApiStackFrame();
@@ -77,7 +75,7 @@ namespace Assignments.Core.Handlers
             Console.WriteLine(sb.ToString());
         }
 
-        public WinApiMultiWaitStackFrame GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
+        public static WinApiMultiWaitStackFrame GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             //TODO : Check if GetNativeParams and ReadFromMemmory functions are identical
 
@@ -91,13 +89,13 @@ namespace Assignments.Core.Handlers
                 result.HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
                 result.WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
                 result.Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
-                result.Params = GetNativeParams(result.Frame, runtime, (int)result.HandlesCunt);
+                result.Params = ReadFromMemmory(result.HandleAddress, result.HandlesCunt, runtime);
             }
             return result;
         }
 
 
-        public WinApiSingleWaitStackFrame GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
+        public static WinApiSingleWaitStackFrame GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             WinApiSingleWaitStackFrame result = new WinApiSingleWaitStackFrame();
 
@@ -121,20 +119,19 @@ namespace Assignments.Core.Handlers
         /// <param name="runtime"></param>
         /// <param name="paramCount">Number of params of the passed stackFrame</param>
         /// <returns></returns>
-        public List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
+        public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
 
             var offset = stackFrame.FrameOffset; //Base Pointer - % EBP
             byte[] paramBuffer;
             int bytesRead = 0;
-            offset += (ulong)IntPtr.Size;
+            offset += 4;
 
             for (int i = 0; i < paramCount; i++)
             {
                 paramBuffer = new byte[4];
-                offset += (ulong)IntPtr.Size;
-
+                offset += 4;
                 if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
                 {
                     result.Add(paramBuffer);
@@ -143,5 +140,36 @@ namespace Assignments.Core.Handlers
 
             return result;
         }
+
+
+        /// <summary>
+        /// Reads 'count' times from the address using runtime.ReadMemory function 
+        /// </summary>
+        /// <param name="startAddress"></param>
+        /// <param name="handlesCunt"></param>
+        /// <param name="runtime"></param>
+        /// <returns>Array with memmory fetched parameters</returns>
+        public static List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
+        {
+            List<byte[]> result = new List<byte[]>();
+            int sum = 0;
+            //TODO: Check if dfor can be inserted into the REadMemmory result (seems to be..)
+            for (int i = 0; i < count; i++)
+            {
+                byte[] readedBytes = new byte[4];
+                if (runtime.ReadMemory(startAddress, readedBytes, 4, out sum))
+                {
+                    result.Add(readedBytes);
+                }
+                else
+                {
+                    throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", startAddress));
+                }
+                //Advancing the pointer by 4 (32-bit system)
+                count += 4;
+            }
+            return result;
+        }
+
     }
 }
