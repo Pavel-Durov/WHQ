@@ -15,7 +15,6 @@ namespace Assignment_4
 {
     class Program
     {
-        int temp = 0;
         const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
