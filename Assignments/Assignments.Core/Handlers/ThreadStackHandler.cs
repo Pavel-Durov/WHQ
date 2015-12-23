@@ -22,7 +22,7 @@ namespace Assignments.Core.Handlers
         }
 
         WctApiHandler _wctApi;
-        UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
+
 
         public WctApiHandler WctApi
         {
@@ -73,11 +73,9 @@ namespace Assignments.Core.Handlers
 
         private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
-
             var wctThreadInfo = WctApi.CollectWaitInformation(thread);
 
-            var nativeStackList = _unmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
+            var nativeStackList = UnmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
 
             return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
         }
