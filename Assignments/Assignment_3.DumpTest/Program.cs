@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,9 +11,12 @@ using HANDLE = System.IntPtr;
 
 namespace Assignment_3.DumpTest
 {
-    class Program
+    public class Program
     {
-        private static AutoResetEvent AUTO_EVENT  =new AutoResetEvent(false);
+
+        const String PID_FILE_PATH = @"./../../../../dump_pid.txt";
+
+        private static AutoResetEvent AUTO_EVENT = new AutoResetEvent(false);
         //Run this project in orer to take a dump
         //Wait functions -> https://msdn.microsoft.com/en-us/library/windows/desktop/ms687069(v=vs.85).aspx
         static void Main(string[] args)
@@ -27,33 +31,41 @@ namespace Assignment_3.DumpTest
                 arr[i] = loopAutoEvent.Handle;
             }
 
-            var proc = Process.GetCurrentProcess();
-            Console.WriteLine("PID : " + proc.Id);
-
+            DealWithPID();
             //Loop forever inorder to debig
             //TODO : Add dead lock in te future
             uint waitParam = 100;
 
             ConsoleColor defaultColor = Console.ForegroundColor;
 
-            while (true)
-            {
-                Console.WriteLine($"WaitForMultipleObjects - 3 HANDLES with waitParam {waitParam}");
 
-                var mulRes = WaitForMultipleObjects(3, arr, true, waitParam);
-                waitParam += waitParam;
+            //while (true)
+            //{
+            //    Console.WriteLine($"WaitForMultipleObjects - 3 HANDLES with waitParam {waitParam}");
 
-                Console.ForegroundColor = ConsoleColor.Red;
+            //    var mulRes = WaitForMultipleObjects(3, arr, true, waitParam);
+            //    waitParam += waitParam;
 
-                Console.WriteLine($"WaitForSingleObject - waitParam {waitParam}");
-                var singleRes = WaitForSingleObject(arr[0], waitParam);
+            //    Console.ForegroundColor = ConsoleColor.Red;
 
-                Console.ForegroundColor = defaultColor;
+            //    Console.WriteLine($"WaitForSingleObject - waitParam {waitParam}");
+            //    var singleRes = WaitForSingleObject(arr[0], waitParam);
 
-            }
+            //    Console.ForegroundColor = defaultColor;
 
+            //}
 
-           //Console.WriteLine("Not waiting anymore...");
+            var mulRes = WaitForMultipleObjects(3, arr, true, int.MaxValue);
+
+            //Console.WriteLine("Not waiting anymore...");
+        }
+
+        private static void DealWithPID()
+        {
+            var proc = Process.GetCurrentProcess();
+            Console.WriteLine("PID : " + proc.Id);
+
+            File.WriteAllText(PID_FILE_PATH, proc.Id.ToString());
         }
 
         private static void TestResetEvent()
