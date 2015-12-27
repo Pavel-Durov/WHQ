@@ -51,11 +51,9 @@ namespace Assignments.Core.Handlers.WCT
 
         IntPtr _eventHandler;
 
-        internal ThreadWCTInfo CollectWaitAsyncInformation(ClrThread thread)
+        internal void CollectWaitAsyncInformation(ClrThread thread)
         {   
             //Currenlty not working
-            ThreadWCTInfo result = null;
-
             var handle = Advapi32.OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS.WCT_ASYNC_OPEN_FLAG, AppCallback);
 
             uint threadID = thread.OSThreadId;
@@ -67,6 +65,7 @@ namespace Assignments.Core.Handlers.WCT
 
             _eventHandler = Kernel32.CreateEvent(IntPtr.Zero, true, true, "MyEvent");
 
+            //This is where the applciation hangs
             bool waitChainResult = Advapi32.GetThreadWaitChain(handle,
                                     _eventHandler, 0 ,
                                     threadID, ref Count, NodeInfoArray, out isCycle);
@@ -85,8 +84,6 @@ namespace Assignments.Core.Handlers.WCT
                 }
                 Kernel32.WaitForSingleObject(_eventHandler, uint.MaxValue);
             }
-
-            return result;
         }
 
         /////////////////////////////////////////////////////////
