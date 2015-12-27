@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Assignments.Core.Handlers.WCT;
-using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Extentions;
-using Assignments.Core.Model.WCT;
 
 namespace Assignments.Core.Model.WCT
 {
@@ -51,34 +46,6 @@ namespace Assignments.Core.Model.WCT
                     WctBlockingObjects.Add(block);
                 }
             }
-        }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendWithNewLine();
-            sb.AppendWithNewLine($"ThreadId: { ThreadId}");
-            sb.AppendWithNewLine($"Is DeadLocked : {IsDeadLocked}");
-
-            for (int i = 0; i < WctBlockingObjects.Count; i++)
-            {
-                var item = WctBlockingObjects[i];
-
-                sb.AppendWithNewLine();
-
-                sb.AppendWithNewLine($"WCT WAITCHAIN NODES INFO");
-                sb.AppendWithNewLine();
-                sb.AppendWithNewLine($"i = {i}) ");
-                sb.AppendWithNewLine($"Context Switches: { item.ContextSwitches}");
-                sb.AppendWithNewLine($"WaitTime: { item.WaitTime}");
-                sb.AppendWithNewLine($"TimeOut: { item.TimeOut}");
-                sb.AppendWithNewLine($"ObjectType: { item.ObjectType}");
-                sb.AppendWithNewLine($"ObjectStatus: { item.ObjectStatus}");
-                sb.AppendWithNewLine($"ObjectName: { item.ObjectName}");
-                sb.AppendWithNewLine($"AlertTable: { item.AlertTable}");
-            }
-
-            return sb.ToString();
         }
     }
 }

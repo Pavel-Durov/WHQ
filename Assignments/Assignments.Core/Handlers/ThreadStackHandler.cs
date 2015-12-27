@@ -1,15 +1,9 @@
 ﻿using Microsoft.Diagnostics.Runtime;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Diagnostics.Runtime.Interop;
-using System.Runtime.InteropServices;
-using System.IO;
 using Assignments.Core.msos;
 using Assignments.Core.Handlers.WCT;
-using System.Diagnostics;
 using Assignments.Core.Model.StackFrames;
 
 namespace Assignments.Core.Handlers
@@ -68,7 +62,7 @@ namespace Assignments.Core.Handlers
             AnalyzedThreadStack result = Analyze(thread, managedStack, unmanagedStack);
 
             //Printing result
-            Console.WriteLine(result.ToString());
+            PrintHandler.Print(result);
         }
 
         private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)

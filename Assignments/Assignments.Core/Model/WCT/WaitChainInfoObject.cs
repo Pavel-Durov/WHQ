@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Utils;
 
@@ -67,8 +63,6 @@ namespace Assignments.Core.Model.WCT
         /// This member is reserved for future use.
         /// </summary>
         public uint AlertTable { get; private set; }
-
-
     }
 
 

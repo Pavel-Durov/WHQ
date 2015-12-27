@@ -49,6 +49,7 @@
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
+    <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />

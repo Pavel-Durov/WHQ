@@ -1,18 +1,15 @@
-﻿using Assignments.Core.Model;
+﻿using Assignments.Core.Model.StackFrames.UnManaged;
+using Assignments.Core.Model.WCT;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Assignments.Core.Extentions
-{ 
-
+{
     public static class ToStringExtentions
     {
-
         public static String AsString(this ClrThread thread)
         {
             StringBuilder sb = new StringBuilder();
@@ -23,20 +20,21 @@ namespace Assignments.Core.Extentions
             return sb.ToString();
         }
 
-        public static String AsString<T>(this List<T> list) 
+        public static String AsString<WinApiStackFrameT>(this List<WinApiStackFrame> list)
         {
             StringBuilder sb = new StringBuilder();
 
             foreach (var frame in list)
             {
-                sb.AppendWithNewLine(frame.ToString());
+                sb.AppendWithNewLine(frame.AsString());
             }
 
             return sb.ToString();
         }
 
         
-        public static String AsString(this List<UnifiedStackFrame> list) 
+
+        public static String AsString(this List<UnifiedStackFrame> list)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -92,6 +90,71 @@ namespace Assignments.Core.Extentions
         }
 
 
+
+
+
+        
+
+        public static String AsString(this WinApiStackFrame info)
+        {
+            StringBuilder sb = new StringBuilder();
+
+
+            sb.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3}+0x{4:x}",
+                    info.Frame.Type, info.Frame.InstructionPointer,
+                    info.Frame.Module, info.Frame.Method, info.Frame.OffsetInMethod));
+
+            sb.AppendWithNewLine($"HandleAddress : {info.HandleAddress}");
+            sb.AppendWithNewLine($"Timeout : {info.Timeout}");
+
+
+            sb.AppendWithNewLine($"Params: { info.Params.AsString()}");
+
+            return sb.ToString();
+        }
+
+
+        public static String AsString(this WinApiMultiWaitStackFrame info)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(info.ToString());
+
+            sb.AppendWithNewLine($"WaitallFlag : {info.WaitallFlag}");
+            sb.AppendWithNewLine($"HandlesCunt : {info.HandlesCunt}");
+
+            sb.AppendWithNewLine($"Params: { info.Params.AsString()}");
+
+            return sb.ToString();
+        }
+
+        public static String AsString(this ThreadWCTInfo info)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendWithNewLine();
+            sb.AppendWithNewLine($"ThreadId: { info.ThreadId}");
+            sb.AppendWithNewLine($"Is DeadLocked : {info.IsDeadLocked}");
+
+            for (int i = 0; i < info.WctBlockingObjects.Count; i++)
+            {
+                var item = info.WctBlockingObjects[i];
+
+                sb.AppendWithNewLine();
+
+                sb.AppendWithNewLine($"WCT WAITCHAIN NODES INFO");
+                sb.AppendWithNewLine();
+                sb.AppendWithNewLine($"i = {i}) ");
+                sb.AppendWithNewLine($"Context Switches: { item.ContextSwitches}");
+                sb.AppendWithNewLine($"WaitTime: { item.WaitTime}");
+                sb.AppendWithNewLine($"TimeOut: { item.TimeOut}");
+                sb.AppendWithNewLine($"ObjectType: { item.ObjectType}");
+                sb.AppendWithNewLine($"ObjectStatus: { item.ObjectStatus}");
+                sb.AppendWithNewLine($"ObjectName: { item.ObjectName}");
+                sb.AppendWithNewLine($"AlertTable: { item.AlertTable}");
+            }
+
+            return sb.ToString();
+        }
         public static String AsString(this IList<BlockingObject> blockingObjects)
         {
             StringBuilder result = new StringBuilder();
@@ -134,10 +197,10 @@ namespace Assignments.Core.Extentions
                 result.AppendWithNewLine($"Block Reason : {bObj.Reason}");
                 result.AppendWithNewLine($"Taken : {0}{bObj.Taken}");
                 result.AppendWithNewLine(" -- Witers List -- ");
-            
-                result.AppendWithNewLine(bObj.Waiters.AsString());                
+
+                result.AppendWithNewLine(bObj.Waiters.AsString());
             }
-            
+
             return result.ToString();
         }
 

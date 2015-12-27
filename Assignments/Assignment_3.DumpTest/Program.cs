@@ -55,9 +55,24 @@ namespace Assignment_3.DumpTest
 
             //}
 
-            var mulRes = WaitForMultipleObjects(3, arr, true, int.MaxValue);
+
+            
+            var result = AnotherMethodToTest();
+
+            var mulRes0 = WaitForMultipleObjects(3, arr, true, 0);
+            var mulRes1 = WaitForMultipleObjects(3, arr, false, 0);
+            var mulRes2 = WaitForMultipleObjects(3, arr, true, int.MaxValue);
 
             //Console.WriteLine("Not waiting anymore...");
+        }
+
+        private static int AnotherMethodToTest()
+        {
+            Beep(150, 555);
+
+            var a = 2;
+
+            return a + 8;
         }
 
         private static void DealWithPID()
@@ -81,6 +96,12 @@ namespace Assignment_3.DumpTest
             task.Start();
             autoEvent.WaitOne();
         }
+
+        
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool Beep(uint dwFreq, uint dwDuration);
+
 
         [DllImport("kernel32.dll")]
         static extern uint WaitForMultipleObjects(uint nCount, IntPtr[] lpHandles, bool bWaitAll, uint dwMilliseconds);
