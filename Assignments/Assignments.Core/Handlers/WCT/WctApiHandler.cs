@@ -49,10 +49,51 @@ namespace Assignments.Core.Handlers.WCT
             return result;
         }
 
+        
+        private ThreadWCTInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
+        {
+            ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, thread.OSThreadId);
+            WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
+            Array.Copy(NodeInfoArray, info, Count);
+
+            result.SetInfo(info);
+
+            return result;
+        }
+
+        private void HandleWctRequestError(IntPtr g_WctIntPtr)
+        {
+            var lastErrorCode = Advapi32.GetLastError();
+
+            if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
+            {
+                //TODO: Follow this doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
+            }
+            else
+            {
+                //TODO : Ifdentify code error and responce accordingly
+            }
+        }
+
+        private void CheckCount(ref int Count)
+        {
+            // Check if the wait chain is too big for the array we passed in.
+            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
+            {
+                //Found additional nodes 
+                Count = WctApiConst.WCT_MAX_NODE_COUNT;
+            }
+        }
+
+
+
+
+        #region WCT Async Call
+
         IntPtr _eventHandler;
 
         internal void CollectWaitAsyncInformation(ClrThread thread)
-        {   
+        {
             //Currenlty not working
             var handle = Advapi32.OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS.WCT_ASYNC_OPEN_FLAG, AppCallback);
 
@@ -67,7 +108,7 @@ namespace Assignments.Core.Handlers.WCT
 
             //This is where the applciation hangs
             bool waitChainResult = Advapi32.GetThreadWaitChain(handle,
-                                    _eventHandler, 0 ,
+                                    _eventHandler, 0,
                                     threadID, ref Count, NodeInfoArray, out isCycle);
 
             CheckCount(ref Count);
@@ -94,42 +135,6 @@ namespace Assignments.Core.Handlers.WCT
 
         }
 
-        private ThreadWCTInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
-        {
-            ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, thread.OSThreadId);
-            WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
-            Array.Copy(NodeInfoArray, info, Count);
-
-            result.SetInfo(info);
-
-            return result;
-        }
-
-        private void HandleWctRequestError(IntPtr g_WctIntPtr)
-        {
-            var lastErrorCode = Advapi32.GetLastError();
-
-            if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
-            {
-
-
-                //TODO: Follow this doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
-            }
-            else
-            {
-                //TODO : Ifdentify code error and responce accordingly
-            }
-        }
-
-        private void CheckCount(ref int Count)
-        {
-            // Check if the wait chain is too big for the array we passed in.
-            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
-            {
-                //Found additional nodes 
-                Count = WctApiConst.WCT_MAX_NODE_COUNT;
-            }
-        }
-
+        #endregion
     }
 }
