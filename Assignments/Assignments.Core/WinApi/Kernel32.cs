@@ -11,6 +11,16 @@ namespace Assignments.Core.WinApi
     public class Kernel32
     {
 
+        public struct SECURITY_ATTRIBUTES
+        {
+            Int32 nLength;
+            IntPtr lpSecurityDescriptor;
+            bool bInheritHandle;
+        };
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern HANDLE CreateEvent(SECURITY_ATTRIBUTES lpSecurityAttributes, bool isManualReset, bool initialState, string name);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool Beep(uint dwFreq, uint dwDuration);

@@ -69,7 +69,7 @@ namespace Assignments.Core.WinApi
             WAITCHAIN_NODE_INFO[] NodeInfoArray,
             out int IsCycle
         );
-
+        
 
         /// <summary>
         /// Original Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
@@ -92,12 +92,12 @@ namespace Assignments.Core.WinApi
 
 
 
-        //[UnmanagedFunctionPointer(CallingConvenction.Cdecl)]
 
         ///Wct Async Callback
         public delegate void AppCallback(IntPtr WctHnd, IntPtr Context, Int32 CallbackStatus, Int32 NodeCount, IntPtr NodeInfoArray, bool IsCycle);
 
-        [DllImport("Cortex_SDK.dll")]
-        public extern static int Cortex_SetDataHandlerFunc([MarshalAs(UnmanagedType.FunctionPtr)]AppCallback functionCallback);
+        [DllImport("Advapi32.dll")]
+        public static extern IntPtr OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS Flags, [MarshalAs(UnmanagedType.FunctionPtr)]AppCallback callback);
+
     }
 }

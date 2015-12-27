@@ -16,7 +16,7 @@ namespace Assignments.Core.Handlers.WCT
         internal ThreadWCTInfo CollectWaitInformation(ClrThread thread)
         {
             ThreadWCTInfo result = null;
-            
+
             var g_WctIntPtr = Advapi32.OpenThreadWaitChainSession((int)WCT_SESSION_OPEN_FLAGS.WCT_SYNC_OPEN_FLAG, 0);
 
             uint threadID = thread.OSThreadId;
@@ -34,7 +34,7 @@ namespace Assignments.Core.Handlers.WCT
                                     threadID, ref Count, NodeInfoArray, out isCycle);
 
             CheckCount(ref Count);
-         
+
             if (waitChainResult)
             {
                 result = HandleGetThreadWaitChainRsult(thread, Count, NodeInfoArray, isCycle);
@@ -49,27 +49,52 @@ namespace Assignments.Core.Handlers.WCT
             return result;
         }
 
+        IntPtr _eventHandler;
+
         internal ThreadWCTInfo CollectWaitAsyncInformation(ClrThread thread)
-        {
+        {   
+            //Currenlty not working
             ThreadWCTInfo result = null;
 
-            //TODO: Follow this doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
-            var g_WctIntPtr = Advapi32.OpenThreadWaitChainSession((int)WCT_SESSION_OPEN_FLAGS.WCT_ASYNC_OPEN_FLAG, 0);
+            var handle = Advapi32.OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS.WCT_ASYNC_OPEN_FLAG, AppCallback);
 
             uint threadID = thread.OSThreadId;
 
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WctApiConst.WCT_MAX_NODE_COUNT];
 
-            return result;
+            int isCycle = 0;
+            int Count = WctApiConst.WCT_MAX_NODE_COUNT;
 
+            _eventHandler = Kernel32.CreateEvent(IntPtr.Zero, true, true, "MyEvent");
+
+            bool waitChainResult = Advapi32.GetThreadWaitChain(handle,
+                                    _eventHandler, 0 ,
+                                    threadID, ref Count, NodeInfoArray, out isCycle);
+
+            CheckCount(ref Count);
+
+            if (!waitChainResult)
+            {
+
+                var lastErrorCode = WinApi.Advapi32.GetLastError();
+
+                if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
+                {
+                    // Wait for callback to run...
+                    WinApi.Kernel32.WaitForSingleObject(_eventHandler, int.MaxValue);
+                }
+                Kernel32.WaitForSingleObject(_eventHandler, uint.MaxValue);
+            }
+
+            return result;
         }
 
         /////////////////////////////////////////////////////////
         // WCT Async CallBack implementation
-        void AppCallback( IntPtr WctHnd,IntPtr Context, Int32 CallbackStatus, Int32 NodeCount, IntPtr NodeInfoArray, bool IsCycle)
+
+        static void AppCallback(IntPtr WctHnd, IntPtr Context, Int32 CallbackStatus, Int32 NodeCount, IntPtr NodeInfoArray, bool IsCycle)
         {
-            
-            //SetEvent(((MyContext*)Context)->EventHnd);
+
         }
 
         private ThreadWCTInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
@@ -77,7 +102,7 @@ namespace Assignments.Core.Handlers.WCT
             ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, thread.OSThreadId);
             WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
             Array.Copy(NodeInfoArray, info, Count);
-            
+
             result.SetInfo(info);
 
             return result;
@@ -87,10 +112,10 @@ namespace Assignments.Core.Handlers.WCT
         {
             var lastErrorCode = Advapi32.GetLastError();
 
-            if(lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
+            if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
             {
-                
-              
+
+
                 //TODO: Follow this doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
             }
             else
@@ -108,6 +133,6 @@ namespace Assignments.Core.Handlers.WCT
                 Count = WctApiConst.WCT_MAX_NODE_COUNT;
             }
         }
-        
+
     }
 }

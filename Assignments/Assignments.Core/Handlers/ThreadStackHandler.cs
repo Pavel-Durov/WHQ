@@ -68,7 +68,7 @@ namespace Assignments.Core.Handlers
         private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {
             var wctThreadInfo = WctApi.CollectWaitInformation(thread);
-
+            //var temp = WctApi.CollectWaitAsyncInformation(thread);
             var nativeStackList = UnmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
 
             return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
