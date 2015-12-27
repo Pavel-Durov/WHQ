@@ -10,6 +10,7 @@ namespace Assignments.Core.Extentions
 {
     public static class ToStringExtentions
     {
+
         #region Colection Extentions
 
         public static String AsString<WinApiStackFrameT>(this List<WinApiStackFrame> list)
