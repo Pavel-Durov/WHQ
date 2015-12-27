@@ -11,13 +11,12 @@ namespace Assignments.Core.Handlers
     {
         public static void Print(AnalyzedThreadStack threadStack)
         {
-            //TODO: Consider moving this implementation from ToString Overide to some outside handler 
             StringBuilder result = new StringBuilder();
 
             //Appending thread data
             result.AppendWithNewLine(threadStack.Thread.AsString());
+            WriteToCoonsole(result);
 
-            
             if (threadStack.HasBlockingObjects)
             {
                 //Appending Blcking objects ie Extentions method
@@ -27,6 +26,9 @@ namespace Assignments.Core.Handlers
             WriteToCoonsole(result);
 
             result.AppendWithNewLine(threadStack.WctThreadInfo.AsString());
+
+
+            WriteToCoonsole(result);
 
             ///Appending Managed Stack frame list string
             result.AppendWithNewLine(threadStack.ManagedStackList.AsString());
