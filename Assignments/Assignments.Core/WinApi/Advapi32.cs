@@ -6,9 +6,9 @@ namespace Assignments.Core.WinApi
 {
     public class Advapi32
     {
-
+        
         /// <summary>
-        ///  Original Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679360(v=vs.85).aspx
+        ///   Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679360(v=vs.85).aspx
         ///  System errr codes: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681381(v=vs.85).aspx
         /// </summary>
         /// <returns>The return value is the calling thread's last-error code.</returns>
@@ -17,16 +17,15 @@ namespace Assignments.Core.WinApi
 
 
         /// <summary>
-        /// Original doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679282(v=vs.85).aspx
+        ///  doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms679282(v=vs.85).aspx
         /// </summary>
         /// <param name="WctIntPtr">A IntPtr to the WCT session created by the OpenThreadWaitChainSession function.</param>
         [DllImport("Advapi32.dll")]
         public static extern void CloseThreadWaitChainSession(IntPtr WctIntPtr);
 
 
-
         /// <summary>
-        /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms680543(v=vs.85).aspx
+        ///  Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms680543(v=vs.85).aspx
         /// </summary>
         /// <param name="Flags">The session type. This parameter can be one of the following values. (OpenThreadChainFlags)</param>
         /// <param name="callback">If the session is asynchronous, this parameter can be a pointer to a WaitChainCallback callback function.
@@ -38,7 +37,7 @@ namespace Assignments.Core.WinApi
 
 
         /// <summary>
-        /// Original doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms680564(v=vs.85).aspx
+        ///  doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms680564(v=vs.85).aspx
         /// </summary>
         /// <param name="CallStateCallback">The address of the CoGetCallState function.</param>
         /// <param name="ActivationStateCallback">The address of the CoGetActivationState function.</param>
@@ -46,17 +45,7 @@ namespace Assignments.Core.WinApi
         public static extern void RegisterWaitChainCOMCallback(UInt32 CallStateCallback, UInt32 ActivationStateCallback);
 
 
-        /// <summary>
-        /// Original Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
-        /// </summary>
-        /// <param name="WctIntPtr"></param>
-        /// <param name="Context"></param>
-        /// <param name="flags"></param>
-        /// <param name="ThreadId"></param>
-        /// <param name="NodeCount"></param>
-        /// <param name="NodeInfoArray"></param>
-        /// <param name="IsCycle"></param>
-        /// <returns></returns>
+        ///  Doc : https://msdn.microsoft.com/en-us/library/windows/desktop/ms679364(v=vs.85).aspx
         [DllImport("Advapi32.dll")]
         public static extern bool GetThreadWaitChain(
             IntPtr WctIntPtr,
@@ -72,7 +61,7 @@ namespace Assignments.Core.WinApi
         
 
         /// <summary>
-        /// Original Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
+        ///  Doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
         /// </summary>
         /// <param name="WctIntPtr">A IntPtr to the WCT session created by the OpenThreadWaitChainSession function.</param>
         /// <param name="Context">A optional pointer to an application-defined context structure specified by the GetThreadWaitChain function.</param>
@@ -91,13 +80,17 @@ namespace Assignments.Core.WinApi
         );
 
 
-
-
         ///Wct Async Callback
-        public delegate void AppCallback(IntPtr WctHnd, IntPtr Context, Int32 CallbackStatus, Int32 NodeCount, IntPtr NodeInfoArray, bool IsCycle);
+        public delegate void AppCallback(
+            IntPtr WctHnd, 
+            IntPtr Context, 
+            Int32 CallbackStatus, 
+            Int32 NodeCount, 
+            IntPtr NodeInfoArray,
+            bool IsCycle
+        );
 
         [DllImport("Advapi32.dll")]
         public static extern IntPtr OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS Flags, [MarshalAs(UnmanagedType.FunctionPtr)]AppCallback callback);
-
     }
 }
