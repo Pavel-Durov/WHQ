@@ -64,7 +64,7 @@ namespace Assignments.Core.Handlers.WCT
 
         private void HandleWctRequestError(IntPtr g_WctIntPtr)
         {
-            var lastErrorCode = Advapi32.GetLastError();
+            var lastErrorCode = Marshal.GetLastWin32Error();
 
             if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
             {
