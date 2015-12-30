@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Assignments.Core.Utils
 {
     public class StringUtil
     {
-
         public static unsafe String ConvertCStringToString(ushort* ptr, Encoding encoding)
         {
             if (ptr == null) return "";
@@ -42,8 +38,6 @@ namespace Assignments.Core.Utils
             // now get the string
             return encoding.GetString(asByteArray);
         }
-
-
-
     }
 }
+   

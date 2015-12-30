@@ -49,13 +49,14 @@
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
+    <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
-    <Compile Include="Model\Analyze\AnalyzedThreadStack.cs" />
+    <Compile Include="Model\StackFrames\AnalyzedThreadStack.cs" />
     <Compile Include="Model\StackFrames\UnManaged\WinApiStackFrame.cs" />
     <Compile Include="Model\WCT\ThreadWCTInfo.cs" />
     <Compile Include="Model\WCT\WaitChainInfoObject.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="msos\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\StringUtil.cs" />
+    <Compile Include="WinApi\Advapi32.cs" />
+    <Compile Include="WinApi\Kernel32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

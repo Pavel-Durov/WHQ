@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using Assignments.Core.Model.StackFrames.UnManaged;
 using Assignments.Core.Model.WCT;
 using Microsoft.Diagnostics.Runtime;
-using Assignments.Core.Extentions;
 using Assignments.Core.msos;
 
 
-namespace Assignments.Core.Model.Analyze
+namespace Assignments.Core.Model.StackFrames
 {
     public class AnalyzedThreadStack
     {
@@ -28,36 +26,5 @@ namespace Assignments.Core.Model.Analyze
         public bool HasBlockingObjects { get { return Thread?.BlockingObjects != null && Thread?.BlockingObjects?.Count > 0; } }
 
         #endregion
-
-
-
-        public override string ToString()
-        {
-            //TODO: Consider moving this implementation from ToString Overide to some outside handler 
-            StringBuilder result = new StringBuilder();
-
-            //Appending thread data
-
-            result.AppendWithNewLine(Thread.AsString());
-
-            if (HasBlockingObjects)
-            {
-                //Appending Blcking objects ie Extentions method
-                result.Append(Thread.BlockingObjects.AsString());
-            }
-
-            result.AppendWithNewLine(WctThreadInfo.ToString());
-
-            ///Appending Managed Stack frame list string
-            result.AppendWithNewLine(ManagedStackList.AsString());
-
-            ///Appending UnManaged Stack frame list string
-            result.AppendWithNewLine(NativeStackList.AsString<WinApiStackFrame>());
-
-            return result.ToString();
-        }
-
-        
-
     }
 }
