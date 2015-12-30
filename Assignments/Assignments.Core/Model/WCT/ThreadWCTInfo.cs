@@ -27,20 +27,27 @@ namespace Assignments.Core.Model.WCT
         /// </summary>
         public uint ThreadId { get; private set; }
 
-        List<WaitChainInfoObject> _blockingObjects;
+        List<WaitChainInfoObject> _waiChainOBjects;
 
-        public List<WaitChainInfoObject> WctBlockingObjects
+        /// <summary>
+        /// A Collection of Wait Chain object which collected by GetThreadWaitChain api function
+        /// </summary>
+        public List<WaitChainInfoObject> WaitChainObject
         {
             get
             {
-                if (_blockingObjects == null)
+                if (_waiChainOBjects == null)
                 {
-                    _blockingObjects = new List<WaitChainInfoObject>();
+                    _waiChainOBjects = new List<WaitChainInfoObject>();
                 }
-                return _blockingObjects;
+                return _waiChainOBjects;
             }
         }
 
+        /// <summary>
+        /// Adds WAITCHAIN_NODE_INFO as WaitChainInfoObject to local collection
+        /// </summary>
+        /// <param name="info"></param>
         internal void SetInfo(WAITCHAIN_NODE_INFO[] info)
         {
             if (info != null)
@@ -48,7 +55,7 @@ namespace Assignments.Core.Model.WCT
                 foreach (var item in info)
                 {
                     var block = new WaitChainInfoObject(item);
-                    WctBlockingObjects.Add(block);
+                    WaitChainObject.Add(block);
                 }
             }
         }
@@ -60,9 +67,9 @@ namespace Assignments.Core.Model.WCT
             sb.AppendWithNewLine($"ThreadId: { ThreadId}");
             sb.AppendWithNewLine($"Is DeadLocked : {IsDeadLocked}");
 
-            for (int i = 0; i < WctBlockingObjects.Count; i++)
+            for (int i = 0; i < WaitChainObject.Count; i++)
             {
-                var item = WctBlockingObjects[i];
+                var item = WaitChainObject[i];
 
                 sb.AppendWithNewLine();
 
