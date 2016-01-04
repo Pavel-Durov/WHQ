@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Assignments.Core.msos;
+using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Model.StackFrames.UnManaged
 {

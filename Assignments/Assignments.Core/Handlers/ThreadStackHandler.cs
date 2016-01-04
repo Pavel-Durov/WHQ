@@ -5,6 +5,7 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.msos;
 using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Model.StackFrames;
+using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Handlers
 {

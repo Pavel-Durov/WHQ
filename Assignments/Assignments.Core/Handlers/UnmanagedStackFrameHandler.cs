@@ -5,6 +5,7 @@ using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.StackFrames.UnManaged;
 using Assignments.Core.Exceptions;
+using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Handlers
 {

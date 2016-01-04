@@ -9,7 +9,7 @@ namespace Assignments.Core.Model.Unified
     /// <summary>
     /// (1 per thread) UnifiedThread
     /// </summary>
-    class UnifiedStackTrace
+    public class UnifiedStackTrace
     {
     }
 }
