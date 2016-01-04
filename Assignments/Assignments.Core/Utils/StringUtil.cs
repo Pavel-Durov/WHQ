@@ -15,6 +15,7 @@ namespace Assignments.Core.Utils
 
         public static unsafe String ConvertCStringToString(char* ptr, Encoding encoding)
         {
+            //TODO: Check the string length calculation....
 
             if (ptr == null) return "";
 
