@@ -9,7 +9,7 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class ManagedThread : UnifiedThread
     {
-        public ManagedThread(ClrThread thread, string detail)
+        public ManagedThread(ClrThread thread)//, string detail)
         {
             Thread = thread;
 
@@ -17,7 +17,7 @@ namespace Assignments.Core.Model.Unified.Thread
             base.IsManagedThread = true;
             //base.EngineThreadId = Thread.
             //base.Index
-            base.Detail = detail;
+           // base.Detail = detail;
         }
 
         public ClrThread Thread { get; private set; }
