@@ -16,13 +16,13 @@ namespace Assignments.Core.Model.Unified
 
         }
 
-        public UnifiedThread(ThreadInfo info, uint index, uint engineThreadId, uint OSThreadId, string detail)
+        public UnifiedThread(ThreadInfo info)
         {
             this.IsManagedThread = info.IsManagedThread;
-            this.Index = index;
-            this.EngineThreadId = engineThreadId;
-            this.OSThreadId = OSThreadId;
-            this.Detail = Detail;
+            this.Index = info.Index;
+            this.EngineThreadId = info.EngineThreadId;
+            this.OSThreadId = info.OSThreadId;
+            this.Detail = info.Detail;
         }
 
         public bool IsManagedThread { get; protected set; }
