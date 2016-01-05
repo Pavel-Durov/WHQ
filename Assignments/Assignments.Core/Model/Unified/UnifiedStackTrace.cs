@@ -11,5 +11,11 @@ namespace Assignments.Core.Model.Unified
     /// </summary>
     public class UnifiedStackTrace
     {
+        private List<UnifiedStackFrame> managedStack;
+
+        public UnifiedStackTrace(List<UnifiedStackFrame> managedStack)
+        {
+            this.managedStack = managedStack;
+        }
     }
 }

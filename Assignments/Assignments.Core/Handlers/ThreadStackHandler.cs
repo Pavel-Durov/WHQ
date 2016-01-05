@@ -6,6 +6,7 @@ using Assignments.Core.msos;
 using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Model.StackFrames;
 using Assignments.Core.Model.Unified;
+using System;
 
 namespace Assignments.Core.Handlers
 {
@@ -39,6 +40,8 @@ namespace Assignments.Core.Handlers
 
         public void Handle(IDebugClient debugClient, ClrThread thread, ClrRuntime runtime)
         {
+            UnifiedResult result = new UnifiedResult();
+
             _debugClient = debugClient;
             _runtime = runtime;
 
@@ -49,22 +52,30 @@ namespace Assignments.Core.Handlers
 
             ThreadInfo specific_info = null;
 
+            
+
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 specific_info = GetThreadInfo(threadIdx);
                 threads.Add(specific_info);
-            }
-            Threads = threads;
 
+                result.Add(specific_info);
+            }
+
+            Threads = threads;
 
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            AnalyzedThreadStack result = Analyze(thread, managedStack, unmanagedStack);
+            result.Add(thread, managedStack, unmanagedStack, runtime);
+
+            //AnalyzedThreadStack result = Analyze(thread, managedStack, unmanagedStack);
 
             //Printing result
-            PrintHandler.Print(result);
+            //PrintHandler.Print(result);
         }
+
+       
 
         private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
         {

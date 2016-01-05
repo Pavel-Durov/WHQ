@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.WinApi;
+using Assignments.Core.Model.Unified;
+using System.Collections.Generic;
 
 namespace Assignments.Core.Handlers.WCT
 {
@@ -13,6 +15,13 @@ namespace Assignments.Core.Handlers.WCT
     /// </summary>
     public class WctApiHandler
     {
+
+        internal bool GetBlockingObjects(ClrThread thread, out ThreadWCTInfo info)
+        {
+            info = CollectWaitInformation(thread);
+            return info.WctBlockingObjects?.Count > 0;
+        }
+
         internal ThreadWCTInfo CollectWaitInformation(ClrThread thread)
         {
             ThreadWCTInfo result = null;
@@ -61,6 +70,7 @@ namespace Assignments.Core.Handlers.WCT
 
             return result;
         }
+
 
         private void HandleWctRequestError(IntPtr g_WctIntPtr)
         {

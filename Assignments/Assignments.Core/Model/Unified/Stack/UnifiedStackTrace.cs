@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignments.Core.Model.Unified.Thread
+namespace Assignments.Core.Model.Unified.Stack
 {
-    public class UnManagedThread //: UnifiedThread
+    public class UnifiedStackTrace
     {
+        public UnifiedStackTrace()
+        {
 
+        }
     }
 }

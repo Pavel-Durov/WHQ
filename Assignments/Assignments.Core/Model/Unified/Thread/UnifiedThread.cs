@@ -7,10 +7,11 @@ using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.Unified.Thread;
 using Assignments.Core.msos;
 
-namespace Assignments.Core.Model.Unified
+namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedThread
     {
+
         public UnifiedThread()
         {
 
@@ -24,6 +25,8 @@ namespace Assignments.Core.Model.Unified
             this.OSThreadId = info.OSThreadId;
             this.Detail = info.Detail;
         }
+
+        
 
         public bool IsManagedThread { get; protected set; }
 
