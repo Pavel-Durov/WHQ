@@ -22,6 +22,17 @@ namespace Assignments.Core.Model.Unified
             //this.KernelObjectName = kernelObjectName;
             //TODO: Get Kernel object name
         }
+        public UnifiedBlockingObject(WaitChainInfoObject blockingObj)
+        {
+            //TODO: Complete gathering the inforamtion...
+
+            KernelObjectName = blockingObj.ObjectName;
+
+            //TODO: Get
+            ManagedObjectAddress = 0;
+            KernelObjectName = blockingObj.ObjectName;
+
+        }
 
         private void SetWaiters(BlockingObject item)
         {
@@ -54,22 +65,6 @@ namespace Assignments.Core.Model.Unified
                 this.HasOwnershipInformation = true;
             }
         }
-        
-
-
-
-        public UnifiedBlockingObject(WaitChainInfoObject blockingObj)
-        {
-            //TODO: Complete gathering the inforamtion...
-
-            KernelObjectName = blockingObj.ObjectName;
-
-            //TODO: Get
-            ManagedObjectAddress = 0;
-            KernelObjectName = blockingObj.ObjectName;
-            
-        }
-
 
 
 

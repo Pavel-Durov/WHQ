@@ -40,8 +40,6 @@ namespace Assignments.Core.Handlers
 
         public void Handle(IDebugClient debugClient, ClrThread thread, ClrRuntime runtime)
         {
-            UnifiedResult result = new UnifiedResult();
-
             _debugClient = debugClient;
             _runtime = runtime;
 
@@ -52,14 +50,15 @@ namespace Assignments.Core.Handlers
 
             ThreadInfo specific_info = null;
 
-            
+            List<UnifiedResult> result = new List<UnifiedResult>();
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 specific_info = GetThreadInfo(threadIdx);
                 threads.Add(specific_info);
 
-                result.Add(specific_info);
+                //result.Add(specific_info);
+                result.Add(new UnifiedResult(specific_info))
             }
 
             Threads = threads;
@@ -67,12 +66,9 @@ namespace Assignments.Core.Handlers
             var managedStack = GetManagedStackTrace(thread);
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            result.Add(thread, managedStack, unmanagedStack, runtime);
+            var clrThread = new UnifiedResult(thread, managedStack, unmanagedStack, runtime);
 
-            //AnalyzedThreadStack result = Analyze(thread, managedStack, unmanagedStack);
-
-            //Printing result
-            //PrintHandler.Print(result);
+            result.Add(clrThread);
         }
 
        
@@ -84,6 +80,16 @@ namespace Assignments.Core.Handlers
 
 
             return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
+        }
+
+        public object Handle(IDebugClient debuggerInterface, ClrRuntime runtime)
+        {
+
+            foreach (ClrThread thread in runtime.Threads)
+            {
+                handler.Handle(target.DebuggerInterface, thread, runtime);
+                break;
+            }
         }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)
