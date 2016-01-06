@@ -4,6 +4,7 @@ using Assignments.Core.Model.WCT;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.Unified;
 using Assignments.Core.Model.Unified.Thread;
+using Assignments.Core.Model.Unified.Stack;
 
 namespace Assignments.Core.Model.StackFrames
 {

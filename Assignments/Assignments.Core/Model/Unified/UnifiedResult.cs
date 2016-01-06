@@ -25,8 +25,10 @@ namespace Assignments.Core.Model.Unified
             BlockingObjects = GetBlockingObjects(thread, runtime);
         }
 
+      
 
         WctApiHandler _wctApi;
+      
 
         public UnifiedThread Thread { get; private set; }
         public List<UnifiedStackFrame> StackTrace { get; private set; }

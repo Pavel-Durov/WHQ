@@ -38,7 +38,9 @@ namespace Assignments.Core.Handlers
 
         public IEnumerable<ThreadInfo> Threads { get; private set; }
 
-        public void Handle(IDebugClient debugClient, ClrThread thread, ClrRuntime runtime)
+
+
+        public List<UnifiedResult> Handle(IDebugClient debugClient, ClrRuntime runtime)
         {
             _debugClient = debugClient;
             _runtime = runtime;
@@ -52,24 +54,33 @@ namespace Assignments.Core.Handlers
 
             List<UnifiedResult> result = new List<UnifiedResult>();
 
+
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 specific_info = GetThreadInfo(threadIdx);
                 threads.Add(specific_info);
 
                 //result.Add(specific_info);
-                result.Add(new UnifiedResult(specific_info))
+               // result.Add(new UnifiedResult(specific_info))
             }
+
 
             Threads = threads;
 
-            var managedStack = GetManagedStackTrace(thread);
-            var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+            foreach (ClrThread thread in runtime.Threads)
+            {
 
-            var clrThread = new UnifiedResult(thread, managedStack, unmanagedStack, runtime);
+                var managedStack = GetManagedStackTrace(thread);
+                var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            result.Add(clrThread);
+                var clrThread = new UnifiedResult(thread, managedStack, unmanagedStack, runtime);
+
+                result.Add(clrThread);                
+            }
+
+            return result;
         }
+
 
        
 
@@ -82,15 +93,6 @@ namespace Assignments.Core.Handlers
             return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
         }
 
-        public object Handle(IDebugClient debuggerInterface, ClrRuntime runtime)
-        {
-
-            foreach (ClrThread thread in runtime.Threads)
-            {
-                handler.Handle(target.DebuggerInterface, thread, runtime);
-                break;
-            }
-        }
 
         private ThreadInfo GetThreadInfo(uint threadIndex)
         {
