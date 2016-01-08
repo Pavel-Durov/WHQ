@@ -76,18 +76,18 @@ namespace Assignments.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Special)
             {
-                result.AppendWithNewLine(String.Format("{0}{1,-10}", prefix, "Special"));
+                result.Append(String.Format("{0}{1,-10}", prefix, "Special"));
                 return result.ToString();
             }
             if (String.IsNullOrEmpty(frame.SourceFileName))
             {
-                result.AppendWithNewLine(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4}+0x{5:x}",
+                result.Append(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4}+0x{5:x}",
                     prefix, frame.Type, frame.InstructionPointer,
                     frame.Module, frame.Method, frame.OffsetInMethod));
             }
             else
             {
-                result.AppendWithNewLine(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4} [{5}:{6},{7}]",
+                result.Append(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4} [{5}:{6},{7}]",
                     prefix, frame.Type, frame.InstructionPointer,
                     frame.Module, frame.Method, frame.SourceFileName,
                     frame.SourceLineNumber, frame.SourceColumnNumber));
@@ -95,7 +95,7 @@ namespace Assignments.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Native)
             {
-                result.AppendWithNewLine($"{prefix}{frame.NativeParams.AsString()}");
+                result.Append($"{prefix}{frame.NativeParams.AsString()}");
 
             }
             return result.ToString();

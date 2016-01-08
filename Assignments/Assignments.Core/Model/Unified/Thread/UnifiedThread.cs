@@ -11,7 +11,6 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedThread
     {
-
         public UnifiedThread()
         {
 
@@ -26,7 +25,6 @@ namespace Assignments.Core.Model.Unified.Thread
             this.Detail = info.Detail;
         }
 
-        
 
         public bool IsManagedThread { get; protected set; }
 

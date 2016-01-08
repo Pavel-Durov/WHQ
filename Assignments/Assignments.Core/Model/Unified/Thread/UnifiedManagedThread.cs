@@ -10,7 +10,6 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedManagedThread : UnifiedThread
     {
-        
         public UnifiedManagedThread(ThreadInfo info) : base (info)
         {
 
@@ -18,13 +17,16 @@ namespace Assignments.Core.Model.Unified.Thread
 
         public UnifiedManagedThread(ClrThread thread, ThreadInfo specific_info) : this(specific_info)
         {
-           //TODO: add CltThread information
+            MangedThread = thread;
         }
 
-        public UnifiedManagedThread(ClrThread waiter)
+        public UnifiedManagedThread(ClrThread waiter) : base()
         {
-            //TODO: complete logi -> used with Blocking object Wiater    
+            MangedThread = waiter;
+            base.IsManagedThread = true;
+            base.OSThreadId = waiter.OSThreadId;
         }
 
+        public ClrThread MangedThread { get; private set; }
     }
 }

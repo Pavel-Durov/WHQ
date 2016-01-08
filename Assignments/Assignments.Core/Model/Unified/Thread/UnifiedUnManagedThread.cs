@@ -9,7 +9,6 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedUnManagedThread : UnifiedThread
     {
-
         public UnifiedUnManagedThread(ThreadInfo info) : base (info)
         {
             

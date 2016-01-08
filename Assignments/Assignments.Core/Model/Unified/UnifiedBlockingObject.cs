@@ -46,13 +46,9 @@ namespace Assignments.Core.Model.Unified
             if (item.Owners?.Count > 0)
             {
                 Owners = new List<UnifiedThread>();
-                if (item.HasSingleOwner)
+                foreach (var owner in item.Owners)
                 {
-                    Owners.Add(new UnifiedManagedThread(item.Owner));
-                }
-                else
-                {
-                    foreach (var owner in item.Owners)
+                    if (owner != null)
                     {
                         this.Owners.Add(new UnifiedManagedThread(owner));
                     }
@@ -61,7 +57,7 @@ namespace Assignments.Core.Model.Unified
         }
 
 
-        
+
 
         public List<UnifiedThread> Owners { get; set; }
 
