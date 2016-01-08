@@ -56,7 +56,6 @@
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
-    <Compile Include="Model\Unified\Stack\UnifiedStackTrace.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />

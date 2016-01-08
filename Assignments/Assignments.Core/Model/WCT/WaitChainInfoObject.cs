@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Utils;
+using System.Runtime.InteropServices;
+using System;
 
 namespace Assignments.Core.Model.WCT
 {
@@ -20,10 +22,18 @@ namespace Assignments.Core.Model.WCT
             //LockObject stuct data
             TimeOut = item.Union.LockObject.Timeout;
             AlertTable = item.Union.LockObject.Alertable;
+
             unsafe
             {
-                ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
+                //    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
+
+               
+                ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
+                var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
+
             }
+
+           
         }
 
 

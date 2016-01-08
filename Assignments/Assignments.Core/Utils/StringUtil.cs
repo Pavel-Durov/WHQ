@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Assignments.Core.Utils
@@ -15,6 +16,7 @@ namespace Assignments.Core.Utils
 
         public static unsafe String ConvertCStringToString(char* ptr, Encoding encoding)
         {
+            
             //TODO: Check the string length calculation....
 
             if (ptr == null) return "";
