@@ -60,7 +60,6 @@
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />
-    <Compile Include="Model\Unified\UnifiedBlockingReason.cs" />
     <Compile Include="Model\Unified\UnifiedResult.cs" />
     <Compile Include="Model\Unified\UnifiedStackFrame.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedThread.cs" />
