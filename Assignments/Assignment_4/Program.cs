@@ -73,11 +73,10 @@ namespace Assignment_4
             ThreadStackHandler handler = new ThreadStackHandler();
             var runtime = target.ClrVersions[0].CreateRuntime();
 
-            foreach (ClrThread thread in runtime.Threads)
-            {
-                handler.Handle(target.DebuggerInterface, thread, runtime);
-                break;
-            }
+            var result = handler.Handle(target.DebuggerInterface, runtime);
+
+            PrintHandler.Print(result);
+            Console.ReadKey();
         }
     }
 }

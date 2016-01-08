@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.WinApi;
+using Assignments.Core.Model.Unified;
+using System.Collections.Generic;
 
 namespace Assignments.Core.Handlers.WCT
 {
@@ -13,14 +15,20 @@ namespace Assignments.Core.Handlers.WCT
     /// </summary>
     public class WctApiHandler
     {
-        internal ThreadWCTInfo CollectWaitInformation(ClrThread thread)
+
+        internal bool GetBlockingObjects(uint threadId, out ThreadWCTInfo info)
+        {
+            info = CollectWaitInformation(threadId);
+            return info.WctBlockingObjects?.Count > 0;
+        }
+
+        internal ThreadWCTInfo CollectWaitInformation(uint threadId)
         {
             ThreadWCTInfo result = null;
 
             var g_WctIntPtr = Advapi32.OpenThreadWaitChainSession((int)WCT_SESSION_OPEN_FLAGS.WCT_SYNC_OPEN_FLAG, 0);
 
-            uint threadID = thread.OSThreadId;
-
+            
             WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WctApiConst.WCT_MAX_NODE_COUNT];
 
 
@@ -31,13 +39,13 @@ namespace Assignments.Core.Handlers.WCT
             bool waitChainResult = Advapi32.GetThreadWaitChain(g_WctIntPtr,
                                     IntPtr.Zero,
                                     WctApiConst.WCTP_GETINFO_ALL_FLAGS,
-                                    threadID, ref Count, NodeInfoArray, out isCycle);
+                                    threadId, ref Count, NodeInfoArray, out isCycle);
 
             CheckCount(ref Count);
 
             if (waitChainResult)
             {
-                result = HandleGetThreadWaitChainRsult(thread, Count, NodeInfoArray, isCycle);
+                result = HandleGetThreadWaitChainRsult(threadId, Count, NodeInfoArray, isCycle);
             }
             else
             {
@@ -51,9 +59,9 @@ namespace Assignments.Core.Handlers.WCT
         }
 
         
-        private ThreadWCTInfo HandleGetThreadWaitChainRsult(ClrThread thread, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
+        private ThreadWCTInfo HandleGetThreadWaitChainRsult(uint threadId, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
         {
-            ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, thread.OSThreadId);
+            ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, threadId);
             WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
             Array.Copy(NodeInfoArray, info, Count);
 
@@ -61,6 +69,7 @@ namespace Assignments.Core.Handlers.WCT
 
             return result;
         }
+
 
         private void HandleWctRequestError(IntPtr g_WctIntPtr)
         {
