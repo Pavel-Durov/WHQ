@@ -8,6 +8,7 @@ using Assignments.Core.Model.Unified;
 using System;
 using Assignments.Core.Model.WCT;
 
+
 namespace Assignments.Core.Handlers
 {
     public class ThreadStackHandler
@@ -146,13 +147,12 @@ namespace Assignments.Core.Handlers
             List<UnifiedBlockingObject> result = null;
             if (thread.BlockingObjects?.Count > 0)
             {
-                // ClrHeap heap = runtime.GetHeap();
                 result = new List<UnifiedBlockingObject>();
 
-                foreach (var item in thread.BlockingObjects)
+                foreach (var blockingObject in thread.BlockingObjects)
                 {
-                    //ClrType type = heap.GetObjectType(item.Object);
-                    result.Add(new UnifiedBlockingObject(item));//, type.Name));
+                    var type = runtime.GetHeap().GetObjectType(blockingObject.Object);
+                    result.Add(new UnifiedBlockingObject(blockingObject, type.Name));
                 }
             }
             return result;

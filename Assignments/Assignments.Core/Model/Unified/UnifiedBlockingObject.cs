@@ -8,23 +8,15 @@ namespace Assignments.Core.Model.Unified
 {
     public class UnifiedBlockingObject
     {
-        public UnifiedBlockingObject(BlockingObject obj)
+        public UnifiedBlockingObject(BlockingObject obj, string name)
         {
             SetOwners(obj);
-
             SetWaiters(obj);
 
             WaitReason = (UnifiedBlockingReason)((int)obj.Reason);
-            this.RecursionCount = obj.RecursionCount;
-            this.ManagedObjectAddress = obj.Object;
-            //this.KernelObjectName = item.
-            this.ManagedObjectAddress = obj.Object;
-
-            //this.KernelObjectName = kernelObjectName;
-            //TODO: Get Kernel object name
-
-
-
+            RecursionCount = obj.RecursionCount;
+            ManagedObjectAddress = obj.Object;
+            KernelObjectName = name;
         }
 
 
@@ -65,7 +57,6 @@ namespace Assignments.Core.Model.Unified
                         this.Owners.Add(new UnifiedManagedThread(owner));
                     }
                 }
-                this.HasOwnershipInformation = true;
             }
         }
 
