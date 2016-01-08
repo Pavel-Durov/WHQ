@@ -94,7 +94,7 @@ namespace Assignments.Core.Handlers
             for (int i = 0; i < paramCount; i++)
             {
                 paramBuffer = new byte[4];
-                offset += 4;
+                offset += (uint)IntPtr.Size;
                 if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
                 {
                     result.Add(paramBuffer);
@@ -129,7 +129,7 @@ namespace Assignments.Core.Handlers
                     throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", startAddress));
                 }
                 //Advancing the pointer by 4 (32-bit system)
-                startAddress += 4;
+                startAddress += (uint)IntPtr.Size;
             }
             return result;
         }

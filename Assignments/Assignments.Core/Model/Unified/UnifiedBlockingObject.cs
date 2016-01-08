@@ -8,30 +8,33 @@ namespace Assignments.Core.Model.Unified
 {
     public class UnifiedBlockingObject
     {
-        public UnifiedBlockingObject(BlockingObject item)
+        public UnifiedBlockingObject(BlockingObject obj)
         {
-            SetOwners(item);
+            SetOwners(obj);
 
-            SetWaiters(item);
+            SetWaiters(obj);
 
-            this.RecursionCount = item.RecursionCount;
-            this.ManagedObjectAddress = item.Object;
+            WaitReason = (UnifiedBlockingReason)((int)obj.Reason);
+            this.RecursionCount = obj.RecursionCount;
+            this.ManagedObjectAddress = obj.Object;
             //this.KernelObjectName = item.
-            this.ManagedObjectAddress = item.Object;
+            this.ManagedObjectAddress = obj.Object;
 
             //this.KernelObjectName = kernelObjectName;
             //TODO: Get Kernel object name
+
+
+
         }
-        public UnifiedBlockingObject(WaitChainInfoObject blockingObj)
+
+
+        public UnifiedBlockingObject(WaitChainInfoObject obj)
         {
-            //TODO: Complete gathering the inforamtion...
-
-            KernelObjectName = blockingObj.ObjectName;
-
-            //TODO: Get
             ManagedObjectAddress = 0;
-            KernelObjectName = blockingObj.ObjectName;
+            KernelObjectName = obj.ObjectName;
 
+            var wctIndex = (int)obj.ObjectType;
+            WaitReason = (UnifiedBlockingReason)(BLOCK_REASON_WCT_SECTION_START_INDEX + wctIndex);
         }
 
         private void SetWaiters(BlockingObject item)
@@ -81,5 +84,35 @@ namespace Assignments.Core.Model.Unified
         public ulong ManagedObjectAddress { get; set; }
 
         public string KernelObjectName { get; set; }
+
+        const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
+    }
+
+
+    public enum UnifiedBlockingReason
+    {
+        //ClrThread BlockingReason Enumerations
+        None = 0,
+        Unknown = 1,
+        Monitor = 2,
+        MonitorWait = 3,
+        WaitOne = 4,
+        WaitAll = 5,
+        WaitAny = 6,
+        ThreadJoin = 7,
+        ReaderAcquired = 8,
+        WriterAcquired = 9,
+
+        // WCT_OBJECT_TYPE Enumerations
+        WctCriticalSectionType = 20,
+        WctSendMessageType = 11,
+        WctMutexType = 12,
+        WctAlpcType = 13,
+        WctComType = 14,
+        WctThreadWaitType = 15,
+        WctProcessWaitType = 16,
+        WctThreadType = 17,
+        WctComActivationType = 18,
+        WctUnknownType = 19
     }
 }
