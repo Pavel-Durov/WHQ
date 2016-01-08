@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.msos;
 using Assignments.Core.Handlers.WCT;
-using Assignments.Core.Model.StackFrames;
 using Assignments.Core.Model.Unified;
 using System;
 using Assignments.Core.Model.WCT;
@@ -37,7 +36,7 @@ namespace Assignments.Core.Handlers
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
 
-        
+
 
         public List<UnifiedResult> Handle(IDebugClient debugClient, ClrRuntime runtime)
         {
@@ -59,7 +58,7 @@ namespace Assignments.Core.Handlers
             {
                 specific_info = GetThreadInfo(threadIdx);
                 threads.Add(specific_info);
-                
+
                 if (specific_info.IsManagedThread)
                 {
                     result.Add(DealWithManagedThread(specific_info, runtime));
@@ -69,10 +68,10 @@ namespace Assignments.Core.Handlers
                     result.Add(DealWithUnManagedThread(specific_info));
                 }
             }
-            
+
             return result;
         }
-        
+
         private UnifiedResult DealWithUnManagedThread(ThreadInfo specific_info)
         {
             UnifiedResult result = null;
@@ -94,7 +93,7 @@ namespace Assignments.Core.Handlers
 
                 var blockingObjs = GetBlockingObjects(clr_thread, runtime);
                 result = new UnifiedResult(clr_thread, specific_info, managedStack, unmanagedStack, blockingObjs);
-                
+
             }
             return result;
         }
@@ -242,7 +241,9 @@ namespace Assignments.Core.Handlers
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
-                stackTrace.Add(new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)_debugClient));
+                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)_debugClient);
+                UnmanagedStackFrameHandler.SetParams(frame, _runtime);
+                stackTrace.Add(frame);
             }
             return stackTrace;
         }

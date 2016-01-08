@@ -1,56 +1,106 @@
-﻿using Assignments.Core.Model.StackFrames.UnManaged;
+﻿using Assignments.Core.Handlers;
 using Assignments.Core.Model.Unified;
-using Assignments.Core.Model.WCT;
-using Assignments.Core.msos;
+using Assignments.Core.Model.Unified.Thread;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Assignments.Core.Extentions
 {
-    public static class ToStringExtentions
+    public static class ToStringExtention
     {
+        public static string AsString(this UnifiedThread thread)
+        {
+            StringBuilder sb = new StringBuilder();
 
-        #region Colection Extentions
+            sb.AppendWithNewLine($"OSThreadId : {thread.OSThreadId}");
+            sb.AppendWithNewLine($"IsManagedThreadManaged: {thread.IsManagedThread }");
+            sb.AppendWithNewLine($"Detail: {thread.Detail}");
+            sb.AppendWithNewLine($"EngineThreadId: {thread.EngineThreadId}");
 
-        public static String AsString<WinApiStackFrameT>(this List<WinApiStackFrame> list)
+            return sb.ToString();
+        }
+
+        #region Blocking objects
+
+        public static string AsString(this List<UnifiedBlockingObject> blockingObjects, char prefix)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in blockingObjects)
+            {
+                sb.Append(item.AsString(prefix));
+            }
+            return sb.ToString();
+        }
+
+        public static string AsString(this UnifiedBlockingObject blockingObject, char prefix)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendWithNewLine($"{prefix}ManagedObjectAddress : {blockingObject.ManagedObjectAddress}");
+            if (!String.IsNullOrEmpty(blockingObject.KernelObjectName))
+            {
+                sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
+            }
+            sb.AppendWithNewLine($"{prefix}RecursionCount: {blockingObject.RecursionCount}");
+
+            //TODO: Complete the info
+            return sb.ToString();
+        }
+
+        #endregion
+
+
+        #region StackTrace
+
+        public static String AsString(this List<UnifiedStackFrame> list, char prefix)
         {
             StringBuilder sb = new StringBuilder();
 
             foreach (var frame in list)
             {
-                sb.AppendWithNewLine(frame.AsString());
+                sb.AppendWithNewLine(frame.AsString(prefix));
             }
 
             return sb.ToString();
         }
 
-        public static String AsString(this IList<BlockingObject> blockingObjects)
+        public static String AsString(this UnifiedStackFrame frame, char prefix)
         {
             StringBuilder result = new StringBuilder();
 
-            if (blockingObjects != null && blockingObjects?.Count > 0)
+            if (frame.Type == UnifiedStackFrameType.Special)
             {
-                foreach (var bObj in blockingObjects)
-                {
-                    result.AppendWithNewLine(bObj.AsString());
-                }
+                result.AppendWithNewLine(String.Format("{0}{1,-10}", prefix, "Special"));
+                return result.ToString();
+            }
+            if (String.IsNullOrEmpty(frame.SourceFileName))
+            {
+                result.AppendWithNewLine(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4}+0x{5:x}",
+                    prefix, frame.Type, frame.InstructionPointer,
+                    frame.Module, frame.Method, frame.OffsetInMethod));
+            }
+            else
+            {
+                result.AppendWithNewLine(String.Format("{0}{1,-10} {2,-20:x16} {3}!{4} [{5}:{6},{7}]",
+                    prefix, frame.Type, frame.InstructionPointer,
+                    frame.Module, frame.Method, frame.SourceFileName,
+                    frame.SourceLineNumber, frame.SourceColumnNumber));
+            }
+
+            if (frame.Type == UnifiedStackFrameType.Native)
+            {
+                result.AppendWithNewLine($"{prefix}{frame.NativeParams.AsString()}");
+
             }
             return result.ToString();
         }
 
-        //public static String AsString(this List<UnifiedStackFrame> list, char prefix)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-
-        //    foreach (var frame in list)
-        //    {
-        //        sb.AppendWithNewLine(frame.AsString(prefix));
-        //    }
-
-        //    return sb.ToString();
-        //}
+        #endregion
 
         public static String AsString(this List<byte[]> parms)
         {
@@ -67,166 +117,20 @@ namespace Assignments.Core.Extentions
             return sb.ToString();
         }
 
-        public static string AsString(this IList<ClrThread> list)
+        private static void PrintBytesAsHex(ConsoleColor color, List<byte[]> parms)
         {
-            StringBuilder result = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < parms.Count; i++)
             {
-                result.AppendWithNewLine($"{i}) Owner: {list[i]?.OSThreadId}");
+                int byteValue = BitConverter.ToInt32(parms[i], 0);
+
+                var msg = String.Format("p{0}= 0x{1:x}", i, byteValue);
+                sb.Append(msg);
             }
 
-            return result.ToString();
+            Console.WriteLine(sb.ToString());
         }
-        
-        #endregion
-
-
-
-        #region StackFrames Extentions
-
-        //public static String AsString(this UnifiedStackFrame frame)
-        //{
-        //    StringBuilder result = new StringBuilder();
-
-        //    if (frame.Type == UnifiedStackFrameType.Special)
-        //    {
-        //        result.AppendWithNewLine(String.Format("{0,-10}", "Special"));
-        //        return result.ToString();
-        //    }
-        //    if (String.IsNullOrEmpty(frame.SourceFileName))
-        //    {
-        //        result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3}+0x{4:x}",
-        //            frame.Type, frame.InstructionPointer,
-        //            frame.Module, frame.Method, frame.OffsetInMethod));
-        //    }
-        //    else
-        //    {
-        //        result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3} [{4}:{5},{6}]",
-        //            frame.Type, frame.InstructionPointer,
-        //            frame.Module, frame.Method, frame.SourceFileName,
-        //            frame.SourceLineNumber, frame.SourceColumnNumber));
-        //    }
-
-        //    return result.ToString();
-        //}
-
-        public static String AsString(this WinApiStackFrame info)
-        {
-            StringBuilder sb = new StringBuilder();
-
-
-            sb.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3}+0x{4:x}",
-                    info.Frame.Type, info.Frame.InstructionPointer,
-                    info.Frame.Module, info.Frame.Method, info.Frame.OffsetInMethod));
-
-            sb.AppendWithNewLine($"HandleAddress : {info.HandleAddress}");
-            sb.AppendWithNewLine($"Timeout : {info.Timeout}");
-
-
-            sb.AppendWithNewLine($"Params: { info.Params.AsString()}");
-
-            return sb.ToString();
-        }
-
-        public static String AsString(this WinApiMultiWaitStackFrame info)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(info.ToString());
-
-            sb.AppendWithNewLine($"WaitallFlag : {info.WaitallFlag}");
-            sb.AppendWithNewLine($"HandlesCunt : {info.HandlesCunt}");
-
-            sb.AppendWithNewLine($"Params: { info.Params.AsString()}");
-
-            return sb.ToString();
-        }
-
-        #endregion
-
-
-
-        #region Single Objects Extentions
-
-        public static String AsString(this ClrThread thread)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendWithNewLine($"Thread Id: {thread.OSThreadId}");
-            sb.AppendWithNewLine($"IsAlive: {thread.IsAlive}");
-            //TODO : Complete string logic with relevant data
-            return sb.ToString();
-        }
-
-        public static String AsString(this ThreadWCTInfo info)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendWithNewLine();
-            sb.AppendWithNewLine($"ThreadId: { info.ThreadId}");
-            sb.AppendWithNewLine($"Is DeadLocked : {info.IsDeadLocked}");
-
-            var infoCount = info.WctBlockingObjects.Count;
-
-            for (int i = 0; i < infoCount; i++)
-            {
-                var item = info.WctBlockingObjects[i];
-
-                sb.AppendWithNewLine();
-
-                sb.AppendWithNewLine($" -- WCT WAITCHAIN NODES INFO -- ");
-                sb.AppendWithNewLine();
-                sb.AppendWithNewLine($"Node count : {infoCount}");
-                sb.AppendWithNewLine($"Node #{i}");
-
-                sb.AppendWithNewLine($"\tContext Switches: { item.ContextSwitches}");
-                sb.AppendWithNewLine($"\tWaitTime: { item.WaitTime}");
-                sb.AppendWithNewLine($"\tTimeOut: { item.TimeOut}");
-                sb.AppendWithNewLine($"\tObjectType: { item.ObjectType}");
-                sb.AppendWithNewLine($"\tObjectStatus: { item.ObjectStatus}");
-                sb.AppendWithNewLine($"\tObjectName: { item.ObjectName}");
-                sb.AppendWithNewLine($"\tAlertTable: { item.AlertTable}");
-            }
-
-            return sb.ToString();
-        }
-        
-
-        public static String AsString(this BlockingObject bObj)
-        {
-            StringBuilder result = new StringBuilder();
-
-            if (bObj != null)
-            {
-                result.AppendWithNewLine($"Associated Object : {bObj.Object}");
-
-                if (bObj.HasSingleOwner && bObj.Taken)
-                {
-                    result.AppendWithNewLine($"Single Owner : {bObj.Owner}");
-                }
-                else
-                {
-                    int ownerCounter = 0;
-                    result.AppendWithNewLine("-- Owners -- ");
-                    result.AppendWithNewLine(bObj.Waiters.AsString());
-
-                    foreach (var owner in bObj.Owners)
-                    {
-                        result.AppendWithNewLine($"({++ownerCounter}) Owner: {owner?.OSThreadId}");
-                    }
-                }
-
-                result.AppendWithNewLine($"Block Reason : {bObj.Reason}");
-                result.AppendWithNewLine($"Taken : {0}{bObj.Taken}");
-                result.AppendWithNewLine(" -- Witers List -- ");
-
-                result.AppendWithNewLine(bObj.Waiters.AsString());
-            }
-
-            return result.ToString();
-        }
-
-        #endregion
 
     }
 }

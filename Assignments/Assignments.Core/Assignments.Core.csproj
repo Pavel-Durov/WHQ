@@ -49,7 +49,6 @@
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
-    <Compile Include="Extentions\UnifiedToStringExtention.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
@@ -57,8 +56,6 @@
     <Compile Include="Handlers\WCT\WctApiHandler.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
     <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
-    <Compile Include="Model\StackFrame\AnalyzedThreadStack.cs" />
-    <Compile Include="Model\StackFrame\UnManaged\WinApiStackFrame.cs" />
     <Compile Include="Model\Unified\Stack\UnifiedStackTrace.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
@@ -69,8 +66,6 @@
     <Compile Include="Model\Unified\Thread\UnifiedThread.cs" />
     <Compile Include="Model\WCT\ThreadWCTInfo.cs" />
     <Compile Include="Model\WCT\WaitChainInfoObject.cs" />
-    <Compile Include="Model\StackFrame\UnManaged\WinApiMultiWaitStackFrame.cs" />
-    <Compile Include="Model\StackFrame\UnManaged\WinApiSingleWaitStackFrame.cs" />
     <Compile Include="msos\SymbolCache.cs" />
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\Util.cs" />

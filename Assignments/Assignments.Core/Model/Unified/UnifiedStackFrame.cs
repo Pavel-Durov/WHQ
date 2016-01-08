@@ -4,7 +4,7 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using System.IO;
 using System.Text;
-
+using System.Collections.Generic;
 
 namespace Assignments.Core.Model.Unified
 {
@@ -42,6 +42,7 @@ namespace Assignments.Core.Model.Unified
         }
 
         public UnifiedStackFrame LinkedStackFrame { get; set; } //Used for linking managed frame to native frame
+        public List<byte[]> NativeParams { get; set; } 
 
         public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols)
         {

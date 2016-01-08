@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
-using Assignments.Core.Model.StackFrames.UnManaged;
 using Assignments.Core.Exceptions;
 using Assignments.Core.Model.Unified;
 
@@ -11,42 +10,22 @@ namespace Assignments.Core.Handlers
 {
     public class UnmanagedStackFrameHandler
     {
+        public const string SINGLE_WAIT_FUNCTION_NAME = "WaitForSingleObject";
+        public const string MULTI_WAIT_FUNCTION_NAME = "WaitForMultipleObjects";
 
-
-        public static List<WinApiStackFrame> Analyze(List<UnifiedStackFrame> list, ClrRuntime runtime, ClrThread thread)
+        public static void SetParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
-            List<WinApiStackFrame> result = new List<WinApiStackFrame>();
-
-            foreach (var frame in list)
+            List<byte[]> result = new List<byte[]>();
+            if (CheckForWinApiCalls(frame, SINGLE_WAIT_FUNCTION_NAME))
             {
-                WinApiStackFrame frameParams = null;
-
-                if (CheckForWinApiCalls(frame, WinApiSingleWaitStackFrame.FUNCTION_NAME))
-                {
-                    frameParams = GetSingleStackFrameParams(frame, runtime);
-                    frameParams.Params = GetNativeParams(frame, runtime, 2);
-                }
-                else if (CheckForWinApiCalls(frame, WinApiMultiWaitStackFrame.FUNCTION_NAME))
-                {
-                    frameParams = GetMultipleStackFrameParams(frame, runtime);
-
-                }
-
-                frameParams = new WinApiStackFrame();
-
-                frameParams.Frame = frame;
-
-                if (frameParams.Params == null)
-                {
-                    frameParams.Params = GetNativeParams(frame, runtime, 4);
-                }
-
-                if (frameParams != null)
-                {
-                    result.Add(frameParams);
-                }
+                result = GetSingleStackFrameParams(frame, runtime);
             }
-            return result;
+            else if (CheckForWinApiCalls(frame, MULTI_WAIT_FUNCTION_NAME))
+            {
+                result = GetMultipleStackFrameParams(frame, runtime);
+            }
+
+            frame.NativeParams = result;
         }
 
         public static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
@@ -59,55 +38,40 @@ namespace Assignments.Core.Handlers
         }
 
 
-        private static void PrintBytesAsHex(ConsoleColor color, List<byte[]> parms)
+
+        public static List<byte[]> GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < parms.Count; i++)
-            {
-                int byteValue = BitConverter.ToInt32(parms[i], 0);
-
-                var msg = String.Format("p{0}= 0x{1:x}", i, byteValue);
-                sb.Append(msg);
-            }
-
-            Console.WriteLine(sb.ToString());
-        }
-
-        public static WinApiMultiWaitStackFrame GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
-        {
-            //TODO : Check if GetNativeParams and ReadFromMemmory functions are identical
-
-            WinApiMultiWaitStackFrame result = new WinApiMultiWaitStackFrame();
+            List<byte[]> result = new List<byte[]>();
             var nativeParams = GetNativeParams(frame, runtime, 4);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
-                result.Frame = frame;
-                result.HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-                result.HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
-                result.WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
-                result.Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
-                result.Params = ReadFromMemmory(result.HandleAddress, result.HandlesCunt, runtime);
+
+                var HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
+                var HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
+                var WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
+                var Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
+
+                result = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
             }
             return result;
         }
 
 
-        public static WinApiSingleWaitStackFrame GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
+        public static List<byte[]> GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
-            WinApiSingleWaitStackFrame result = new WinApiSingleWaitStackFrame();
 
             var nativeParams = GetNativeParams(frame, runtime, 2);
 
             if (nativeParams != null && nativeParams.Count > 0)
             {
-                result.Frame = frame;
-                result.HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
-                result.Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
+                //Handle Address 
+                var HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
+                //Timeout Param
+                var Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
             }
 
-            return result;
+            return nativeParams;
         }
 
 
@@ -165,7 +129,7 @@ namespace Assignments.Core.Handlers
                     throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", startAddress));
                 }
                 //Advancing the pointer by 4 (32-bit system)
-                count += 4;
+                startAddress += 4;
             }
             return result;
         }

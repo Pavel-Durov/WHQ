@@ -1,5 +1,4 @@
-﻿using Assignments.Core.Model.StackFrames;
-using Assignments.Core.Model.Unified.Thread;
+﻿using Assignments.Core.Model.Unified.Thread;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +31,6 @@ namespace Assignments.Core.Model.Unified
             Thread = new UnifiedUnManagedThread(specific_info);
             StackTrace = unmanagedStack;
         }
-
-        
 
         public UnifiedThread Thread { get; private set; }
         public List<UnifiedStackFrame> StackTrace { get; private set; }
