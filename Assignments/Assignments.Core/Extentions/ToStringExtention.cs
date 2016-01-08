@@ -40,17 +40,17 @@ namespace Assignments.Core.Extentions
             return result.ToString();
         }
 
-        public static String AsString(this List<UnifiedStackFrame> list)
-        {
-            StringBuilder sb = new StringBuilder();
+        //public static String AsString(this List<UnifiedStackFrame> list, char prefix)
+        //{
+        //    StringBuilder sb = new StringBuilder();
 
-            foreach (var frame in list)
-            {
-                sb.AppendWithNewLine(frame.AsString());
-            }
+        //    foreach (var frame in list)
+        //    {
+        //        sb.AppendWithNewLine(frame.AsString(prefix));
+        //    }
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
 
         public static String AsString(this List<byte[]> parms)
         {
@@ -85,31 +85,31 @@ namespace Assignments.Core.Extentions
 
         #region StackFrames Extentions
 
-        public static String AsString(this UnifiedStackFrame frame)
-        {
-            StringBuilder result = new StringBuilder();
+        //public static String AsString(this UnifiedStackFrame frame)
+        //{
+        //    StringBuilder result = new StringBuilder();
 
-            if (frame.Type == UnifiedStackFrameType.Special)
-            {
-                result.AppendWithNewLine(String.Format("{0,-10}", "Special"));
-                return result.ToString();
-            }
-            if (String.IsNullOrEmpty(frame.SourceFileName))
-            {
-                result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3}+0x{4:x}",
-                    frame.Type, frame.InstructionPointer,
-                    frame.Module, frame.Method, frame.OffsetInMethod));
-            }
-            else
-            {
-                result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3} [{4}:{5},{6}]",
-                    frame.Type, frame.InstructionPointer,
-                    frame.Module, frame.Method, frame.SourceFileName,
-                    frame.SourceLineNumber, frame.SourceColumnNumber));
-            }
+        //    if (frame.Type == UnifiedStackFrameType.Special)
+        //    {
+        //        result.AppendWithNewLine(String.Format("{0,-10}", "Special"));
+        //        return result.ToString();
+        //    }
+        //    if (String.IsNullOrEmpty(frame.SourceFileName))
+        //    {
+        //        result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3}+0x{4:x}",
+        //            frame.Type, frame.InstructionPointer,
+        //            frame.Module, frame.Method, frame.OffsetInMethod));
+        //    }
+        //    else
+        //    {
+        //        result.AppendWithNewLine(String.Format("{0,-10} {1,-20:x16} {2}!{3} [{4}:{5},{6}]",
+        //            frame.Type, frame.InstructionPointer,
+        //            frame.Module, frame.Method, frame.SourceFileName,
+        //            frame.SourceLineNumber, frame.SourceColumnNumber));
+        //    }
 
-            return result.ToString();
-        }
+        //    return result.ToString();
+        //}
 
         public static String AsString(this WinApiStackFrame info)
         {

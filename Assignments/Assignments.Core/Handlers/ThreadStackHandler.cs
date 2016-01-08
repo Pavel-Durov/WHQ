@@ -7,6 +7,7 @@ using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Model.StackFrames;
 using Assignments.Core.Model.Unified;
 using System;
+using Assignments.Core.Model.WCT;
 
 namespace Assignments.Core.Handlers
 {
@@ -36,9 +37,7 @@ namespace Assignments.Core.Handlers
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
 
-        public IEnumerable<ThreadInfo> Threads { get; private set; }
-
-
+        
 
         public List<UnifiedResult> Handle(IDebugClient debugClient, ClrRuntime runtime)
         {
@@ -54,45 +53,113 @@ namespace Assignments.Core.Handlers
 
             List<UnifiedResult> result = new List<UnifiedResult>();
 
+            var clrThreads = runtime.Threads;
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 specific_info = GetThreadInfo(threadIdx);
                 threads.Add(specific_info);
-
-                //result.Add(specific_info);
-               // result.Add(new UnifiedResult(specific_info))
+                
+                if (specific_info.IsManagedThread)
+                {
+                    result.Add(DealWithManagedThread(specific_info, runtime));
+                }
+                else
+                {
+                    result.Add(DealWithUnManagedThread(specific_info));
+                }
             }
+            
+            return result;
+        }
+        
+        private UnifiedResult DealWithUnManagedThread(ThreadInfo specific_info)
+        {
+            UnifiedResult result = null;
+            var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+            var blockingObjecets = GetWCTBlockingObject(specific_info.OSThreadId);
+            result = new UnifiedResult(specific_info, unmanagedStack, blockingObjecets);
+            return result;
+        }
 
+        private UnifiedResult DealWithManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
+        {
+            UnifiedResult result = null;
 
-            Threads = threads;
-
-            foreach (ClrThread thread in runtime.Threads)
+            ClrThread clr_thread = runtime.Threads.Where(x => x.OSThreadId == specific_info.OSThreadId).FirstOrDefault();
+            if (clr_thread != null)
             {
-
-                var managedStack = GetManagedStackTrace(thread);
+                var managedStack = GetManagedStackTrace(clr_thread);
                 var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-                var clrThread = new UnifiedResult(thread, managedStack, unmanagedStack, runtime);
+                var blockingObjs = GetBlockingObjects(clr_thread, runtime);
+                result = new UnifiedResult(clr_thread, specific_info, managedStack, unmanagedStack, blockingObjs);
+                
+            }
+            return result;
+        }
 
-                result.Add(clrThread);                
+        #region Blocking Objects Methods
+
+        private List<UnifiedBlockingObject> GetBlockingObjects(ClrThread thread, ClrRuntime runtime)
+        {
+            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
+
+            //Clr Blocking Objects
+            var clr_blockingObjects = GetClrBlockingObjects(thread, runtime);
+            if (clr_blockingObjects != null)
+            {
+                result.AddRange(clr_blockingObjects);
+            }
+            //WCT API Blocking Objects
+            var wct_blockingObjects = GetWCTBlockingObject(thread.OSThreadId);
+
+            if (wct_blockingObjects != null)
+            {
+                result.AddRange(wct_blockingObjects);
+            }
+
+            return result;
+        }
+        private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)
+        {
+            List<UnifiedBlockingObject> result = null;
+
+            ThreadWCTInfo wct_threadInfo = null;
+            if (WctApi.GetBlockingObjects(threadId, out wct_threadInfo))
+            {
+                result = new List<UnifiedBlockingObject>();
+
+                if (wct_threadInfo.WctBlockingObjects?.Count > 0)
+                {
+                    foreach (var blockingObj in wct_threadInfo.WctBlockingObjects)
+                    {
+                        result.Add(new UnifiedBlockingObject(blockingObj));
+                    }
+                }
             }
 
             return result;
         }
 
-
-       
-
-        private AnalyzedThreadStack Analyze(ClrThread thread, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unmanagedStack)
+        private List<UnifiedBlockingObject> GetClrBlockingObjects(ClrThread thread, ClrRuntime runtime)
         {
-            var wctThreadInfo = WctApi.CollectWaitInformation(thread);
-            var nativeStackList = UnmanagedStackFrameHandler.Analyze(unmanagedStack, _runtime, thread);
+            List<UnifiedBlockingObject> result = null;
+            if (thread.BlockingObjects?.Count > 0)
+            {
+                // ClrHeap heap = runtime.GetHeap();
+                result = new List<UnifiedBlockingObject>();
 
-
-            return new AnalyzedThreadStack(thread, wctThreadInfo, managedStack, nativeStackList);
+                foreach (var item in thread.BlockingObjects)
+                {
+                    //ClrType type = heap.GetObjectType(item.Object);
+                    result.Add(new UnifiedBlockingObject(item));//, type.Name));
+                }
+            }
+            return result;
         }
 
+        #endregion
 
         private ThreadInfo GetThreadInfo(uint threadIndex)
         {
@@ -109,6 +176,7 @@ namespace Assignments.Core.Handlers
             };
         }
 
+        #region StackTrace
 
         public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)
         {
@@ -163,8 +231,6 @@ namespace Assignments.Core.Handlers
                     ).ToList();
         }
 
-
-
         private List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
         {
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(engineThreadId));
@@ -181,6 +247,7 @@ namespace Assignments.Core.Handlers
             return stackTrace;
         }
 
+        #endregion
 
     }
 

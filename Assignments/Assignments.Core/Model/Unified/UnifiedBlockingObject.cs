@@ -70,16 +70,16 @@ namespace Assignments.Core.Model.Unified
 
         public List<UnifiedThread> Owners { get; set; }
 
-        bool HasOwnershipInformation { get; set; }
+        public bool HasOwnershipInformation { get; set; }
 
-        UnifiedBlockingReason WaitReason { get; set; }
+        public UnifiedBlockingReason WaitReason { get; set; }
 
-        List<UnifiedThread> Waiters { get; set; }
+        public List<UnifiedThread> Waiters { get; set; }
 
-        int RecursionCount { get; set; }
+        public int RecursionCount { get; set; }
 
-        ulong ManagedObjectAddress { get; set; }
+        public ulong ManagedObjectAddress { get; set; }
 
-        string KernelObjectName { get; set; }
+        public string KernelObjectName { get; set; }
     }
 }

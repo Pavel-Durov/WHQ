@@ -79,8 +79,8 @@ namespace Assignment_3.DumpTest
         {
             var proc = Process.GetCurrentProcess();
             Console.WriteLine("PID : " + proc.Id);
-
             File.WriteAllText(PID_FILE_PATH, proc.Id.ToString());
+            Console.WriteLine("Pid wrote to shared txt file");
         }
 
         private static void TestResetEvent()

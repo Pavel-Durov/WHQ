@@ -4,49 +4,41 @@ using Assignments.Core.Model.StackFrames;
 using Assignments.Core.Extentions;
 
 using Assignments.Core.Model.StackFrames.UnManaged;
+using Assignments.Core.Model.Unified;
+using System.Collections.Generic;
 
 namespace Assignments.Core.Handlers
 {
     public class PrintHandler
     {
-        public static void Print(AnalyzedThreadStack threadStack)
+        
+        public static void Print(List<UnifiedResult> collection)
         {
-            StringBuilder result = new StringBuilder();
-
-            //Appending thread data
-            result.AppendWithNewLine(threadStack.Thread.AsString());
-            WriteToCoonsole(result);
-
-            if (threadStack.HasBlockingObjects)
+            foreach (var item in collection)
             {
-                //Appending Blcking objects ie Extentions method
-                result.Append(threadStack.Thread.BlockingObjects.AsString());
+                Print(item);
             }
-
-            WriteToCoonsole(result);
-
-            result.AppendWithNewLine(threadStack.WctThreadInfo.AsString());
-
-
-            WriteToCoonsole(result);
-
-            ///Appending Managed Stack frame list string
-            result.AppendWithNewLine(threadStack.ManagedStackList.AsString());
-
-            WriteToCoonsole(result);
-
-            ///Appending UnManaged Stack frame list string
-            result.AppendWithNewLine(threadStack.NativeStackList.AsString<WinApiStackFrame>());
-
-            WriteToCoonsole(result);
-
-            //Console.WriteLine(result.ToString());
         }
 
-        private static void WriteToCoonsole(StringBuilder result)
+        public static void Print(UnifiedResult item)
         {
-            Console.WriteLine(result.ToString());
-            result.Clear();
+            Console.WriteLine("Thread info");
+            Console.WriteLine(item.Thread.AsString());
+
+            if (item.BlockingObjects?.Count > 0)
+            {
+                Console.WriteLine("- BlockingObjects");
+                Console.WriteLine($"{item.BlockingObjects.AsString('\t')}");
+            }
+
+            //item.StackTrace
+            Console.WriteLine("- StackTrace");
+            
+            Console.WriteLine(item.StackTrace.AsString('\t'));
         }
     }
 }
+
+
+
+

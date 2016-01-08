@@ -75,6 +75,8 @@ namespace Assignment_4
 
             var result = handler.Handle(target.DebuggerInterface, runtime);
 
+            PrintHandler.Print(result);
+            Console.ReadKey();
         }
     }
 }

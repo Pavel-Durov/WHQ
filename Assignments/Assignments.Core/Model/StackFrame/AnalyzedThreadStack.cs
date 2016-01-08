@@ -22,7 +22,7 @@ namespace Assignments.Core.Model.StackFrames
 
 
             //Refactoring
-            this.Refactoring_Thread = new UnifiedManagedThread(thread);
+            //this.Refactoring_Thread = new UnifiedManagedThread(thread);
         }
 
         #region Properties
