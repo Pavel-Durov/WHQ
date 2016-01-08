@@ -25,9 +25,8 @@ namespace Assignments.Core.Model.WCT
 
             unsafe
             {
-                //    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.Unicode);
-
-               
+                    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.UTF8);
+             
                 ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
                 var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
 

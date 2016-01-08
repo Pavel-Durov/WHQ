@@ -9,13 +9,12 @@ using System.Text;
 using HANDLE = System.IntPtr;
 using System.Threading.Tasks;
 using System.Threading;
-
-namespace Assignment_3.DumpTest
+namespace DumpTest
 {
     public class Program
     {
 
-        const String PID_FILE_PATH = @"./../../../../dump_pid.txt";
+        const String PID_FILE_PATH = @"./../../../dump_pid.txt";
 
         private static AutoResetEvent AUTO_EVENT = new AutoResetEvent(false);
         //Run this project in orer to take a dump
@@ -57,14 +56,35 @@ namespace Assignment_3.DumpTest
             //}
 
 
-            
+
             var result = AnotherMethodToTest();
-            //ManagedWait();
+
             var mulRes0 = WaitForMultipleObjects(3, arr, true, 0);
             var mulRes1 = WaitForMultipleObjects(3, arr, false, 0);
             var mulRes2 = WaitForMultipleObjects(3, arr, true, int.MaxValue);
-
             //Console.WriteLine("Not waiting anymore...");
+
+            //MutexStuff();
+
+            Console.Read();
+        }
+
+        private static void MutexStuff()
+        {
+            Console.WriteLine("Craeting mutex");
+            Mutex gM1 = new Mutex(true, "MyMutex");
+            Console.WriteLine("waiting for mutex");
+
+            gM1.WaitOne();
+            Mutex mutex = null;
+
+            if (Mutex.TryOpenExisting("MyMutex", out mutex))
+            {
+                mutex.ReleaseMutex();
+            }
+
+            bool mutexExist = Mutex.TryOpenExisting("MyMutex2", out mutex);
+
         }
 
         private static void ManagedWait()
@@ -112,7 +132,7 @@ namespace Assignment_3.DumpTest
             autoEvent.WaitOne();
         }
 
-        
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool Beep(uint dwFreq, uint dwDuration);

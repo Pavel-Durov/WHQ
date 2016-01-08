@@ -95,7 +95,7 @@ namespace Assignments.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Native)
             {
-                result.Append($"{prefix}{frame.NativeParams.AsString()}");
+                result.Append($"{prefix}{frame.NativeParams.AsString(prefix)}");
 
             }
             return result.ToString();
@@ -103,10 +103,12 @@ namespace Assignments.Core.Extentions
 
         #endregion
 
-        public static String AsString(this List<byte[]> parms)
+        public static String AsString(this List<byte[]> parms, char prefix)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.Append(Environment.NewLine);
+            sb.Append(prefix);
+            
             for (int i = 0; i < parms.Count; i++)
             {
                 int byteValue = BitConverter.ToInt32(parms[i], 0);

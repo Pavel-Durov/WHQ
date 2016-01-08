@@ -11,7 +11,7 @@ using Microsoft.Diagnostics.Runtime;
 
 //TODO: post build -> start ../../../Assignment_3.DumpTest\bin\x86\Debug\Assignment_3.DumpTest.exe
 
-namespace Assignment_4
+namespace Consumer
 {
     class Program
     {
