@@ -70,10 +70,11 @@ namespace Assignments.Core.Model.Unified
         }
 
 
+        
 
         public List<UnifiedThread> Owners { get; set; }
 
-        public bool HasOwnershipInformation { get; set; }
+        public bool HasOwnershipInformation { get { return Owners != null && Owners.Count > 0; } }
 
         public UnifiedBlockingReason WaitReason { get; set; }
 
