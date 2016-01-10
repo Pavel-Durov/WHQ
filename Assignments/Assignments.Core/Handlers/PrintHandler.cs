@@ -10,12 +10,47 @@ namespace Assignments.Core.Handlers
     public class PrintHandler
     {
 
-        public static void Print(List<UnifiedThread> collection)
+        public static void Print(List<UnifiedThread> collection, bool log = false)
         {
             foreach (var item in collection)
             {
-                Print(item);
+                if (log)
+                {
+                    PrintToLog(item);
+                }
+                else
+                {
+                    Print(item);
+                }
             }
+        }
+
+        private static void PrintToLog(UnifiedThread item)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Thread info");
+            sb.Append(item.AsString());
+
+            DumpToLogAndConsole(sb);
+
+            if (item.BlockingObjects?.Count > 0)
+            {
+                sb.Append(" -- BlockingObjects");
+                sb.Append($"{item.BlockingObjects.AsString('\t')}");
+
+                DumpToLogAndConsole(sb);
+            }
+
+            sb.Append("- StackTrace");
+            sb.Append(item.StackTrace.AsString('\t'));
+            DumpToLogAndConsole(sb);
+        }
+
+        private static void DumpToLogAndConsole(StringBuilder sb)
+        {
+            Console.WriteLine(sb);
+            LogHandler.Log(sb.ToString());
+            sb.Clear();
         }
 
         public static void Print(UnifiedThread item)

@@ -75,7 +75,10 @@ namespace Consumer
 
             var result = handler.Handle(target.DebuggerInterface, runtime);
 
-            PrintHandler.Print(result);
+            PrintHandler.Print(result, true);
+
+          
+
             Console.ReadKey();
         }
     }

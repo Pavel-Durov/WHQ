@@ -38,8 +38,5 @@ namespace DumpTest
             File.WriteAllText(PID_FILE_PATH, proc.Id.ToString());
             Console.WriteLine("Pid wrote to shared txt file");
         }
-
- 
-
     }
 }
