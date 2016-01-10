@@ -19,7 +19,7 @@ namespace Assignments.Core.Model.Unified.Thread
 
         public UnifiedManagedThread(ClrThread waiter)
         {
-            //TODO: complete logi -> used with Blocking object Wiater    
+            //TODO: complete logic -> used with Blocking object Wiater    
         }
     }
 }
