@@ -11,6 +11,7 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedThread
     {
+
         public UnifiedThread()
         {
 
@@ -25,6 +26,9 @@ namespace Assignments.Core.Model.Unified.Thread
             this.Detail = info.Detail;
         }
 
+        public List<UnifiedStackFrame> StackTrace { get; protected set; }
+        public List<UnifiedBlockingObject> BlockingObjects { get; protected set; }
+
 
         public bool IsManagedThread { get; protected set; }
 
@@ -33,7 +37,7 @@ namespace Assignments.Core.Model.Unified.Thread
         public uint EngineThreadId { get; set; }
 
         public uint OSThreadId { get; set; }
- 
+
         public string Detail { get; set; }
     }
 }

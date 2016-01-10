@@ -3,13 +3,14 @@ using System.Text;
 using Assignments.Core.Extentions;
 using Assignments.Core.Model.Unified;
 using System.Collections.Generic;
+using Assignments.Core.Model.Unified.Thread;
 
 namespace Assignments.Core.Handlers
 {
     public class PrintHandler
     {
-        
-        public static void Print(List<UnifiedResult> collection)
+
+        public static void Print(List<UnifiedThread> collection)
         {
             foreach (var item in collection)
             {
@@ -17,10 +18,10 @@ namespace Assignments.Core.Handlers
             }
         }
 
-        public static void Print(UnifiedResult item)
+        public static void Print(UnifiedThread item)
         {
             Console.WriteLine("Thread info");
-            Console.WriteLine(item.Thread.AsString());
+            Console.WriteLine(item.AsString());
 
             if (item.BlockingObjects?.Count > 0)
             {
@@ -30,7 +31,7 @@ namespace Assignments.Core.Handlers
 
             //item.StackTrace
             Console.WriteLine("- StackTrace");
-            
+
             Console.WriteLine(item.StackTrace.AsString('\t'));
         }
     }

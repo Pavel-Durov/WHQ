@@ -8,7 +8,7 @@ namespace Assignments.Core.Model.Unified
 {
     public class UnifiedBlockingObject
     {
-        public UnifiedBlockingObject(BlockingObject obj, string name)
+        public UnifiedBlockingObject(BlockingObject obj)
         {
             SetOwners(obj);
             SetWaiters(obj);
@@ -16,7 +16,7 @@ namespace Assignments.Core.Model.Unified
             WaitReason = (UnifiedBlockingReason)((int)obj.Reason);
             RecursionCount = obj.RecursionCount;
             ManagedObjectAddress = obj.Object;
-            KernelObjectName = name;
+            KernelObjectName = null;
         }
 
 
