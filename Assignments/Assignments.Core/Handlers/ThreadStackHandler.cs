@@ -7,6 +7,7 @@ using Assignments.Core.Handlers.WCT;
 using Assignments.Core.Model.Unified;
 using System;
 using Assignments.Core.Model.WCT;
+using Assignments.Core.Model.Unified.Thread;
 
 namespace Assignments.Core.Handlers
 {
@@ -38,7 +39,7 @@ namespace Assignments.Core.Handlers
 
 
 
-        public List<UnifiedResult> Handle(IDebugClient debugClient, ClrRuntime runtime)
+        public List<UnifiedThread> Handle(IDebugClient debugClient, ClrRuntime runtime)
         {
             _debugClient = debugClient;
             _runtime = runtime;
@@ -50,7 +51,7 @@ namespace Assignments.Core.Handlers
 
             ThreadInfo specific_info = null;
 
-            List<UnifiedResult> result = new List<UnifiedResult>();
+            List<UnifiedThread> result = new List<UnifiedThread>();
 
             var clrThreads = runtime.Threads;
 
@@ -72,18 +73,18 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private UnifiedResult DealWithUnManagedThread(ThreadInfo specific_info)
+        private UnifiedUnManagedThread DealWithUnManagedThread(ThreadInfo specific_info)
         {
-            UnifiedResult result = null;
+            UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
             var blockingObjecets = GetWCTBlockingObject(specific_info.OSThreadId);
-            result = new UnifiedResult(specific_info, unmanagedStack, blockingObjecets);
+            result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjecets);
             return result;
         }
 
-        private UnifiedResult DealWithManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
+        private UnifiedManagedThread DealWithManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
         {
-            UnifiedResult result = null;
+            UnifiedManagedThread result = null;
 
             ClrThread clr_thread = runtime.Threads.Where(x => x.OSThreadId == specific_info.OSThreadId).FirstOrDefault();
             if (clr_thread != null)
@@ -92,7 +93,8 @@ namespace Assignments.Core.Handlers
                 var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
                 var blockingObjs = GetBlockingObjects(clr_thread, runtime);
-                result = new UnifiedResult(clr_thread, specific_info, managedStack, unmanagedStack, blockingObjs);
+                
+                result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
             }
             return result;

@@ -26,7 +26,9 @@ namespace Assignments.Core.Model.Unified.Thread
             this.Detail = info.Detail;
         }
 
-        
+        public List<UnifiedStackFrame> StackTrace { get; protected set; }
+        public List<UnifiedBlockingObject> BlockingObjects { get; protected set; }
+
 
         public bool IsManagedThread { get; protected set; }
 

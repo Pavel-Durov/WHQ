@@ -10,15 +10,16 @@ namespace Assignments.Core.Model.Unified.Thread
 {
     public class UnifiedManagedThread : UnifiedThread
     {
-        
-        public UnifiedManagedThread(ThreadInfo info) : base (info)
-        {
+        private ThreadInfo specific_info;
+        private List<UnifiedStackFrame> managedStack;
+        private List<UnifiedStackFrame> unmanagedStack;
+        private List<UnifiedBlockingObject> blockingObjs;
 
-        }
-
-        public UnifiedManagedThread(ClrThread thread, ThreadInfo specific_info) : this(specific_info)
+        public UnifiedManagedThread(ThreadInfo info, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unManagedStack, List<UnifiedBlockingObject> blockingObjects) : base(info)
         {
-           //TODO: add CltThread information
+            StackTrace = new List<UnifiedStackFrame>(managedStack);
+            StackTrace.AddRange(unManagedStack);
+            BlockingObjects = blockingObjects;
         }
 
         public UnifiedManagedThread(ClrThread waiter)
@@ -26,5 +27,6 @@ namespace Assignments.Core.Model.Unified.Thread
             //TODO: complete logi -> used with Blocking object Wiater    
         }
 
+    
     }
 }
