@@ -25,10 +25,15 @@ namespace Assignments.Core.Model.WCT
 
             unsafe
             {
+                if (item.Union.ThreadObject.ThreadId != 0 && item.Union.ThreadObject.ProcessId != 0)
+                {
+                    //Obtaining object name only if its relevant
                     ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.UTF8);
-             
-                ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
-                var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
+
+                    //ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
+                    //var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
+                }
+            
 
             }
 

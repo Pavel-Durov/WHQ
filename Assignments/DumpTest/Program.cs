@@ -26,8 +26,8 @@ namespace DumpTest
 
             DealWithPID();
 
-            Kernel32Calls.Run();
-
+            //Kernel32Calls.Run();
+            MutexWait.Run();
             Console.ReadLine();
         }
 
