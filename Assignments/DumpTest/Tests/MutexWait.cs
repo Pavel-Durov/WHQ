@@ -9,42 +9,66 @@ namespace DumpTest.Tests
 {
     class MutexWait
     {
-        const string mutex_id = "{B1E7934A-F688-417f-8FCB-65C3985E9E27}";
+        const string mutex_id = "this-is-the-most-unique-id-ever-8947F";
 
         public static async Task Run()
         {
-            await Task.Run(() => { CatchMutex(); });
-
-            Mutex mutex;
-            Mutex.TryOpenExisting(mutex_id, out mutex);
-            try
+            using (var mutex = new Mutex(false, mutex_id))
             {
+                await Task.Run(() => { CatchMutex(); });
                 try
                 {
-                    if (!mutex.WaitOne())
+                    if (!mutex.WaitOne(TimeSpan.FromSeconds(60), false))
                     {
-                        Console.WriteLine("Another instance of this program is running");
-                        Environment.Exit(0);
+                        Console.WriteLine("Someone got the mutex before me");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} aquires mutex");
                     }
                 }
-                catch (AbandonedMutexException)
+                catch (Exception e)
                 {
+                   //..
+                }
+                finally
+                {
+                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} simulates work for 10 minutes");
 
+                    //some work simulation
+                    await Task.Delay(TimeSpan.FromMinutes(10));
+
+                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} releases the mutex");
+                    mutex.ReleaseMutex();
                 }
             }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }
-
-
         }
 
         private static void CatchMutex()
         {
-            var mutex = new Mutex(false, mutex_id);
-            
+            Thread workerThread = new Thread(ThreadWork);
+            workerThread.Start();
+        }
 
+        private static void ThreadWork()
+        {
+            Thread.Sleep(3000);
+                        
+            Mutex mutex = null;
+            if (Mutex.TryOpenExisting(mutex_id, out mutex))
+            {
+                try
+                {
+                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} waits from mutex with 1 hour timeout");
+                    //Kernel32Calls.WaitForSingleObject(mutex.Handle, int.MaxValue);
+                    mutex.WaitOne(TimeSpan.FromHours(1), false);
+                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} released from mutex");
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
     }
 }
