@@ -62,18 +62,18 @@ namespace Assignments.Core.Handlers
 
                 if (specific_info.IsManagedThread)
                 {
-                    result.Add(DealWithManagedThread(specific_info, runtime));
+                    result.Add(HandleManagedThread(specific_info, runtime));
                 }
                 else
                 {
-                    result.Add(DealWithUnManagedThread(specific_info));
+                    result.Add(HandleUnManagedThread(specific_info));
                 }
             }
 
             return result;
         }
 
-        private UnifiedUnManagedThread DealWithUnManagedThread(ThreadInfo specific_info)
+        private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
         {
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
@@ -82,7 +82,7 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private UnifiedManagedThread DealWithManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
+        private UnifiedManagedThread HandleManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
         {
             UnifiedManagedThread result = null;
 
@@ -99,6 +99,22 @@ namespace Assignments.Core.Handlers
             }
             return result;
         }
+
+        private ThreadInfo GetThreadInfo(uint threadIndex)
+        {
+            uint[] engineThreadIds = new uint[1];
+            uint[] osThreadIds = new uint[1];
+            Util.VerifyHr(((IDebugSystemObjects)_debugClient).GetThreadIdsByIndex(threadIndex, 1, engineThreadIds, osThreadIds));
+            ClrThread managedThread = _runtime.Threads.FirstOrDefault(thread => thread.OSThreadId == osThreadIds[0]);
+            return new ThreadInfo
+            {
+                Index = threadIndex,
+                EngineThreadId = engineThreadIds[0],
+                OSThreadId = osThreadIds[0],
+                ManagedThread = managedThread
+            };
+        }
+
 
         #region Blocking Objects Methods
 
@@ -148,13 +164,11 @@ namespace Assignments.Core.Handlers
             List<UnifiedBlockingObject> result = null;
             if (thread.BlockingObjects?.Count > 0)
             {
-                // ClrHeap heap = runtime.GetHeap();
                 result = new List<UnifiedBlockingObject>();
 
                 foreach (var item in thread.BlockingObjects)
                 {
-                    //ClrType type = heap.GetObjectType(item.Object);
-                    result.Add(new UnifiedBlockingObject(item));//, type.Name));
+                    result.Add(new UnifiedBlockingObject(item));
                 }
             }
             return result;
@@ -162,20 +176,6 @@ namespace Assignments.Core.Handlers
 
         #endregion
 
-        private ThreadInfo GetThreadInfo(uint threadIndex)
-        {
-            uint[] engineThreadIds = new uint[1];
-            uint[] osThreadIds = new uint[1];
-            Util.VerifyHr(((IDebugSystemObjects)_debugClient).GetThreadIdsByIndex(threadIndex, 1, engineThreadIds, osThreadIds));
-            ClrThread managedThread = _runtime.Threads.FirstOrDefault(thread => thread.OSThreadId == osThreadIds[0]);
-            return new ThreadInfo
-            {
-                Index = threadIndex,
-                EngineThreadId = engineThreadIds[0],
-                OSThreadId = osThreadIds[0],
-                ManagedThread = managedThread
-            };
-        }
 
         #region StackTrace
 

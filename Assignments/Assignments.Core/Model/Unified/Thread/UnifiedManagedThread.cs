@@ -17,9 +17,16 @@ namespace Assignments.Core.Model.Unified.Thread
             BlockingObjects = blockingObjects;
         }
 
-        public UnifiedManagedThread(ClrThread waiter)
+        public UnifiedManagedThread(ClrThread waiter) 
+            : base(new ThreadInfo()
+            {
+                    OSThreadId = waiter.OSThreadId,
+                    ManagedThread = waiter
+            })
         {
             //TODO: complete logic -> used with Blocking object Wiater    
+
+            
         }
     }
 }
