@@ -13,31 +13,30 @@ namespace Assignments.Core.Model.WCT
             ObjectStatus = item.ObjectStatus;
             ObjectType = item.ObjectType;
 
-            //ThreadObject stuct data
-            this.ThreadId = item.Union.ThreadObject.ThreadId;
-            this.ProcessId = item.Union.ThreadObject.ProcessId;
-            this.ContextSwitches = item.Union.ThreadObject.ContextSwitches;
-            this.WaitTime = item.Union.ThreadObject.WaitTime;
 
             //LockObject stuct data
             TimeOut = item.Union.LockObject.Timeout;
             AlertTable = item.Union.LockObject.Alertable;
 
-            unsafe
-            {
-                //TODO: Check what part of the unin is valid
-                if (item.Union.ThreadObject.ThreadId == 0 && item.Union.ThreadObject.ProcessId == 0 )
-                {
-                    //Obtaining object name only if its relevant
-                    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.UTF8);
-                    //ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
-                    //var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
-                }
-            
+            if (item.ObjectType == Handlers.WCT.WCT_OBJECT_TYPE.WctThreadType)
+            { //Use the ThreadObject part of the union
+                this.ThreadId = item.Union.ThreadObject.ThreadId;
+                this.ProcessId = item.Union.ThreadObject.ProcessId;
+                this.ContextSwitches = item.Union.ThreadObject.ContextSwitches;
+                this.WaitTime = item.Union.ThreadObject.WaitTime;
 
             }
+            else
+            {//Use the LockObject  part of the union
+                unsafe
+                {
+                    //TODO: Deal with ObjectName convertion
+                    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.UTF8);
+                    ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
+                    var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
+                }
+            }
 
-           
         }
 
 

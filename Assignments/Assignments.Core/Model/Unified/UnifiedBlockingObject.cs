@@ -23,7 +23,6 @@ namespace Assignments.Core.Model.Unified
         public UnifiedBlockingObject(WaitChainInfoObject obj)
         {
             ManagedObjectAddress = 0;
-            if()
             KernelObjectName = obj.ObjectName;
 
             var wctIndex = (int)obj.ObjectType;
