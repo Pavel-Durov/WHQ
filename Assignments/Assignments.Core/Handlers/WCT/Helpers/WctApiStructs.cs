@@ -24,7 +24,7 @@ namespace Assignments.Core.Handlers.WCT
     public unsafe struct _WAITCHAIN_NODE_INFO_LOCK_OBJECT
     {
         /*The name of the object. Object names are only available for certain object, such as mutexes. If the object does not have a name, this member is an empty string.*/
-        public fixed char ObjectName[WctApiConst.WCT_OBJNAME_LENGTH];
+        public fixed byte ObjectName[WctApiConst.WCT_OBJNAME_LENGTH * 2];
         /*This member is reserved for future use.*/
         public UInt64 Timeout;
         /*This member is reserved for future use.*/
