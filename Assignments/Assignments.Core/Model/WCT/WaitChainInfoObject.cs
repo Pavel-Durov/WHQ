@@ -30,10 +30,7 @@ namespace Assignments.Core.Model.WCT
             {//Use the LockObject  part of the union
                 unsafe
                 {
-                    //TODO: Deal with ObjectName convertion
-                    ObjectName = StringUtil.ConvertCStringToString(item.Union.LockObject.ObjectName, Encoding.UTF8);
                     ObjectName = Marshal.PtrToStringUni((IntPtr)item.Union.LockObject.ObjectName);
-                    var ObjectName1 = Marshal.PtrToStringAuto((IntPtr)item.Union.LockObject.ObjectName);
                 }
             }
 
