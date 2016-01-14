@@ -30,14 +30,20 @@ namespace Assignments.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var item in blockingObjects)
+
+            var itemPrefix = $"{prefix}{prefix}";
+
+            for (int i = 0; i < blockingObjects.Count; i++)
             {
-                sb.Append(item.AsString(prefix));
+                sb.AppendWithNewLine($"{prefix}blockingObject: {i}");
+                var loopObj = blockingObjects[i];
+                sb.Append(loopObj.AsString(itemPrefix));
             }
+
             return sb.ToString();
         }
 
-        public static string AsString(this UnifiedBlockingObject blockingObject, char prefix)
+        public static string AsString(this UnifiedBlockingObject blockingObject, string prefix)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -52,7 +58,6 @@ namespace Assignments.Core.Extentions
             //TODO: Complete the info
             return sb.ToString();
         }
-
         #endregion
 
 

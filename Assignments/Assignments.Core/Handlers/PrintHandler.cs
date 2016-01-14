@@ -35,7 +35,7 @@ namespace Assignments.Core.Handlers
 
             if (item.BlockingObjects?.Count > 0)
             {
-                sb.Append(" -- BlockingObjects");
+                sb.AppendWithNewLine("BlockingObjects : ");
                 sb.Append($"{item.BlockingObjects.AsString('\t')}");
 
                 DumpToLogAndConsole(sb);
