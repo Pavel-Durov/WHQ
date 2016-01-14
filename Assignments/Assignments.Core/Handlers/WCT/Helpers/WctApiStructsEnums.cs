@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assignments.Core.Handlers.WCT
 {
-    
+
     public enum CallbackStatus
     {
         /*The caller did not have sufficient privilege to open a target thread.*/
@@ -40,33 +40,37 @@ namespace Assignments.Core.Handlers.WCT
         /*Follows the wait chain into other processes. Otherwise, the function reports the first thread in a different process but does not retrieve additional information.*/
         WCT_OUT_OF_PROC_FLAG
     }
-
+    /// <summary>
+    /// Doc: http://winappdbg.sourceforge.net/doc/v1.4/reference/winappdbg.win32.advapi32-pysrc.html
+    /// </summary>
     public enum WCT_OBJECT_TYPE
     {
-        WctCriticalSectionType,
-        WctSendMessageType,
-        WctMutexType,
-        WctAlpcType,
-        WctComType,
-        WctThreadWaitType,
-        WctProcessWaitType,
-        WctThreadType,
-        WctComActivationType,
-        WctUnknownType
+        WctCriticalSectionType = 1,
+        WctSendMessageType = 2,
+        WctMutexType = 3,
+        WctAlpcType = 4,
+        WctComType = 5,
+        WctThreadWaitType = 6,
+        WctProcessWaitType = 7,
+        WctThreadType = 8,
+        WctComActivationType = 9,
+        WctUnknownType = 10,
+        WctMaxType = 11,
     }
 
     public enum WCT_OBJECT_STATUS
     {
-        WctStatusNoAccess,
-        WctStatusRunning,
-        WctStatusBlocked,
-        WctStatusPidOnly,
-        WctStatusPidOnlyRpcss,
-        WctStatusOwned,
-        WctStatusNotOwned,
-        WctStatusAbandoned,
-        WctStatusUnknown,
-        WctStatusError
+        WctStatusNoAccess = 1,    // ACCESS_DENIED for this object 
+        WctStatusRunning = 2,     // Thread status 
+        WctStatusBlocked = 3,     // Thread status 
+        WctStatusPidOnly = 4,     // Thread status 
+        WctStatusPidOnlyRpcss = 5,// Thread status 
+        WctStatusOwned = 6,       // Dispatcher object status 
+        WctStatusNotOwned = 7,    // Dispatcher object status 
+        WctStatusAbandoned = 8,   // Dispatcher object status 
+        WctStatusUnknown = 9,     // All objects 
+        WctStatusError = 10,      // All objects 
+        WctStatusMax = 11
     }
 
 
