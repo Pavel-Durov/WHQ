@@ -53,15 +53,20 @@ namespace DumpTest.Tests
         private static void ThreadWork()
         {
             Thread.Sleep(3000);
-                        
+
             Mutex mutex = null;
             if (Mutex.TryOpenExisting(mutex_id, out mutex))
             {
                 try
                 {
-                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} waits from mutex with 1 hour timeout");
-                    //Kernel32Calls.WaitForSingleObject(mutex.Handle, int.MaxValue);
-                    mutex.WaitOne(TimeSpan.FromHours(1), false);
+                    var timeout = (uint)TimeSpan.FromHours(1).TotalMilliseconds;
+                    var handle = mutex.SafeWaitHandle.DangerousGetHandle();
+
+                    
+                    Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} waits for mutex with timout of {timeout}");
+
+                    Kernel32Calls.WaitForSingleObject(handle, timeout);
+
                     Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} released from mutex");
                 }
                 catch (Exception e)
