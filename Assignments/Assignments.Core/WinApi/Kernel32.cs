@@ -26,6 +26,35 @@ namespace Assignments.Core.WinApi
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="dwDesiredAccess">Handle</param>
+        /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
+        /// <param name="processId"></param>
+        /// <returns></returns>
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        public static extern HANDLE OpenProcess(Int64 dwDesiredAccess, bool bInheritHandle, Int32 processId);
+
+        //https://msdn.microsoft.com/en-us/library/windows/desktop/aa446619(v=vs.85).aspx
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        public static extern bool SetPrivilege(HANDLE token, PROCESS_PRIVILEGE Privilege, bool EnablePrivilege);
+
+        public enum PROCESS_PRIVILEGE : long
+        {
+            SDELETE = 0x00010000L,
+            /*Required to delete the object. */
+            READ_CONTROL = 0x00020000L,
+            /*Required to read information in the security descriptor for the object, not including the information in the SACL.To read or write the SACL, you must request the ACCESS_SYSTEM_SECURITY access right.For more information, see SACL Access Right. */
+            SYNCHRONIZE = 0x00100000L,
+            /*The right to use the object for synchronization. This enables a thread to wait until the object is in the signaled state.*/
+            WRITE_DAC = 0x00040000L,
+            /*Required to modify the DACL in the security descriptor for the object.*/
+            WRITE_OWNER = 0x00080000L
+            /*Required to change the owner in the security descriptor for the object.*/
+        }
+
         #region Constants
 
         public const Int32 INFINITE = -1;

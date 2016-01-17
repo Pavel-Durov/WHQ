@@ -1,4 +1,4 @@
-﻿//#define DUMP_AS_SOURCE
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +22,7 @@ namespace Consumer
         static void Main(string[] args)
         {
 
-#if DUMP_AS_SOURCE
-            if (File.Exists(SOME_86_DUMP))
-            {
-                //Loading a crash dump
-                using (DataTarget target = DataTarget.LoadCrashDump(SOME_86_DUMP))
-                {
-                    DoAnaytics(target);
-                }
 
-            }
-#else
             int pid = GetPidFromDumpProcessTextFile();
             if (pid != PID_NOT_FOUND)
             {
@@ -46,12 +36,8 @@ namespace Consumer
                 pid = int.Parse(Console.ReadLine());
             }
 
-            using (DataTarget target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT))
-            {
-                DoAnaytics(target);
-            }
-
-#endif
+            //Global.Test.Run(pid);
+            DumpFile64Bit.Test.Run(pid);
             Console.ReadKey();
         }
 
@@ -68,18 +54,6 @@ namespace Consumer
             return pid;
         }
 
-        private static void DoAnaytics(DataTarget target)
-        {
-            ThreadStackHandler handler = new ThreadStackHandler();
-            var runtime = target.ClrVersions[0].CreateRuntime();
-
-            var result = handler.Handle(target.DebuggerInterface, runtime);
-
-            PrintHandler.Print(result, true);
-
-          
-
-            Console.ReadKey();
-        }
+      
     }
 }
