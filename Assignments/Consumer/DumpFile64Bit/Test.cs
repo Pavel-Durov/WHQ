@@ -17,26 +17,24 @@ namespace Consumer.DumpFile64Bit
         //Example: http://blogs.msdn.com/b/dondu/archive/2010/10/24/writing-minidumps-in-c.aspx
         public static void Run(int pid)
         {
-            var handle = Kernel32.OpenProcess((long)Kernel32.PROCESS_PRIVILEGE.WRITE_DAC, false , pid);
+            var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryInformation, false , pid);
 
             string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MiniDumpDemo_Mainline.mdmp");
 
+            Console.WriteLine($"Writing dump to {fileName}");
+            Debug.WriteLine(fileName);
             using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Write))
-
             {
-
-                Write(fs.SafeFileHandle, DbgHelp.Option.WithFullMemory);
-
+                Write(fs.SafeFileHandle, DbgHelp.Option.WithFullMemory, (uint) pid);
             }
 
         }
 
-        public static bool Write(SafeHandle fileHandle, DbgHelp.Option options, DbgHelp.ExceptionInfo exceptionInfo)
+        public static bool Write(SafeHandle fileHandle, DbgHelp.Option options, DbgHelp.ExceptionInfo exceptionInfo, uint currentProcessId)
         {
             Process currentProcess = Process.GetCurrentProcess();
             IntPtr currentProcessHandle = currentProcess.Handle;
-            uint currentProcessId = (uint)currentProcess.Id;
-
+            
             DbgHelp.MiniDumpExceptionInformation exp;
             exp.ThreadId = DbgHelp.GetCurrentThreadId();
 
@@ -64,9 +62,9 @@ namespace Consumer.DumpFile64Bit
 
 
 
-        public static bool Write(SafeHandle fileHandle, DbgHelp.Option dumpType)
+        public static bool Write(SafeHandle fileHandle, DbgHelp.Option dumpType, uint pid)
         {
-            return Write(fileHandle, dumpType, DbgHelp.ExceptionInfo.None);
+            return Write(fileHandle, dumpType, DbgHelp.ExceptionInfo.None, pid);
         }
 
     }

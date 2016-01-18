@@ -34,26 +34,34 @@ namespace Assignments.Core.WinApi
         /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
         /// <param name="processId"></param>
         /// <returns></returns>
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern HANDLE OpenProcess(Int64 dwDesiredAccess, bool bInheritHandle, Int32 processId);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, int processId);
+
+
 
         //https://msdn.microsoft.com/en-us/library/windows/desktop/aa446619(v=vs.85).aspx
         [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern bool SetPrivilege(HANDLE token, PROCESS_PRIVILEGE Privilege, bool EnablePrivilege);
+        public static extern bool SetPrivilege(HANDLE token, ProcessAccessFlags Privilege, bool EnablePrivilege);
 
-        public enum PROCESS_PRIVILEGE : long
+        [Flags]
+        public enum ProcessAccessFlags : uint
         {
-            SDELETE = 0x00010000L,
-            /*Required to delete the object. */
-            READ_CONTROL = 0x00020000L,
-            /*Required to read information in the security descriptor for the object, not including the information in the SACL.To read or write the SACL, you must request the ACCESS_SYSTEM_SECURITY access right.For more information, see SACL Access Right. */
-            SYNCHRONIZE = 0x00100000L,
-            /*The right to use the object for synchronization. This enables a thread to wait until the object is in the signaled state.*/
-            WRITE_DAC = 0x00040000L,
-            /*Required to modify the DACL in the security descriptor for the object.*/
-            WRITE_OWNER = 0x00080000L
-            /*Required to change the owner in the security descriptor for the object.*/
+            All = 0x001F0FFF,
+            Terminate = 0x00000001,
+            CreateThread = 0x00000002,
+            VirtualMemoryOperation = 0x00000008,
+            VirtualMemoryRead = 0x00000010,
+            VirtualMemoryWrite = 0x00000020,
+            DuplicateHandle = 0x00000040,
+            CreateProcess = 0x000000080,
+            SetQuota = 0x00000100,
+            SetInformation = 0x00000200,
+            QueryInformation = 0x00000400,
+            QueryLimitedInformation = 0x00001000,
+            Synchronize = 0x00100000
         }
+
+
 
         #region Constants
 
