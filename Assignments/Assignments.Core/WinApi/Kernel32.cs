@@ -35,7 +35,7 @@ namespace Assignments.Core.WinApi
         /// <param name="processId"></param>
         /// <returns></returns>
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, int processId);
+        public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, uint processId);
 
 
 
@@ -85,5 +85,46 @@ namespace Assignments.Core.WinApi
 
         #endregion
 
+
+        #region Files
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr CreateFileMapping(
+         IntPtr hFile,
+         IntPtr lpFileMappingAttributes,
+         FileMapProtection flProtect,
+         uint dwMaximumSizeHigh,
+         uint dwMaximumSizeLow,
+         string lpName);
+
+
+
+        //User-Defined Types:
+
+        [Flags]
+        public enum FileMapProtection : uint
+        {
+            PageReadonly = 0x02,
+            PageReadWrite = 0x04,
+            PageWriteCopy = 0x08,
+            PageExecuteRead = 0x20,
+            PageExecuteReadWrite = 0x40,
+            SectionCommit = 0x8000000,
+            SectionImage = 0x1000000,
+            SectionNoCache = 0x10000000,
+            SectionReserve = 0x4000000,
+        }
+
+
+        public enum FileMapAccessType : uint
+        {
+            Copy = 0x01,
+            Write = 0x02,
+            Read = 0x04,
+            AllAccess = 0x08,
+            Execute = 0x20,
+        }
+
+        #endregion
     }
 }
