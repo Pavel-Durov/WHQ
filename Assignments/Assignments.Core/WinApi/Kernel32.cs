@@ -76,26 +76,47 @@ namespace Assignments.Core.WinApi
 
         #region Structs
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct SECURITY_ATTRIBUTES
         {
-            Int32 nLength;
-            IntPtr lpSecurityDescriptor;
-            bool bInheritHandle;
-        };
+            public int nLength;
+            public unsafe byte* lpSecurityDescriptor;
+            public int bInheritHandle;
+        }
 
         #endregion
 
 
         #region Files
 
+
+        const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
+        const UInt32 SECTION_QUERY = 0x0001;
+        const UInt32 SECTION_MAP_WRITE = 0x0002;
+        const UInt32 SECTION_MAP_READ = 0x0004;
+        const UInt32 SECTION_MAP_EXECUTE = 0x0008;
+        const UInt32 SECTION_EXTEND_SIZE = 0x0010;
+        const UInt32 SECTION_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SECTION_QUERY |
+            SECTION_MAP_WRITE |
+            SECTION_MAP_READ |
+            SECTION_MAP_EXECUTE |
+            SECTION_EXTEND_SIZE);
+        public const UInt32 FILE_MAP_ALL_ACCESS = SECTION_ALL_ACCESS;
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr OpenFileMapping(
+          uint dwDesiredAccess,
+          bool bInheritHandle,
+          string lpName);
+
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr CreateFileMapping(
-         IntPtr hFile,
-         IntPtr lpFileMappingAttributes,
-         FileMapProtection flProtect,
-         uint dwMaximumSizeHigh,
-         uint dwMaximumSizeLow,
-         string lpName);
+               IntPtr hFile,
+               ref SECURITY_ATTRIBUTES attributes,
+               FileMapProtection flProtect,
+               uint dwMaximumSizeHigh,
+               uint dwMaximumSizeLow,
+               string lpName);
 
 
 
