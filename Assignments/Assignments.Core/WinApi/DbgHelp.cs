@@ -9,16 +9,64 @@ namespace Assignments.Core.WinApi
 {
     public class DbgHelp
     {
-        [DllImport("Dbghelp.dll")]
-        public static extern bool MiniDumpWriteDump(IntPtr hProcess, uint ProcessId, SafeHandle hFile, MINIDUMP_TYPE DumpType,
-            ref MINIDUMP_EXCEPTION_INFORMATION ExceptionParam, IntPtr UserStreamParam, ref MINIDUMP_MODULE_CALLBACK CallbackParam);
+
+        public const int ERR_ELEMENT_NOT_FOUND = 1168;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
+
+
+        [DllImport("DbgHelp.dll", SetLastError = true)]
+        public extern static bool MiniDumpWriteDump(
+        IntPtr hProcess,
+        UInt32 ProcessId, // DWORD is a 32 bit unsigned integer
+        SafeHandle hFile,
+        DbgHelp.MINIDUMP_STREAM_TYPE DumpType,
+        IntPtr ExceptionParam,
+        IntPtr UserStreamParam,
+        IntPtr CallbackParam);
 
         [DllImport("Dbghelp.dll", SetLastError = true)]
         public static extern bool MiniDumpReadDumpStream(IntPtr BaseOfDump,
-        uint StreamNumber,
+        DbgHelp.MINIDUMP_STREAM_TYPE StreamNumber,
         ref MINIDUMP_DIRECTORY Dir,
         ref IntPtr StreamPointer,
         ref uint StreamSize);
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_HANDLE_DATA_STREAM
+        {
+            public UInt32 SizeOfHeader;
+            public UInt32 SizeOfDescriptor;
+            public UInt32 NumberOfDescriptors;
+            public UInt32 Reserved;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_HANDLE_DESCRIPTOR_2
+        {
+            public UInt64 Handle;
+            public uint TypeNameRva;
+            public uint ObjectNameRva;
+            public UInt32 Attributes;
+            public UInt32 GrantedAccess;
+            public UInt32 HandleCount;
+            public UInt32 PointerCount;
+            public uint ObjectInfoRva;
+            public UInt32 Reserved0;
+        }
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_HANDLE_DESCRIPTOR
+        {
+            public UInt64 Handle;
+            public uint TypeNameRva;
+            public uint ObjectNameRva;
+            public UInt32 Attributes;
+            public UInt32 GrantedAccess;
+            public UInt32 HandleCount;
+            public UInt32 PointerCount;
+        }
 
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -98,7 +146,7 @@ namespace Assignments.Core.WinApi
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct VS_FIXEDFILEINFO
+        public struct VS_FIXEDFILEINFO
         {
             UInt32 dwSignature;
             UInt32 dwStrucVersion;
@@ -129,18 +177,30 @@ namespace Assignments.Core.WinApi
             None,
             Present
         }
-
-
-        [Flags]
-        public enum FileMapAccess : uint
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_MODULE
         {
-            FileMapCopy = 0x0001,
-            FileMapWrite = 0x0002,
-            FileMapRead = 0x0004,
-            FileMapAllAccess = 0x001f,
-            FileMapExecute = 0x0020,
+            public UInt64 BaseOfImage;
+            public UInt32 SizeOfImage;
+            public UInt32 CheckSum;
+            public UInt32 TimeDateStamp;
+            public uint ModuleNameRva;
+            public VS_FIXEDFILEINFO VersionInfo;
+            public MINIDUMP_LOCATION_DESCRIPTOR CvRecord;
+            public MINIDUMP_LOCATION_DESCRIPTOR MiscRecord;
+            public UInt64 Reserved0;
+            public UInt64 Reserved1;
         }
 
+
+
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_MODULE_LIST
+        {
+            public UInt32 NumberOfModules;
+            public IntPtr Modules;
+        }
         public struct MINIDUMP_DIRECTORY
         {
             public UInt32 StreamType;

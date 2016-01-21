@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Runtime.InteropServices;
 using HANDLE = System.IntPtr;
 
@@ -86,16 +87,41 @@ namespace Assignments.Core.WinApi
 
         #endregion
 
+        public struct MEMORY_BASIC_INFORMATION
+        {
+            public IntPtr BaseAddress;
+            public IntPtr AllocationBase;
+            public uint AllocationProtect;
+            public UIntPtr RegionSize;
+            public uint State;
+            public uint Protect;
+            public uint Type;
+        }
 
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr VirtualQuery(SafeMemoryMappedViewHandle address, ref MEMORY_BASIC_INFORMATION buffer, IntPtr sizeOfBuffer);
         #region Files
 
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern IntPtr MapViewOfFile(
-         IntPtr hFileMappingObject,
-         DbgHelp.FileMapAccess dwDesiredAccess,
-         UInt32 dwFileOffsetHigh,
-         UInt32 dwFileOffsetLow,
-         uint dwNumberOfBytesToMap);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern SafeMemoryMappedViewHandle MapViewOfFile(SafeMemoryMappedFileHandle hFileMappingObject,
+            Kernel32.FileMapAccess dwDesiredAccess,
+            uint dwFileOffsetHigh,
+            uint dwFileOffsetLow,
+            IntPtr dwNumberOfBytesToMap);
+
+
+
+        [Flags]
+        public enum FileMapAccess : uint
+        {
+            FileMapCopy = 0x0001,
+            FileMapWrite = 0x0002,
+            FileMapRead = 0x0004,
+            FileMapAllAccess = 0x001f,
+            FileMapExecute = 0x0020,
+        }
+
 
         const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
         const UInt32 SECTION_QUERY = 0x0001;

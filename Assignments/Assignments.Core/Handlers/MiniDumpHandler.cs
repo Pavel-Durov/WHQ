@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.IO.MemoryMappedFiles;
 
 namespace Assignments.Core.Handlers
 {
@@ -26,67 +28,160 @@ namespace Assignments.Core.Handlers
 
             using (FileStream fs = new FileStream(fullfileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Write))
             {
-                Analyze(handle, pid, fs.SafeFileHandle, DbgHelp.MINIDUMP_TYPE.MiniDumpWithHandleData, fullfileName);
-            }
-        }
-
-        private void Analyze(IntPtr handle, uint processId, SafeHandle fileHandle, DbgHelp.MINIDUMP_TYPE dumpType, string fullfileName)
-        {
-
-
-            DbgHelp.MINIDUMP_EXCEPTION_INFORMATION info = new DbgHelp.MINIDUMP_EXCEPTION_INFORMATION();
-            DbgHelp.MINIDUMP_MODULE_CALLBACK callback = new DbgHelp.MINIDUMP_MODULE_CALLBACK();
-            
-            //Craeting mini dump file...
-            bool result = DbgHelp.MiniDumpWriteDump(handle, processId, fileHandle, dumpType, ref info, IntPtr.Zero, ref callback);
-
-            if (result)
-            {
-                Kernel32.SECURITY_ATTRIBUTES securityAttributes = new Kernel32.SECURITY_ATTRIBUTES();
-                //20971520
-                IntPtr fileMaphandle = Kernel32.CreateFileMapping(INVALID_HANDLE_VALUE, ref securityAttributes, Kernel32.FileMapProtection.PageReadWrite, 0, 1024, "test");
-
-                if (fileMaphandle != IntPtr.Zero)
+                bool createdFile = DbgHelp.MiniDumpWriteDump(handle, pid, fs.SafeFileHandle, DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                if (createdFile)
                 {
-                    IntPtr openFileMapping = Kernel32.OpenFileMapping(Kernel32.FILE_MAP_ALL_ACCESS, false, "test");
+                    var safeMemoryMappedViewHandle = MapFile(fs, fullfileName);
 
-                    if (openFileMapping != IntPtr.Zero)
-                    {
-
-
-                        DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
-
-                        var streamPointer = IntPtr.Zero;
-                        uint streamSize = 0;
-
-                        var error = Marshal.GetLastWin32Error();
-                        uint size = 1024;
-                        var viewHandle = Kernel32.MapViewOfFile(fileMaphandle, DbgHelp.FileMapAccess.FileMapAllAccess, 0, 0, size);
-                        //MapViewOfFile
-
-                        // baseOfView is the IntPtr we got when we created the memory mapped file
-                        var readDumpResult = DbgHelp.MiniDumpReadDumpStream(
-                                        viewHandle,
-                                        (uint)DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream,
-                                        ref directory, ref streamPointer, ref streamSize);
-
-                        if (readDumpResult)
-                        {
-
-                        }
-                        else {
-                            var errorCode = Marshal.GetLastWin32Error();
-                        }
-
-                    }
-                    else
-                    {
-                        //TODO: Handle...
-                    }
-
+                    ReadHandleData(safeMemoryMappedViewHandle);
                 }
             }
         }
+
+        private SafeMemoryMappedViewHandle MapFile(FileStream fs, string fullfileName)
+        {
+            MemoryMappedFile minidumpMappedFile = MemoryMappedFile.CreateFromFile(fs, Path.GetFileName(fullfileName), 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
+
+            SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(minidumpMappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
+
+            Kernel32.MEMORY_BASIC_INFORMATION memoryInformation = default(Kernel32.MEMORY_BASIC_INFORMATION);
+
+            if (Kernel32.VirtualQuery(mappedFileView, ref memoryInformation, (IntPtr)Marshal.SizeOf(memoryInformation)) == IntPtr.Zero)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            if (mappedFileView.IsInvalid)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            mappedFileView.Initialize((ulong)memoryInformation.RegionSize);
+            return mappedFileView;
+        }
+
+
+
+
+        public void ReadHandleData(SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        {
+            DbgHelp.MINIDUMP_HANDLE_DATA_STREAM handleData;
+            IntPtr streamPointer;
+            uint streamSize;
+
+            if (!this.ReadStream<DbgHelp.MINIDUMP_HANDLE_DATA_STREAM>(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, safeMemoryMappedViewHandle))
+            {
+                //Handle it somehow
+            }
+
+            // Advance the stream pointer past the header
+            streamPointer = streamPointer + (int)handleData.SizeOfHeader;
+
+
+            // Now read the handles
+            if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR)))
+            {
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
+
+                foreach (var h in handles) {
+                    Console.WriteLine("Handle found");
+                    Console.WriteLine($"handle : {h.Handle}");
+                    Console.WriteLine($"pointerCount: {h.PointerCount}");
+                    Console.WriteLine($"RVA: {h.TypeNameRva}");
+                    Console.WriteLine();
+
+                }
+            }
+            else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2)))
+            {
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
+
+                foreach (var h in handles)
+                {
+                    Console.WriteLine("Handle found");
+                    Console.WriteLine($"handle : {h.Handle}");
+                    Console.WriteLine($"pointerCount: {h.PointerCount}");
+                    Console.WriteLine($"RVA: {h.TypeNameRva}");
+                    Console.WriteLine();
+
+                }
+
+            }
+            else
+                throw new Exception("Unexpected 'SizeOfDescriptor' when reading HandleDataStream. The unexpected value was: '" + handleData.SizeOfDescriptor + "'");
+
+
+        }
+
+
+        /// <summary>
+        /// Reads the specified number of value types from memory starting at the address, and writes them into an array.
+        /// </summary>
+        /// <typeparam name="T">The value type to read</typeparam>
+        /// <param name="absoluteStreamReadAddress">The absolute (not offset) location in the stream from which to start reading.</param>
+        /// <param name="count">The number of value types to read from the input array and to write to the output array.</param>
+        /// <returns>A populated array of the value type.</returns>
+        protected internal unsafe T[] ReadArray<T>(IntPtr absoluteStreamReadAddress, int count, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle) where T : struct
+        {
+            T[] readItems = new T[count];
+
+            try
+            {
+                byte* baseOfView = null;
+
+                safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
+
+                ulong offset = (ulong)absoluteStreamReadAddress - (ulong)baseOfView;
+
+                safeMemoryMappedViewHandle.ReadArray<T>(offset, readItems, 0, count);
+            }
+            finally
+            {
+                safeMemoryMappedViewHandle.ReleasePointer();
+            }
+
+            return readItems;
+        }
+
+
+        protected unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        {
+            DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
+            streamData = default(T);
+            streamPointer = IntPtr.Zero;
+            streamSize = 0;
+
+            try
+            {
+                byte* baseOfView = null;
+                safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
+
+                if (baseOfView == null)
+                    throw new Exception("Unable to aquire pointer to memory mapped view");
+
+                if (!DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize))
+                {
+                    int lastError = Marshal.GetLastWin32Error();
+
+                    if (lastError == DbgHelp.ERR_ELEMENT_NOT_FOUND)
+                    {
+                        return false;
+                    }
+                    else
+                        throw new Win32Exception(lastError);
+                }
+
+                streamData = (T)Marshal.PtrToStructure(streamPointer, typeof(T));
+
+            }
+            finally
+            {
+                safeMemoryMappedViewHandle.ReleasePointer();
+            }
+
+            return true;
+        }
+
 
         private static string GetDumpFileName(uint pid)
         {
@@ -102,5 +197,9 @@ namespace Assignments.Core.Handlers
                 dirInfo.Create();
             }
         }
+
+
     }
+
 }
+
