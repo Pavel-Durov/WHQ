@@ -6,24 +6,24 @@ namespace Assignments.Core.WinApi
 {
     public class Kernel32
     {
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern HANDLE CreateEvent(SECURITY_ATTRIBUTES lpSecurityAttributes, bool isManualReset, bool initialState, string name);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("Kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool Beep(uint dwFreq, uint dwDuration);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("Kernel32.dll")]
         static extern uint WaitForMultipleObjects(uint nCount, IntPtr[] lpHandles, bool bWaitAll, uint dwMilliseconds);
 
-        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
+        [DllImport("Kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
         public static extern HANDLE CreateEvent(HANDLE lpEventAttributes, [In, MarshalAs(UnmanagedType.Bool)] bool bManualReset, [In, MarshalAs(UnmanagedType.Bool)] bool bIntialState, [In, MarshalAs(UnmanagedType.BStr)] string lpName);
 
-        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
+        [DllImport("Kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseHandle(HANDLE hObject);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("Kernel32.dll", SetLastError = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 
 
@@ -34,7 +34,7 @@ namespace Assignments.Core.WinApi
         /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
         /// <param name="processId"></param>
         /// <returns></returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("Kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, uint processId);
 
 
@@ -89,6 +89,13 @@ namespace Assignments.Core.WinApi
 
         #region Files
 
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        public static extern IntPtr MapViewOfFile(
+         IntPtr hFileMappingObject,
+         DbgHelp.FileMapAccess dwDesiredAccess,
+         UInt32 dwFileOffsetHigh,
+         UInt32 dwFileOffsetLow,
+         uint dwNumberOfBytesToMap);
 
         const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
         const UInt32 SECTION_QUERY = 0x0001;
@@ -103,13 +110,13 @@ namespace Assignments.Core.WinApi
             SECTION_EXTEND_SIZE);
         public const UInt32 FILE_MAP_ALL_ACCESS = SECTION_ALL_ACCESS;
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr OpenFileMapping(
           uint dwDesiredAccess,
           bool bInheritHandle,
           string lpName);
 
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr CreateFileMapping(
                IntPtr hFile,
                ref SECURITY_ATTRIBUTES attributes,

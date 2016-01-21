@@ -13,7 +13,7 @@ namespace Assignments.Core.WinApi
         public static extern bool MiniDumpWriteDump(IntPtr hProcess, uint ProcessId, SafeHandle hFile, MINIDUMP_TYPE DumpType,
             ref MINIDUMP_EXCEPTION_INFORMATION ExceptionParam, IntPtr UserStreamParam, ref MINIDUMP_MODULE_CALLBACK CallbackParam);
 
-        [DllImport("dbghelp.dll", SetLastError = true)]
+        [DllImport("Dbghelp.dll", SetLastError = true)]
         public static extern bool MiniDumpReadDumpStream(IntPtr BaseOfDump,
         uint StreamNumber,
         ref MINIDUMP_DIRECTORY Dir,
@@ -53,8 +53,7 @@ namespace Assignments.Core.WinApi
 
 
 
-        // Taken almost verbatim from http://blog.kalmbach-software.de/2008/12/13/writing-minidumps-in-c/
-
+     
         [Flags]
         public enum Option : uint
         {
@@ -116,12 +115,7 @@ namespace Assignments.Core.WinApi
             UInt32 dwFileDateLS;
         }
 
-        //typedef struct _MINIDUMP_EXCEPTION_INFORMATION 
-        //    DWORD ThreadId;
-        //    PEXCEPTION_POINTERS ExceptionPointers;
-        //    BOOL ClientPointers;
-        //} MINIDUMP_EXCEPTION_INFORMATION, *PMINIDUMP_EXCEPTION_INFORMATION;
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]  // Pack=4 is important! So it works also for x64!
+
         public struct MiniDumpExceptionInformation
         {
             public uint ThreadId;
@@ -136,13 +130,6 @@ namespace Assignments.Core.WinApi
             Present
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr MapViewOfFile(
-         IntPtr hFileMappingObject,
-         FileMapAccess dwDesiredAccess,
-         UInt32 dwFileOffsetHigh,
-         UInt32 dwFileOffsetLow,
-         uint dwNumberOfBytesToMap);
 
         [Flags]
         public enum FileMapAccess : uint
@@ -153,12 +140,6 @@ namespace Assignments.Core.WinApi
             FileMapAllAccess = 0x001f,
             FileMapExecute = 0x0020,
         }
-        //[DllImport("dbghelp.dll", SetLastError = true)]
-        //public static extern bool MiniDumpReadDumpStream(IntPtr BaseOfDump,
-        // MINIDUMP_STREAM_TYPE StreamNumber,
-        // ref MINIDUMP_DIRECTORY Dir,
-        // ref IntPtr StreamPointer,
-        // ref uint StreamSize);
 
         public struct MINIDUMP_DIRECTORY
         {
@@ -197,26 +178,7 @@ namespace Assignments.Core.WinApi
             LastReservedStream = 0xffff
         }
 
-
-
-        // Overload requiring MiniDumpExceptionInformation
-
-        //[DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-
-        //public static extern bool MiniDumpWriteDump(IntPtr hProcess, uint processId, SafeHandle hFile, uint dumpType, ref MiniDumpExceptionInformation expParam, IntPtr userStreamParam, IntPtr callbackParam);
-
-
-
-        //// Overload supporting MiniDumpExceptionInformation == NULL
-
-        //[DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-
-        //public static extern bool MiniDumpWriteDump(IntPtr hProcess, uint processId, SafeHandle hFile, uint dumpType, IntPtr expParam, IntPtr userStreamParam, IntPtr callbackParam);
-
-
-
-        //[DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId", ExactSpelling = true)]
-        //public static extern uint GetCurrentThreadId();
+        
 
     }
 }
