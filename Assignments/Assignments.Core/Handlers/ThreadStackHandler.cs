@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.msos;
-using Assignments.Core.Handlers.WCT;
+using Assignments.Core.Handlers;
 using Assignments.Core.Model.Unified;
 using System;
 using Assignments.Core.Model.WCT;

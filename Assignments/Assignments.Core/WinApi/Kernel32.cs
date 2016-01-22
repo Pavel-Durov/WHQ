@@ -104,7 +104,8 @@ namespace Assignments.Core.WinApi
         #region Files
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern SafeMemoryMappedViewHandle MapViewOfFile(SafeMemoryMappedFileHandle hFileMappingObject,
+        public static extern SafeMemoryMappedViewHandle MapViewOfFile(
+            SafeMemoryMappedFileHandle hFileMappingObject,
             Kernel32.FileMapAccess dwDesiredAccess,
             uint dwFileOffsetHigh,
             uint dwFileOffsetLow,

@@ -50,14 +50,11 @@
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler.cs" />
-    <Compile Include="Handlers\MiniDump\MiniDumpModule.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
-    <Compile Include="Handlers\WCT\Helpers\WctApiConst.cs" />
-    <Compile Include="Handlers\WCT\WctApiHandler.cs" />
-    <Compile Include="Handlers\WCT\Helpers\WctApiStructs.cs" />
-    <Compile Include="Handlers\WCT\Helpers\WctApiStructsEnums.cs" />
+    <Compile Include="Handlers\WctApiHandler.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />

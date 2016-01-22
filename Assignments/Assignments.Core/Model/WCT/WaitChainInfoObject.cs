@@ -1,14 +1,15 @@
 ﻿using System.Text;
-using Assignments.Core.Handlers.WCT;
+using Assignments.Core.Handlers;
 using Assignments.Core.Utils;
 using System.Runtime.InteropServices;
 using System;
+using Assignments.Core.WinApi;
 
 namespace Assignments.Core.Model.WCT
 {
     public class WaitChainInfoObject
     {
-        public WaitChainInfoObject(WAITCHAIN_NODE_INFO item)
+        public WaitChainInfoObject(Advapi32.WAITCHAIN_NODE_INFO item)
         {
             ObjectStatus = item.ObjectStatus;
             ObjectType = item.ObjectType;
@@ -18,7 +19,7 @@ namespace Assignments.Core.Model.WCT
             TimeOut = item.Union.LockObject.Timeout;
             AlertTable = item.Union.LockObject.Alertable;
 
-            if (item.ObjectType == Handlers.WCT.WCT_OBJECT_TYPE.WctThreadType)
+            if (item.ObjectType == Advapi32.WCT_OBJECT_TYPE.WctThreadType)
             { //Use the ThreadObject part of the union
                 this.ThreadId = item.Union.ThreadObject.ThreadId;
                 this.ProcessId = item.Union.ThreadObject.ProcessId;
@@ -37,13 +38,13 @@ namespace Assignments.Core.Model.WCT
         }
 
 
-        public WCT_OBJECT_STATUS ObjectStatus { get; private set; }
-        public WCT_OBJECT_TYPE ObjectType { get; private set; }
+        public Advapi32.WCT_OBJECT_STATUS ObjectStatus { get; private set; }
+        public Advapi32.WCT_OBJECT_TYPE ObjectType { get; private set; }
 
         /// <summary>
         /// Is Current Objects Status is WCT_OBJECT_STATUS.WctStatusBlocked
         /// </summary>
-        public bool IsBlocked { get { return ObjectStatus == WCT_OBJECT_STATUS.WctStatusBlocked; } }
+        public bool IsBlocked { get { return ObjectStatus == Advapi32.WCT_OBJECT_STATUS.WctStatusBlocked; } }
         /// <summary>
         /// The thread identifier. For COM and ALPC, this member can be 0.
         /// </summary>

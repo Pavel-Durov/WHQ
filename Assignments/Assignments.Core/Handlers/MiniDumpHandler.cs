@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.IO.MemoryMappedFiles;
 using System.Diagnostics;
+using Assignments.Core.Model.MiniDump;
 
 namespace Assignments.Core.Handlers
 {
@@ -23,7 +24,7 @@ namespace Assignments.Core.Handlers
         {
             var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.All, false, pid);
 
-            RecCheckDirectory();
+            RecheckDirectory();
 
             string fileName = null;
             string fullfileName = GetDumpFileName(pid, ref fileName);
@@ -35,13 +36,14 @@ namespace Assignments.Core.Handlers
                 if (miniDumpCreated)
                 {
                     var safeMemoryMappedViewHandle = MapFile(fs, fileName);
-                    ReadHandleData(safeMemoryMappedViewHandle);
+                    var result = ReadHandleData(safeMemoryMappedViewHandle);
                 }
             }
         }
 
         private SafeMemoryMappedViewHandle MapFile(FileStream fs, string fileName)
         {
+
             MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fs, fileName, 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
 
             SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
@@ -57,7 +59,7 @@ namespace Assignments.Core.Handlers
             {
                 Debug.WriteLine($"MapViewOfFile IsInvalid, error:  {Marshal.GetLastWin32Error()}");
             }
-            
+
             mappedFileView.Initialize((ulong)memoryInfo.RegionSize);
 
             return mappedFileView;
@@ -66,8 +68,10 @@ namespace Assignments.Core.Handlers
 
 
 
-        public void ReadHandleData(SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        public List<MiniDumpHandle> ReadHandleData(SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {
+            List<MiniDumpHandle> result = new List<MiniDumpHandle>();
+
             DbgHelp.MINIDUMP_HANDLE_DATA_STREAM handleData;
             IntPtr streamPointer;
             uint streamSize;
@@ -79,45 +83,35 @@ namespace Assignments.Core.Handlers
                 Debug.WriteLine($"Can't read stream ! ");
             }
 
-            //Stream pointer advance
+            //Advancing the pointer
             streamPointer = streamPointer + (int)handleData.SizeOfHeader;
-
 
             if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR)))
             {
                 DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
 
-                foreach (var h in handles)
+                foreach (var handle in handles)
                 {
-                    Console.WriteLine("Handle found");
-                    Console.WriteLine($"handle : {h.Handle}");
-                    Console.WriteLine($"pointerCount: {h.PointerCount}");
-                    Console.WriteLine($"RVA: {h.TypeNameRva}");
-                    Console.WriteLine();
-
+                    result.Add(new MiniDumpHandle(handle));
                 }
             }
             else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2)))
             {
                 DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
 
-                foreach (var h in handles)
+                foreach (var handle in handles)
                 {
-                    Console.WriteLine("Handle found");
-                    Console.WriteLine($"handle : {h.Handle}");
-                    Console.WriteLine($"pointerCount: {h.PointerCount}");
-                    Console.WriteLine($"RVA: {h.TypeNameRva}");
-                    Console.WriteLine();
+                    result.Add(new MiniDumpHandle(handle));
                 }
-            }
-            else {
 
             }
+
+            return result;
         }
 
 
 
-        protected internal unsafe T[] ReadArray<T>(IntPtr absoluteStreamReadAddress, int count, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle) where T : struct
+        protected internal unsafe T[] ReadArray<T>(IntPtr absoluteAddress, int count, SafeMemoryMappedViewHandle safeHandle) where T : struct
         {
             T[] readItems = new T[count];
 
@@ -125,15 +119,15 @@ namespace Assignments.Core.Handlers
             {
                 byte* baseOfView = null;
 
-                safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
+                safeHandle.AcquirePointer(ref baseOfView);
 
-                ulong offset = (ulong)absoluteStreamReadAddress - (ulong)baseOfView;
+                ulong offset = (ulong)absoluteAddress - (ulong)baseOfView;
 
-                safeMemoryMappedViewHandle.ReadArray<T>(offset, readItems, 0, count);
+                safeHandle.ReadArray<T>(offset, readItems, 0, count);
             }
             finally
             {
-                safeMemoryMappedViewHandle.ReleasePointer();
+                safeHandle.ReleasePointer();
             }
 
             return readItems;
@@ -186,7 +180,7 @@ namespace Assignments.Core.Handlers
             return Path.GetFullPath(local);
         }
 
-        private static void RecCheckDirectory()
+        private static void RecheckDirectory()
         {
             DirectoryInfo dirInfo = new DirectoryInfo(DUMPS_DIR);
             if (!dirInfo.Exists)

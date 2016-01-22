@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Assignments.Core.Handlers.WCT;
+using Assignments.Core.Handlers;
 using Assignments.Core.Extentions;
+using Assignments.Core.WinApi;
 
 namespace Assignments.Core.Model.WCT
 {
@@ -36,7 +37,7 @@ namespace Assignments.Core.Model.WCT
             }
         }
 
-        internal void SetInfo(WAITCHAIN_NODE_INFO[] info)
+        internal void SetInfo(Advapi32.WAITCHAIN_NODE_INFO[] info)
         {
             if (info != null)
             {

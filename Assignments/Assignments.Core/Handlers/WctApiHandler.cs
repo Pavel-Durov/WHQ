@@ -6,13 +6,9 @@ using Assignments.Core.WinApi;
 using Assignments.Core.Model.Unified;
 using System.Collections.Generic;
 
-namespace Assignments.Core.Handlers.WCT
+namespace Assignments.Core.Handlers
 {
-    /// <summary>
-    /// //https://msdn.microsoft.com/en-us/library/cc308564.aspx
-    /// about: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
-    /// use: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681418(v=vs.85).aspx
-    /// </summary>
+
     public class WctApiHandler
     {
 
@@ -26,19 +22,19 @@ namespace Assignments.Core.Handlers.WCT
         {
             ThreadWCTInfo result = null;
 
-            var g_WctIntPtr = Advapi32.OpenThreadWaitChainSession((int)WCT_SESSION_OPEN_FLAGS.WCT_SYNC_OPEN_FLAG, 0);
+            var g_WctIntPtr = Advapi32.OpenThreadWaitChainSession((int)Advapi32.WCT_SESSION_OPEN_FLAGS.WCT_SYNC_OPEN_FLAG, 0);
 
-            
-            WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WctApiConst.WCT_MAX_NODE_COUNT];
+
+            Advapi32.WAITCHAIN_NODE_INFO[] NodeInfoArray = new Advapi32.WAITCHAIN_NODE_INFO[Advapi32.WCT_MAX_NODE_COUNT];
 
 
             int isCycle = 0;
-            int Count = WctApiConst.WCT_MAX_NODE_COUNT;
+            int Count = Advapi32.WCT_MAX_NODE_COUNT;
 
             // Make a synchronous WCT call to retrieve the wait chain.
             bool waitChainResult = Advapi32.GetThreadWaitChain(g_WctIntPtr,
                                     IntPtr.Zero,
-                                    WctApiConst.WCTP_GETINFO_ALL_FLAGS,
+                                    Advapi32.WCTP_GETINFO_ALL_FLAGS,
                                     threadId, ref Count, NodeInfoArray, out isCycle);
 
             CheckCount(ref Count);
@@ -59,10 +55,10 @@ namespace Assignments.Core.Handlers.WCT
         }
 
         
-        private ThreadWCTInfo HandleGetThreadWaitChainRsult(uint threadId, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
+        private ThreadWCTInfo HandleGetThreadWaitChainRsult(uint threadId, int Count, Advapi32.WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
         {
             ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, threadId);
-            WAITCHAIN_NODE_INFO[] info = new WAITCHAIN_NODE_INFO[Count];
+            Advapi32.WAITCHAIN_NODE_INFO[] info = new Advapi32.WAITCHAIN_NODE_INFO[Count];
             Array.Copy(NodeInfoArray, info, Count);
 
             result.SetInfo(info);
@@ -75,7 +71,7 @@ namespace Assignments.Core.Handlers.WCT
         {
             var lastErrorCode = Marshal.GetLastWin32Error();
 
-            if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
+            if (lastErrorCode == (uint)Advapi32.SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
             {
                 //TODO: Follow this doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681421(v=vs.85).aspx
             }
@@ -88,10 +84,10 @@ namespace Assignments.Core.Handlers.WCT
         private void CheckCount(ref int Count)
         {
             // Check if the wait chain is too big for the array we passed in.
-            if (Count > WctApiConst.WCT_MAX_NODE_COUNT)
+            if (Count > Advapi32.WCT_MAX_NODE_COUNT)
             {
                 //Found additional nodes 
-                Count = WctApiConst.WCT_MAX_NODE_COUNT;
+                Count = Advapi32.WCT_MAX_NODE_COUNT;
             }
         }
 

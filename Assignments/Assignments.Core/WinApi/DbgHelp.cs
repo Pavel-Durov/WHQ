@@ -9,8 +9,7 @@ namespace Assignments.Core.WinApi
 {
     public class DbgHelp
     {
-
-        public const int ERR_ELEMENT_NOT_FOUND = 1168;
+        #region Methods
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
@@ -34,8 +33,13 @@ namespace Assignments.Core.WinApi
             ref uint StreamSize);
 
 
+        #endregion
 
-        internal struct MINIDUMP_HANDLE_DATA_STREAM
+
+        #region Structs
+
+
+        public struct MINIDUMP_HANDLE_DATA_STREAM
         {
             public UInt32 SizeOfHeader;
             public UInt32 SizeOfDescriptor;
@@ -44,8 +48,8 @@ namespace Assignments.Core.WinApi
         }
 
 
-        
-        internal struct MINIDUMP_HANDLE_DESCRIPTOR_2
+
+        public struct MINIDUMP_HANDLE_DESCRIPTOR_2
         {
             public UInt64 Handle;
             public uint TypeNameRva;
@@ -58,7 +62,7 @@ namespace Assignments.Core.WinApi
             public UInt32 Reserved0;
         }
         
-        internal struct MINIDUMP_HANDLE_DESCRIPTOR
+        public struct MINIDUMP_HANDLE_DESCRIPTOR
         {
             public UInt64 Handle;
             public uint TypeNameRva;
@@ -148,6 +152,10 @@ namespace Assignments.Core.WinApi
             public uint Rva;
         }
 
+        #endregion
+
+
+        #region Enums + Constants
 
         public enum MINIDUMP_STREAM_TYPE
         {
@@ -173,7 +181,9 @@ namespace Assignments.Core.WinApi
             LastReservedStream = 0xffff
         }
 
-        
+        public const int ERR_ELEMENT_NOT_FOUND = 1168;
+
+        #endregion
 
     }
 }
