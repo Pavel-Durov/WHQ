@@ -18,22 +18,23 @@ namespace Assignments.Core.WinApi
 
         [DllImport("DbgHelp.dll", SetLastError = true)]
         public extern static bool MiniDumpWriteDump(
-        IntPtr hProcess,
-        UInt32 ProcessId, // DWORD is a 32 bit unsigned integer
-        SafeHandle hFile,
-        DbgHelp.MINIDUMP_STREAM_TYPE DumpType,
-        IntPtr ExceptionParam,
-        IntPtr UserStreamParam,
-        IntPtr CallbackParam);
+            IntPtr hProcess,
+            UInt32 ProcessId, // DWORD is a 32 bit unsigned integer
+            SafeHandle hFile,
+            DbgHelp.MINIDUMP_STREAM_TYPE DumpType,
+            IntPtr exceptionParam,
+            IntPtr userStream,
+            IntPtr callback);
 
         [DllImport("Dbghelp.dll", SetLastError = true)]
         public static extern bool MiniDumpReadDumpStream(IntPtr BaseOfDump,
-        DbgHelp.MINIDUMP_STREAM_TYPE StreamNumber,
-        ref MINIDUMP_DIRECTORY Dir,
-        ref IntPtr StreamPointer,
-        ref uint StreamSize);
+            DbgHelp.MINIDUMP_STREAM_TYPE StreamNumber,
+            ref MINIDUMP_DIRECTORY Dir,
+            ref IntPtr StreamPointer,
+            ref uint StreamSize);
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+
+
         internal struct MINIDUMP_HANDLE_DATA_STREAM
         {
             public UInt32 SizeOfHeader;
@@ -43,7 +44,7 @@ namespace Assignments.Core.WinApi
         }
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        
         internal struct MINIDUMP_HANDLE_DESCRIPTOR_2
         {
             public UInt64 Handle;
@@ -56,7 +57,7 @@ namespace Assignments.Core.WinApi
             public uint ObjectInfoRva;
             public UInt32 Reserved0;
         }
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        
         internal struct MINIDUMP_HANDLE_DESCRIPTOR
         {
             public UInt64 Handle;
@@ -69,7 +70,7 @@ namespace Assignments.Core.WinApi
         }
 
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        
         public struct MINIDUMP_EXCEPTION_INFORMATION
         {
             public uint ThreadId;
@@ -99,10 +100,6 @@ namespace Assignments.Core.WinApi
 
 
 
-
-
-     
-        [Flags]
         public enum Option : uint
         {
             // From dbghelp.h:
@@ -129,40 +126,7 @@ namespace Assignments.Core.WinApi
         };
 
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MINIDUMP_MODULE_CALLBACK
-        {
-            [MarshalAs(UnmanagedType.LPWStr)]
-            String FullPath;
-            UInt64 BaseOfImage;
-            UInt32 SizeOfImage;
-            UInt32 CheckSum;
-            UInt32 TimeDateStamp;
-            VS_FIXEDFILEINFO VersionInfo;
-            IntPtr CvRecord;
-            UInt32 SizeOfCvRecord;
-            IntPtr MiscRecord;
-            UInt32 SizeOfMiscRecord;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct VS_FIXEDFILEINFO
-        {
-            UInt32 dwSignature;
-            UInt32 dwStrucVersion;
-            UInt32 dwFileVersionMS;
-            UInt32 dwFileVersionLS;
-            UInt32 dwProductVersionMS;
-            UInt32 dwProductVersionLS;
-            UInt32 dwFileFlagsMask;
-            UInt32 dwFileFlags;
-            UInt32 dwFileOS;
-            UInt32 dwFileType;
-            UInt32 dwFileSubtype;
-            UInt32 dwFileDateMS;
-            UInt32 dwFileDateLS;
-        }
-
+       
 
         public struct MiniDumpExceptionInformation
         {
@@ -172,35 +136,6 @@ namespace Assignments.Core.WinApi
             public bool ClientPointers;
         }
 
-        public enum ExceptionInfo
-        {
-            None,
-            Present
-        }
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        internal struct MINIDUMP_MODULE
-        {
-            public UInt64 BaseOfImage;
-            public UInt32 SizeOfImage;
-            public UInt32 CheckSum;
-            public UInt32 TimeDateStamp;
-            public uint ModuleNameRva;
-            public VS_FIXEDFILEINFO VersionInfo;
-            public MINIDUMP_LOCATION_DESCRIPTOR CvRecord;
-            public MINIDUMP_LOCATION_DESCRIPTOR MiscRecord;
-            public UInt64 Reserved0;
-            public UInt64 Reserved1;
-        }
-
-
-
-
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        internal struct MINIDUMP_MODULE_LIST
-        {
-            public UInt32 NumberOfModules;
-            public IntPtr Modules;
-        }
         public struct MINIDUMP_DIRECTORY
         {
             public UInt32 StreamType;
