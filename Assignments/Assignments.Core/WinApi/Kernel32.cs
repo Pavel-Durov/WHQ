@@ -30,7 +30,6 @@ namespace Assignments.Core.WinApi
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 
 
-
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr VirtualQuery(SafeMemoryMappedViewHandle address, ref MEMORY_BASIC_INFORMATION buffer, IntPtr sizeOfBuffer);
 

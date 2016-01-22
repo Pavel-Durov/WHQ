@@ -139,15 +139,10 @@ namespace Assignments.Core.Handlers
                 byte* baseOfView = null;
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
-                var dumpStream = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
-                if (dumpStream)
+                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
+                if (result)
                 {
                     streamData = (DbgHelp.MINIDUMP_HANDLE_DATA_STREAM)Marshal.PtrToStructure(streamPointer, typeof(DbgHelp.MINIDUMP_HANDLE_DATA_STREAM));
-                    result = true;
-                }
-                else
-                {
-                    result = false;
                 }
             }
             finally
