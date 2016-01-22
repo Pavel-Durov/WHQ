@@ -2,12 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 using System.IO.MemoryMappedFiles;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
@@ -43,7 +39,6 @@ namespace Assignments.Core.Handlers
 
         private SafeMemoryMappedViewHandle MapFile(FileStream fs, string fileName)
         {
-
             MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fs, fileName, 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
 
             SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
@@ -76,7 +71,7 @@ namespace Assignments.Core.Handlers
             IntPtr streamPointer;
             uint streamSize;
 
-            var readStrem = ReadStream<DbgHelp.MINIDUMP_HANDLE_DATA_STREAM>(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, safeMemoryMappedViewHandle);
+            var readStrem = ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, safeMemoryMappedViewHandle);
 
             if (!readStrem)
             {
@@ -118,11 +113,8 @@ namespace Assignments.Core.Handlers
             try
             {
                 byte* baseOfView = null;
-
                 safeHandle.AcquirePointer(ref baseOfView);
-
                 ulong offset = (ulong)absoluteAddress - (ulong)baseOfView;
-
                 safeHandle.ReadArray<T>(offset, readItems, 0, count);
             }
             finally
@@ -134,10 +126,11 @@ namespace Assignments.Core.Handlers
         }
 
 
-        protected unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {
+            bool result = false;
             DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
-            streamData = default(T);
+            streamData = default(DbgHelp.MINIDUMP_HANDLE_DATA_STREAM);
             streamPointer = IntPtr.Zero;
             streamSize = 0;
 
@@ -146,30 +139,23 @@ namespace Assignments.Core.Handlers
                 byte* baseOfView = null;
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
-                if (baseOfView == null)
-                    throw new Exception("Unable to aquire pointer to memory mapped view");
-
-                if (!DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize))
+                var dumpStream = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
+                if (dumpStream)
                 {
-                    int lastError = Marshal.GetLastWin32Error();
-
-                    if (lastError == DbgHelp.ERR_ELEMENT_NOT_FOUND)
-                    {
-                        return false;
-                    }
-                    else
-                        throw new Win32Exception(lastError);
+                    streamData = (DbgHelp.MINIDUMP_HANDLE_DATA_STREAM)Marshal.PtrToStructure(streamPointer, typeof(DbgHelp.MINIDUMP_HANDLE_DATA_STREAM));
+                    result = true;
                 }
-
-                streamData = (T)Marshal.PtrToStructure(streamPointer, typeof(T));
-
+                else
+                {
+                    result = false;
+                }
             }
             finally
             {
                 safeMemoryMappedViewHandle.ReleasePointer();
             }
 
-            return true;
+            return result;
         }
 
 

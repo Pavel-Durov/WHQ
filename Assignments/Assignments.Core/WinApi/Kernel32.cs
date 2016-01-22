@@ -7,6 +7,8 @@ namespace Assignments.Core.WinApi
 {
     public class Kernel32
     {
+        #region Methods
+
         [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern HANDLE CreateEvent(SECURITY_ATTRIBUTES lpSecurityAttributes, bool isManualReset, bool initialState, string name);
 
@@ -29,20 +31,76 @@ namespace Assignments.Core.WinApi
 
 
 
-        /// <summary>
-        /// </summary>
-        /// <param name="dwDesiredAccess">Handle</param>
-        /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
-        /// <param name="processId"></param>
-        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr VirtualQuery(SafeMemoryMappedViewHandle address, ref MEMORY_BASIC_INFORMATION buffer, IntPtr sizeOfBuffer);
+
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern SafeMemoryMappedViewHandle MapViewOfFile(
+            SafeMemoryMappedFileHandle hFileMappingObject,
+            Kernel32.FileMapAccess dwDesiredAccess,
+            uint dwFileOffsetHigh,
+            uint dwFileOffsetLow,
+            IntPtr dwNumberOfBytesToMap);
+
         [DllImport("Kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, uint processId);
 
-
-
-        //https://msdn.microsoft.com/en-us/library/windows/desktop/aa446619(v=vs.85).aspx
         [DllImport("Kernel32.dll", SetLastError = true)]
         public static extern bool SetPrivilege(HANDLE token, ProcessAccessFlags Privilege, bool EnablePrivilege);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr OpenFileMapping(
+          uint dwDesiredAccess,
+          bool bInheritHandle,
+          string lpName);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr CreateFileMapping(
+               IntPtr hFile,
+               ref SECURITY_ATTRIBUTES attributes,
+               FileMapProtection flProtect,
+               uint dwMaximumSizeHigh,
+               uint dwMaximumSizeLow,
+               string lpName);
+
+
+
+        #endregion
+
+
+        #region Constants
+
+        public const Int32 INFINITE = -1;
+        public const Int32 WAIT_ABANDONED = 0x80;
+        public const Int32 WAIT_OBJECT_0 = 0x00;
+        public const Int32 WAIT_TIMEOUT = 0x102;
+        public const Int32 WAIT_FAILED = -1;
+
+
+        public enum FileMapAccessType : uint
+        {
+            Copy = 0x01,
+            Write = 0x02,
+            Read = 0x04,
+            AllAccess = 0x08,
+            Execute = 0x20,
+        }
+
+        #endregion
+
+
+        #region Structs
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SECURITY_ATTRIBUTES
+        {
+            public int nLength;
+            public unsafe byte* lpSecurityDescriptor;
+            public int bInheritHandle;
+        }
+
+
 
         [Flags]
         public enum ProcessAccessFlags : uint
@@ -62,31 +120,6 @@ namespace Assignments.Core.WinApi
             Synchronize = 0x00100000
         }
 
-
-
-        #region Constants
-
-        public const Int32 INFINITE = -1;
-        public const Int32 WAIT_ABANDONED = 0x80;
-        public const Int32 WAIT_OBJECT_0 = 0x00;
-        public const Int32 WAIT_TIMEOUT = 0x102;
-        public const Int32 WAIT_FAILED = -1;
-
-        #endregion
-
-
-        #region Structs
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SECURITY_ATTRIBUTES
-        {
-            public int nLength;
-            public unsafe byte* lpSecurityDescriptor;
-            public int bInheritHandle;
-        }
-
-        #endregion
-
         public struct MEMORY_BASIC_INFORMATION
         {
             public IntPtr BaseAddress;
@@ -99,19 +132,6 @@ namespace Assignments.Core.WinApi
         }
 
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr VirtualQuery(SafeMemoryMappedViewHandle address, ref MEMORY_BASIC_INFORMATION buffer, IntPtr sizeOfBuffer);
-        #region Files
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern SafeMemoryMappedViewHandle MapViewOfFile(
-            SafeMemoryMappedFileHandle hFileMappingObject,
-            Kernel32.FileMapAccess dwDesiredAccess,
-            uint dwFileOffsetHigh,
-            uint dwFileOffsetLow,
-            IntPtr dwNumberOfBytesToMap);
-
-
 
         [Flags]
         public enum FileMapAccess : uint
@@ -122,39 +142,6 @@ namespace Assignments.Core.WinApi
             FileMapAllAccess = 0x001f,
             FileMapExecute = 0x0020,
         }
-
-
-        const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
-        const UInt32 SECTION_QUERY = 0x0001;
-        const UInt32 SECTION_MAP_WRITE = 0x0002;
-        const UInt32 SECTION_MAP_READ = 0x0004;
-        const UInt32 SECTION_MAP_EXECUTE = 0x0008;
-        const UInt32 SECTION_EXTEND_SIZE = 0x0010;
-        const UInt32 SECTION_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SECTION_QUERY |
-            SECTION_MAP_WRITE |
-            SECTION_MAP_READ |
-            SECTION_MAP_EXECUTE |
-            SECTION_EXTEND_SIZE);
-        public const UInt32 FILE_MAP_ALL_ACCESS = SECTION_ALL_ACCESS;
-
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr OpenFileMapping(
-          uint dwDesiredAccess,
-          bool bInheritHandle,
-          string lpName);
-
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr CreateFileMapping(
-               IntPtr hFile,
-               ref SECURITY_ATTRIBUTES attributes,
-               FileMapProtection flProtect,
-               uint dwMaximumSizeHigh,
-               uint dwMaximumSizeLow,
-               string lpName);
-
-
-
-        //User-Defined Types:
 
         [Flags]
         public enum FileMapProtection : uint
@@ -171,15 +158,8 @@ namespace Assignments.Core.WinApi
         }
 
 
-        public enum FileMapAccessType : uint
-        {
-            Copy = 0x01,
-            Write = 0x02,
-            Read = 0x04,
-            AllAccess = 0x08,
-            Execute = 0x20,
-        }
 
         #endregion
+
     }
 }
