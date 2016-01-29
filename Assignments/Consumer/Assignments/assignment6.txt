@@ -1,0 +1,9 @@
+﻿Hi,
+
+Sorry again for the delay. Your work looks good. The reason there are two handle descriptor structures is that the second one has more information, and it's only available on newer versions of Windows (I think after Windows XP). Notice specifically that the second version has a pointer to the MINIDUMP_HANDLE_OBJECT_INFORMATION structure, which is where the interesting information is for thread and mutex handles. It gives us the thread id given a thread handle, and the mutex owner thread given a mutex handle.
+
+In any case, you can go ahead and integrate this work with the data you get from snooping WaitForSingleObject and WaitForMultipleObjects on the thread stacks. Ideally it would fit into the same Unified* object model you built previously. Now, whenever there's a thread waiting for a handle, you can get the handle information from the dump file and create the appropriate UnifiedBlockingObject. But -- please keep this code separate from the WCT logic, because we can only use one or the other. WCT would work for a live process, and the dump structures would only work when you have a dump file. 
+
+Re your final question, there is no way to get information from a dump file without generating a dump file. Not sure what you mean by that question. 
+
+Sasha

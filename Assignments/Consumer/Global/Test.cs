@@ -18,7 +18,7 @@ namespace Consumer.Global
         {
             using (DataTarget target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT))
             {
-                DoAnaytics(target);
+                DoAnaytics(target, pid);
             }
 
             Console.ReadKey();
@@ -38,12 +38,13 @@ namespace Consumer.Global
             return pid;
         }
 
-        private static void DoAnaytics(DataTarget target)
+        private static void DoAnaytics(DataTarget target, int pid)
         {
-            ThreadStackHandler handler = new ThreadStackHandler();
+            
             var runtime = target.ClrVersions[0].CreateRuntime();
+            ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, pid, ProcessState.Dump);
 
-            var result = handler.Handle(target.DebuggerInterface, runtime);
+            var result = handler.Handle();
 
             PrintHandler.Print(result, true);
 

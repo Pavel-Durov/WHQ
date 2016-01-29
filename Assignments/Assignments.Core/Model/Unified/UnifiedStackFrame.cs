@@ -42,7 +42,9 @@ namespace Assignments.Core.Model.Unified
         }
 
         public UnifiedStackFrame LinkedStackFrame { get; set; } //Used for linking managed frame to native frame
-        public List<byte[]> NativeParams { get; set; } 
+        public List<byte[]> NativeParams { get; set; }
+        public List<uint> Handles { get; set; }
+
 
         public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols)
         {

@@ -108,6 +108,21 @@ namespace Assignments.Core.Extentions
 
         #endregion
 
+        public static String AsString(this List<uint> parms, char prefix)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Environment.NewLine);
+            sb.Append(prefix);
+
+            for (int i = 0; i < parms.Count; i++)
+            {
+                var msg = String.Format("[{0}]= 0x{1:x} ", i, parms[i]);
+                sb.Append(msg);
+            }
+
+            return sb.ToString();
+        }
+
         public static String AsString(this List<byte[]> parms, char prefix)
         {
             StringBuilder sb = new StringBuilder();

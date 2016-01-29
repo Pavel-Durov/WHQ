@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.IO.MemoryMappedFiles;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
+using System.Threading.Tasks;
 
 namespace Assignments.Core.Handlers
 {
@@ -16,7 +17,12 @@ namespace Assignments.Core.Handlers
 
         private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
-        public void Handle(uint pid)
+        public MiniDumpHandler()
+        {
+            
+        }
+
+        public void Init(uint pid)
         {
             var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.All, false, pid);
 
@@ -31,11 +37,12 @@ namespace Assignments.Core.Handlers
 
                 if (miniDumpCreated)
                 {
-                    var safeMemoryMappedViewHandle = MapFile(fs, fileName);
-                    var result = ReadHandleData(safeMemoryMappedViewHandle);
+                    _safeMemoryMappedViewHandle = MapFile(fs, fileName);
                 }
             }
         }
+
+        SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
 
         private SafeMemoryMappedViewHandle MapFile(FileStream fs, string fileName)
         {
@@ -63,7 +70,7 @@ namespace Assignments.Core.Handlers
 
 
 
-        public List<MiniDumpHandle> ReadHandleData(SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        public List<MiniDumpHandle> GetHandleData()
         {
             List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
@@ -71,7 +78,7 @@ namespace Assignments.Core.Handlers
             IntPtr streamPointer;
             uint streamSize;
 
-            var readStrem = ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, safeMemoryMappedViewHandle);
+            var readStrem = ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, _safeMemoryMappedViewHandle);
 
             if (!readStrem)
             {
@@ -83,7 +90,7 @@ namespace Assignments.Core.Handlers
 
             if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR)))
             {
-                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
 
                 foreach (var handle in handles)
                 {
@@ -92,7 +99,7 @@ namespace Assignments.Core.Handlers
             }
             else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2)))
             {
-                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, safeMemoryMappedViewHandle);
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
 
                 foreach (var handle in handles)
                 {

@@ -16,14 +16,12 @@ namespace Consumer
     class Program
     {
         const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
-        const uint PID_NOT_FOUND = 0;
+        const int PID_NOT_FOUND = 0;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
         static void Main(string[] args)
         {
-
-
-            uint pid = GetPidFromDumpProcessTextFile();
+            int pid = GetPidFromDumpProcessTextFile();
             if (pid != PID_NOT_FOUND)
             {
                 Console.WriteLine("PID found in Assignment_3.DumpTest file :) ");
@@ -33,22 +31,22 @@ namespace Consumer
                 Console.WriteLine("--- Assignment_4 C# project ----");
                 Console.WriteLine("Please enter a PID: ");
 
-                pid = uint.Parse(Console.ReadLine());
+                pid = int.Parse(Console.ReadLine());
             }
 
-            //Global.Test.Run(pid);
-            DumpFile64Bit.Test.Run(pid);
+            Global.Test.Run(pid);
+            //DumpFile64Bit.Test.Run(pid);
             Console.ReadKey();
         }
 
-        private static uint GetPidFromDumpProcessTextFile()
+        private static int GetPidFromDumpProcessTextFile()
         {
-            uint pid = PID_NOT_FOUND;
+            int pid = PID_NOT_FOUND;
 
             var fileContent = File.ReadAllText(@"./../../../dump_pid.txt");
             if (!String.IsNullOrEmpty(fileContent))
             {
-                var success = uint.TryParse(fileContent, out pid);
+                var success = int.TryParse(fileContent, out pid);
             }
 
             return pid;

@@ -11,39 +11,37 @@ using Assignments.Core.Model.Unified.Thread;
 
 namespace Assignments.Core.Handlers
 {
+    public enum ProcessState
+    {
+        Live, Dump
+    }
+
     public class ThreadStackHandler
     {
-        public void Handle(ClrThread thread)
+        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, ProcessState state)
         {
+            _miniDump = new MiniDumpHandler();
+            _miniDump.Init((uint)_pid);
 
-        }
-
-        WctApiHandler _wctApi;
-
-
-        public WctApiHandler WctApi
-        {
-            get
-            {
-                if (_wctApi == null)
-                {
-                    _wctApi = new WctApiHandler();
-                }
-                return _wctApi;
-            }
-            set { _wctApi = value; }
-        }
-
-        IDebugClient _debugClient;
-        private ClrRuntime _runtime;
-
-
-
-        public List<UnifiedThread> Handle(IDebugClient debugClient, ClrRuntime runtime)
-        {
+            _wctApi = new WctApiHandler();
+            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
+            _state = state;
             _debugClient = debugClient;
             _runtime = runtime;
+            _pid = pid;
+        }
 
+        MiniDumpHandler _miniDump;
+        WctApiHandler _wctApi;
+        UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
+        IDebugClient _debugClient;
+        private ClrRuntime _runtime;
+        int _pid;
+
+        ProcessState _state;
+
+        public List<UnifiedThread> Handle()
+        {
             uint _numThreads = 0;
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).GetNumberThreads(out _numThreads));
 
@@ -53,7 +51,7 @@ namespace Assignments.Core.Handlers
 
             List<UnifiedThread> result = new List<UnifiedThread>();
 
-            var clrThreads = runtime.Threads;
+            var clrThreads = _runtime.Threads;
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
@@ -62,7 +60,7 @@ namespace Assignments.Core.Handlers
 
                 if (specific_info.IsManagedThread)
                 {
-                    result.Add(HandleManagedThread(specific_info, runtime));
+                    result.Add(HandleManagedThread(specific_info));
                 }
                 else
                 {
@@ -77,22 +75,34 @@ namespace Assignments.Core.Handlers
         {
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+
             var blockingObjecets = GetWCTBlockingObject(specific_info.OSThreadId);
+
+            if (_state == ProcessState.Dump)
+            {
+                var miniDimp_blockingObjects = GetMiniDumpBlockingObjects(specific_info, unmanagedStack);
+                if (miniDimp_blockingObjects != null)
+                {
+                    blockingObjecets.AddRange(miniDimp_blockingObjects);
+                }
+            }
+
             result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjecets);
+
             return result;
         }
 
-        private UnifiedManagedThread HandleManagedThread(ThreadInfo specific_info, ClrRuntime runtime)
+        private UnifiedManagedThread HandleManagedThread(ThreadInfo specific_info)
         {
             UnifiedManagedThread result = null;
 
-            ClrThread clr_thread = runtime.Threads.Where(x => x.OSThreadId == specific_info.OSThreadId).FirstOrDefault();
+            ClrThread clr_thread = _runtime.Threads.Where(x => x.OSThreadId == specific_info.OSThreadId).FirstOrDefault();
             if (clr_thread != null)
             {
                 var managedStack = GetManagedStackTrace(clr_thread);
                 var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-                var blockingObjs = GetBlockingObjects(clr_thread, runtime);
+                var blockingObjs = GetBlockingObjects(clr_thread);
 
                 result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
@@ -118,32 +128,74 @@ namespace Assignments.Core.Handlers
 
         #region Blocking Objects Methods
 
-        private List<UnifiedBlockingObject> GetBlockingObjects(ClrThread thread, ClrRuntime runtime)
+        private List<UnifiedBlockingObject> GetBlockingObjects(ClrThread thread)
         {
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
 
             //Clr Blocking Objects
-            var clr_blockingObjects = GetClrBlockingObjects(thread, runtime);
+            var clr_blockingObjects = GetClrBlockingObjects(thread);
             if (clr_blockingObjects != null)
             {
                 result.AddRange(clr_blockingObjects);
             }
-            //WCT API Blocking Objects
-            var wct_blockingObjects = GetWCTBlockingObject(thread.OSThreadId);
 
-            if (wct_blockingObjects != null)
+            if (_state == ProcessState.Live)
             {
-                result.AddRange(wct_blockingObjects);
+                //WCT API Blocking Objects
+                var wct_blockingObjects = GetWCTBlockingObject(thread.OSThreadId);
+            }
+            else if (_state == ProcessState.Dump)
+            {
+                //var miniDimp_blockingObjects = GetMiniDumpBlockingObjects(thread);
+                //if (miniDimp_blockingObjects != null)
+                //{
+                //    result.AddRange(miniDimp_blockingObjects);
+                //}
+            }
+            return result;
+        }
+
+        private List<UnifiedBlockingObject> GetMiniDumpBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
+        {
+            List<UnifiedBlockingObject> result = null;
+
+            var stackFrameHandles = from frame in unmanagedStack
+                                    where frame.Handles?.Count > 0
+                                    select frame;
+
+            if (stackFrameHandles != null)
+            {
+                result = new List<UnifiedBlockingObject>();
+
+                var miniDumpHandles = _miniDump.GetHandleData();
+
+                if (miniDumpHandles?.Count > 0)
+                {
+                    foreach (var item in stackFrameHandles)
+                    {
+                        foreach (var handle in item.Handles)
+                        {
+                            var relevant = from c in miniDumpHandles
+                                           where c.Handle == handle
+                                           select c;
+                            if (relevant?.Count() > 0)
+                            {
+                                Console.WriteLine("WE GOT A MATCH");
+                            }
+                        }
+                    }
+                }
             }
 
             return result;
         }
+
         private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)
         {
             List<UnifiedBlockingObject> result = null;
 
             ThreadWCTInfo wct_threadInfo = null;
-            if (WctApi.GetBlockingObjects(threadId, out wct_threadInfo))
+            if (_wctApi.GetBlockingObjects(threadId, out wct_threadInfo))
             {
                 result = new List<UnifiedBlockingObject>();
 
@@ -159,7 +211,7 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private List<UnifiedBlockingObject> GetClrBlockingObjects(ClrThread thread, ClrRuntime runtime)
+        private List<UnifiedBlockingObject> GetClrBlockingObjects(ClrThread thread)
         {
             List<UnifiedBlockingObject> result = null;
             if (thread.BlockingObjects?.Count > 0)

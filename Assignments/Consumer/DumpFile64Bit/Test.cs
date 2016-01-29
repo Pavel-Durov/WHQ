@@ -17,7 +17,7 @@ namespace Consumer.DumpFile64Bit
         public static void Run(uint pid)
         {
             MiniDumpHandler handler = new MiniDumpHandler();
-            handler.Handle(pid);
+            handler.Init(pid);
         }
     }
 }

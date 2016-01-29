@@ -16,16 +16,44 @@ namespace Assignments.Core.Handlers
         public static void SetParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             List<byte[]> result = new List<byte[]>();
+
             if (CheckForWinApiCalls(frame, SINGLE_WAIT_FUNCTION_NAME))
             {
-                result = GetSingleStackFrameParams(frame, runtime);
+                DealWithSingle(frame, runtime, result);
             }
             else if (CheckForWinApiCalls(frame, MULTI_WAIT_FUNCTION_NAME))
             {
-                result = GetMultipleStackFrameParams(frame, runtime);
+                DealWithMultiple(frame, runtime, result);
             }
 
             frame.NativeParams = result;
+        }
+
+        private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        {
+            result = GetSingleStackFrameParams(frame, runtime);
+            frame.Handles = new List<uint>();
+            frame.Handles.Add(Convert(result[0]));
+        }
+
+        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        {
+            result = GetMultipleStackFrameParams(frame, runtime);
+            frame.Handles = new List<uint>();
+
+            var HandlesCunt = BitConverter.ToUInt32(result[0], 0);
+            var HandleAddress = BitConverter.ToUInt32(result[1], 0);
+
+            var handles = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
+            foreach (var handle in handles)
+            {
+                frame.Handles.Add(Convert(handle));
+            }
+        }
+
+        private static uint Convert(byte[] bits)
+        {
+            return BitConverter.ToUInt32(bits, 0);
         }
 
         public static bool CheckForWinApiCalls(UnifiedStackFrame c, string key)
@@ -44,17 +72,15 @@ namespace Assignments.Core.Handlers
             List<byte[]> result = new List<byte[]>();
             var nativeParams = GetNativeParams(frame, runtime, 4);
 
-            if (nativeParams != null && nativeParams.Count > 0)
-            {
+            //if (nativeParams != null && nativeParams.Count > 0)
+            //{
 
-                var HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-                var HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
-                var WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
-                var Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
-
-                result = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
-            }
-            return result;
+            //    var HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
+            //    var HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
+            //    var WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
+            //    var Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
+            //}
+            return nativeParams;
         }
 
 
@@ -63,13 +89,13 @@ namespace Assignments.Core.Handlers
 
             var nativeParams = GetNativeParams(frame, runtime, 2);
 
-            if (nativeParams != null && nativeParams.Count > 0)
-            {
-                //Handle Address 
-                var HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
-                //Timeout Param
-                var Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
-            }
+            //if (nativeParams != null && nativeParams.Count > 0)
+            //{
+            //    //Handle Address 
+            //    var HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
+            //    //Timeout Param
+            //    var Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
+            //}
 
             return nativeParams;
         }
