@@ -18,6 +18,7 @@ namespace DumpTest.Tests
                 var loopAutoEvent = new AutoResetEvent(false);
                 arr[i] = loopAutoEvent.Handle;
             }
+            Console.WriteLine("WaitForMultipleObjects");
             var mulRes0 = WaitForMultipleObjects(3, arr, true, 0);
             var mulRes1 = WaitForMultipleObjects(3, arr, false, 0);
             var mulRes2 = WaitForMultipleObjects(3, arr, true, int.MaxValue);

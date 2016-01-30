@@ -8,6 +8,7 @@ using Assignments.Core.Model.Unified;
 using System;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.Model.Unified.Thread;
+using Assignments.Core.Model.MiniDump;
 
 namespace Assignments.Core.Handlers
 {
@@ -20,17 +21,24 @@ namespace Assignments.Core.Handlers
     {
         public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, ProcessState state)
         {
-            _miniDump = new MiniDumpHandler();
-            _miniDump.Init((uint)_pid);
 
+            _pid = pid;
+            _miniDump = new MiniDumpHandler();
+            InitMiniDumpHandler();
             _wctApi = new WctApiHandler();
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
             _state = state;
             _debugClient = debugClient;
             _runtime = runtime;
-            _pid = pid;
         }
 
+        private void InitMiniDumpHandler()
+        {
+            _miniDump.Init((uint)_pid);
+            _miniDumpHandles = _miniDump.GetHandleData();
+        }
+
+        List<MiniDumpHandle> _miniDumpHandles;
         MiniDumpHandler _miniDump;
         WctApiHandler _wctApi;
         UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
@@ -163,28 +171,27 @@ namespace Assignments.Core.Handlers
                                     where frame.Handles?.Count > 0
                                     select frame;
 
+            var first = _miniDumpHandles.FirstOrDefault();
             if (stackFrameHandles != null)
             {
                 result = new List<UnifiedBlockingObject>();
 
-                var miniDumpHandles = _miniDump.GetHandleData();
-
-                if (miniDumpHandles?.Count > 0)
-                {
-                    foreach (var item in stackFrameHandles)
-                    {
-                        foreach (var handle in item.Handles)
-                        {
-                            var relevant = from c in miniDumpHandles
-                                           where c.Handle == handle
-                                           select c;
-                            if (relevant?.Count() > 0)
-                            {
-                                Console.WriteLine("WE GOT A MATCH");
-                            }
-                        }
-                    }
-                }
+                //if (miniDumpHandles?.Count > 0)
+                //{
+                //    foreach (var item in stackFrameHandles)
+                //    {
+                //        foreach (var handle in item.Handles)
+                //        {
+                //            var relevant = from c in miniDumpHandles
+                //                           where c.Handle == handle
+                //                           select c;
+                //            if (relevant?.Count() > 0)
+                //            {
+                //                Console.WriteLine("WE GOT A MATCH");
+                //            }
+                //        }
+                //    }
+                //}
             }
 
             return result;

@@ -61,7 +61,14 @@ namespace Assignments.Core.WinApi
             public uint ObjectInfoRva;
             public UInt32 Reserved0;
         }
-        
+
+        public struct MINIDUMP_HANDLE_OBJECT_INFORMATION
+        {
+            public uint NextInfoRva;
+            public UInt32 InfoType;
+            public UInt32 SizeOfInfo;
+        }
+
         public struct MINIDUMP_HANDLE_DESCRIPTOR
         {
             public UInt64 Handle;
@@ -74,7 +81,7 @@ namespace Assignments.Core.WinApi
         }
 
 
-        
+
         public struct MINIDUMP_EXCEPTION_INFORMATION
         {
             public uint ThreadId;
@@ -102,11 +109,21 @@ namespace Assignments.Core.WinApi
             MiniDumpWithoutManagedState = 0x00004000,
         }
 
-
+        public enum MiniDumpHandleObjectInformationType : uint
+        {
+            MiniHandleObjectInformationNone,
+            MiniThreadInformation1,
+            MiniMutantInformation1,
+            MiniMutantInformation2,
+            MiniProcessInformation1,
+            MiniProcessInformation2,
+            MiniEventInformation1,
+            MiniSectionInformation1,
+            MiniHandleObjectInformationTypeMax
+        }
 
         public enum Option : uint
         {
-            // From dbghelp.h:
             Normal = 0x00000000,
             WithDataSegs = 0x00000001,
             WithFullMemory = 0x00000002,
@@ -130,7 +147,7 @@ namespace Assignments.Core.WinApi
         };
 
 
-       
+
 
         public struct MiniDumpExceptionInformation
         {

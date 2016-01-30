@@ -19,7 +19,7 @@ namespace Assignments.Core.Handlers
 
         public MiniDumpHandler()
         {
-            
+
         }
 
         public void Init(uint pid)
@@ -38,6 +38,7 @@ namespace Assignments.Core.Handlers
                 if (miniDumpCreated)
                 {
                     _safeMemoryMappedViewHandle = MapFile(fs, fileName);
+                    GetHandleData();
                 }
             }
         }
@@ -103,9 +104,32 @@ namespace Assignments.Core.Handlers
 
                 foreach (var handle in handles)
                 {
-                    result.Add(new MiniDumpHandle(handle));
-                }
+                    var temp = new MiniDumpHandle(handle);
 
+                    var info = ReadInfo(handle.ObjectInfoRva, streamPointer);
+                    temp.AddInfo(info);
+
+                    result.Add(temp);
+                }
+            }
+
+            return result;
+        }
+
+        public unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION ReadInfo(uint rva, IntPtr streamPtr)
+        {
+            DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION result = new DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION();
+
+            try
+            {
+                byte* baseOfView = null;
+                _safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
+                ulong offset = (ulong)streamPtr - (ulong)baseOfView;
+                result = _safeMemoryMappedViewHandle.Read<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(offset);
+            }
+            finally
+            {
+                _safeMemoryMappedViewHandle.ReleasePointer();
             }
 
             return result;

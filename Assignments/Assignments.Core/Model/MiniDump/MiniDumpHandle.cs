@@ -31,6 +31,11 @@ namespace Assignments.Core.Model.MiniDump
             GrantedAccess = handleDescriptor.GrantedAccess;
         }
 
+        public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor, DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info) : this(handleDescriptor)
+        {
+
+        }
+
         public ulong Handle { get; private set; }
         public uint HandleCount { get; private set; }
         public uint ObjectNameRva { get; private set; }
@@ -39,6 +44,11 @@ namespace Assignments.Core.Model.MiniDump
         public uint Attributes { get; private set; }
         public uint GrantedAccess { get; private set; }
 
+        public MiniDumpHandleInfo HandleInfo { get; private set; }
 
+        internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info)
+        {
+            HandleInfo = new MiniDumpHandleInfo(info);
+        }
     }
 }
