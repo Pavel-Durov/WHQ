@@ -38,7 +38,6 @@ namespace Assignments.Core.Handlers
                 if (miniDumpCreated)
                 {
                     _safeMemoryMappedViewHandle = MapFile(fs, fileName);
-                    GetHandleData();
                 }
             }
         }
@@ -91,7 +90,7 @@ namespace Assignments.Core.Handlers
 
             if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR)))
             {
-                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR[] handles = StreamHandler.ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
 
                 foreach (var handle in handles)
                 {
@@ -100,13 +99,14 @@ namespace Assignments.Core.Handlers
             }
             else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2)))
             {
-                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
+                DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2[] handles = StreamHandler.ReadArray<DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2>(streamPointer, (int)handleData.NumberOfDescriptors, _safeMemoryMappedViewHandle);
 
                 foreach (var handle in handles)
                 {
                     var temp = new MiniDumpHandle(handle);
 
-                    var info = ReadInfo(handle.ObjectInfoRva, streamPointer);
+                    var info =  StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
+                    
                     temp.AddInfo(info);
 
                     result.Add(temp);
@@ -116,45 +116,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        public unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION ReadInfo(uint rva, IntPtr streamPtr)
-        {
-            DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION result = new DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION();
-
-            try
-            {
-                byte* baseOfView = null;
-                _safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
-                ulong offset = (ulong)streamPtr - (ulong)baseOfView;
-                result = _safeMemoryMappedViewHandle.Read<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(offset);
-            }
-            finally
-            {
-                _safeMemoryMappedViewHandle.ReleasePointer();
-            }
-
-            return result;
-        }
-
-
-
-        protected internal unsafe T[] ReadArray<T>(IntPtr absoluteAddress, int count, SafeMemoryMappedViewHandle safeHandle) where T : struct
-        {
-            T[] readItems = new T[count];
-
-            try
-            {
-                byte* baseOfView = null;
-                safeHandle.AcquirePointer(ref baseOfView);
-                ulong offset = (ulong)absoluteAddress - (ulong)baseOfView;
-                safeHandle.ReadArray<T>(offset, readItems, 0, count);
-            }
-            finally
-            {
-                safeHandle.ReleasePointer();
-            }
-
-            return readItems;
-        }
 
 
         protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)

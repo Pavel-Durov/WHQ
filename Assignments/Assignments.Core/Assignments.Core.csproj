@@ -51,6 +51,7 @@
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
+    <Compile Include="Handlers\StreamHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WctApiHandler.cs" />
