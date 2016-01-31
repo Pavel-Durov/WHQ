@@ -37,37 +37,12 @@ namespace Assignments.Core.Handlers
 
                 if (miniDumpCreated)
                 {
-                    _safeMemoryMappedViewHandle = MapFile(fs, fileName);
+                    _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fs, fileName);
                 }
             }
         }
 
         SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
-
-        private SafeMemoryMappedViewHandle MapFile(FileStream fs, string fileName)
-        {
-            MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fs, fileName, 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
-
-            SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
-
-            Kernel32.MEMORY_BASIC_INFORMATION memoryInfo = default(Kernel32.MEMORY_BASIC_INFORMATION);
-
-            if (Kernel32.VirtualQuery(mappedFileView, ref memoryInfo, (IntPtr)Marshal.SizeOf(memoryInfo)) == IntPtr.Zero)
-            {
-                Debug.WriteLine($"error:  {Marshal.GetLastWin32Error()}");
-            }
-
-            if (mappedFileView.IsInvalid)
-            {
-                Debug.WriteLine($"MapViewOfFile IsInvalid, error:  {Marshal.GetLastWin32Error()}");
-            }
-
-            mappedFileView.Initialize((ulong)memoryInfo.RegionSize);
-
-            return mappedFileView;
-        }
-
-
 
 
         public List<MiniDumpHandle> GetHandleData()
