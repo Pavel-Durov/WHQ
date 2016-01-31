@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using Assignments.Core.Model.WCT;
+using Assignments.Core.Model.MiniDump;
 
 namespace Assignments.Core.Model.Unified
 {
@@ -27,6 +28,11 @@ namespace Assignments.Core.Model.Unified
 
             var wctIndex = (int)obj.ObjectType;
             WaitReason = (UnifiedBlockingReason)(BLOCK_REASON_WCT_SECTION_START_INDEX + wctIndex);
+        }
+
+        public UnifiedBlockingObject(MiniDumpHandle item)
+        {
+            //item.Handle
         }
 
         private void SetWaiters(BlockingObject item)

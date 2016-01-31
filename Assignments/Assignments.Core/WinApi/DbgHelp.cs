@@ -37,7 +37,11 @@ namespace Assignments.Core.WinApi
 
 
         #region Structs
-
+        public struct MINIDUMP_STRING
+        {
+            public UInt32 Length;
+            public char[] Buffer;
+        }
 
         public struct MINIDUMP_HANDLE_DATA_STREAM
         {

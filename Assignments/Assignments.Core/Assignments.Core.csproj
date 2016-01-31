@@ -49,6 +49,7 @@
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
+    <Compile Include="Handlers\MemoryMapFileHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\StreamHandler.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Handlers\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WctApiHandler.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />

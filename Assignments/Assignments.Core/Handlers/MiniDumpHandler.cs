@@ -33,7 +33,7 @@ namespace Assignments.Core.Handlers
 
             using (FileStream fs = new FileStream(fullfileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Write))
             {
-                bool miniDumpCreated = DbgHelp.MiniDumpWriteDump(handle, pid, fs.SafeFileHandle, DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                bool miniDumpCreated = DbgHelp.MiniDumpWriteDump(handle, pid, fs.SafeFileHandle, DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
                 if (miniDumpCreated)
                 {
@@ -78,11 +78,17 @@ namespace Assignments.Core.Handlers
 
                 foreach (var handle in handles)
                 {
+                    
                     var temp = new MiniDumpHandle(handle);
 
-                    var info =  StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
-                    
-                    temp.AddInfo(info);
+                    var str = StreamHandler.ReadString(temp.ObjectNameRva, _safeMemoryMappedViewHandle);
+
+                    if (temp.HasObjectInfo)
+                    {
+                        var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
+
+                        temp.AddInfo(info);
+                    }
 
                     result.Add(temp);
                 }

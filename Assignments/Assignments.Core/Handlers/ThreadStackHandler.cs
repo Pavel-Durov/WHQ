@@ -171,27 +171,15 @@ namespace Assignments.Core.Handlers
                                     where frame.Handles?.Count > 0
                                     select frame;
 
-            var first = _miniDumpHandles.FirstOrDefault();
-            if (stackFrameHandles != null)
+            
+            if (stackFrameHandles != null && stackFrameHandles.Any())
             {
                 result = new List<UnifiedBlockingObject>();
 
-                //if (miniDumpHandles?.Count > 0)
-                //{
-                //    foreach (var item in stackFrameHandles)
-                //    {
-                //        foreach (var handle in item.Handles)
-                //        {
-                //            var relevant = from c in miniDumpHandles
-                //                           where c.Handle == handle
-                //                           select c;
-                //            if (relevant?.Count() > 0)
-                //            {
-                //                Console.WriteLine("WE GOT A MATCH");
-                //            }
-                //        }
-                //    }
-                //}
+                foreach (var item in _miniDumpHandles)
+                {
+                    result.Add(new UnifiedBlockingObject(item));
+                }
             }
 
             return result;
