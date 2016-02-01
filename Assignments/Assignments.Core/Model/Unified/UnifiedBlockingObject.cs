@@ -7,6 +7,11 @@ using Assignments.Core.Model.MiniDump;
 
 namespace Assignments.Core.Model.Unified
 {
+    public enum UnifiedBlockingType
+    {
+        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle
+    }
+
     public class UnifiedBlockingObject
     {
         public UnifiedBlockingObject(BlockingObject obj)
@@ -18,6 +23,8 @@ namespace Assignments.Core.Model.Unified
             RecursionCount = obj.RecursionCount;
             ManagedObjectAddress = obj.Object;
             KernelObjectName = null;
+
+            Type = UnifiedBlockingType.ClrBlockingObject;
         }
 
 
@@ -28,11 +35,17 @@ namespace Assignments.Core.Model.Unified
 
             var wctIndex = (int)obj.ObjectType;
             WaitReason = (UnifiedBlockingReason)(BLOCK_REASON_WCT_SECTION_START_INDEX + wctIndex);
-        }
 
+            Type = UnifiedBlockingType.WaitChainInfoObject;
+        }
+        
         public UnifiedBlockingObject(MiniDumpHandle item)
         {
             //item.Handle
+            KernelObjectName = item.ObjectName;
+            KernelObjectTypeName = item.TypeName;
+
+            Type = UnifiedBlockingType.MiniDumpHandle;
         }
 
         private void SetWaiters(BlockingObject item)
@@ -63,21 +76,23 @@ namespace Assignments.Core.Model.Unified
         }
 
 
+        public UnifiedBlockingType Type { get; private set; }
 
-
-        public List<UnifiedThread> Owners { get; set; }
+        public List<UnifiedThread> Owners { get; private set; }
 
         public bool HasOwnershipInformation { get { return Owners != null && Owners.Count > 0; } }
 
-        public UnifiedBlockingReason WaitReason { get; set; }
+        public UnifiedBlockingReason WaitReason { get; private set; }
 
-        public List<UnifiedThread> Waiters { get; set; }
+        public List<UnifiedThread> Waiters { get; private set; }
 
-        public int RecursionCount { get; set; }
+        public int RecursionCount { get; private set; }
 
-        public ulong ManagedObjectAddress { get; set; }
+        public ulong ManagedObjectAddress { get; private set; }
 
-        public string KernelObjectName { get; set; }
+        public string KernelObjectName { get; private set; }
+
+        public string KernelObjectTypeName { get; private set; }
 
         const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
     }
