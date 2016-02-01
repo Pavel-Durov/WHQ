@@ -8,6 +8,7 @@ using System.IO.MemoryMappedFiles;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Assignments.Core.Handlers
 {
@@ -78,18 +79,7 @@ namespace Assignments.Core.Handlers
 
                 foreach (var handle in handles)
                 {
-                    
-                    var temp = new MiniDumpHandle(handle);
-
-                    var str = StreamHandler.ReadString(temp.ObjectNameRva, _safeMemoryMappedViewHandle);
-
-                    if (temp.HasObjectInfo)
-                    {
-                        var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
-
-                        temp.AddInfo(info);
-                    }
-
+                    MiniDumpHandle temp = GetHandleData(handle, streamPointer);
                     result.Add(temp);
                 }
             }
@@ -97,7 +87,36 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
+        private MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
+        {
+            var minidump_string = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(handle.ObjectNameRva, streamPointer, _safeMemoryMappedViewHandle);
 
+            var objectName = StreamHandler.ReadString(handle.ObjectNameRva, minidump_string.Length, _safeMemoryMappedViewHandle);
+
+            var typeName = StreamHandler.ReadString(handle.TypeNameRva, minidump_string.Length, _safeMemoryMappedViewHandle);
+
+            var result = new MiniDumpHandle(handle, objectName, typeName);
+
+            if (result.HasObjectInfo)
+            {
+                var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
+            }
+            return result;
+        }
+
+
+        private unsafe string GetName(uint rva, DbgHelp.MINIDUMP_STRING stringStruct)
+        {
+            string result = null;
+            //unsafe
+            //{
+            //    result = Marshal.PtrToStringUni((IntPtr)stringStruct.Buffer, (int) stringStruct.Length);
+            //}
+            //result = Utils.StringUtil.ConvertCStringToString(stringStruct.Buffer, Encoding.Unicode);
+
+
+            return result;
+        }
 
         protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {

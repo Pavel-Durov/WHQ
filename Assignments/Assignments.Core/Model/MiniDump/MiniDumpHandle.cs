@@ -10,6 +10,7 @@ namespace Assignments.Core.Model.MiniDump
 {
     public class MiniDumpHandle
     {
+
         public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR handleDescriptor)
         {
             Handle = handleDescriptor.Handle;
@@ -32,6 +33,15 @@ namespace Assignments.Core.Model.MiniDump
             GrantedAccess = handleDescriptor.GrantedAccess;
             ObjectInfoRva = handleDescriptor.ObjectInfoRva;
         }
+
+        public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor, string objectName, string typeName) : this(handleDescriptor)
+        {
+            this.ObjectName = objectName;
+            this.TypeName = typeName;
+        }
+
+        public string ObjectName { get; private set; }
+        public string TypeName { get; private set; }
 
 
         public ulong Handle { get; private set; }

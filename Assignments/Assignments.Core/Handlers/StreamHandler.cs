@@ -10,7 +10,7 @@ namespace Assignments.Core.Handlers
 {
     public class StreamHandler
     {
-        public static unsafe string ReadString(uint rva, SafeMemoryMappedViewHandle safeHandle)
+        public static unsafe string ReadString(uint rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace Assignments.Core.Handlers
                 IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
                 int len = Marshal.ReadInt32(positionToReadFrom) / 2;
 
-                positionToReadFrom += 4;
+                positionToReadFrom += (int)length;
 
                 return Marshal.PtrToStringUni(positionToReadFrom);
                 
@@ -68,6 +68,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-
+ 
     }
 }
