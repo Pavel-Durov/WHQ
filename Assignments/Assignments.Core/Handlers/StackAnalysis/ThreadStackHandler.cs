@@ -9,6 +9,7 @@ using System;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.Model.Unified.Thread;
 using Assignments.Core.Model.MiniDump;
+using Assignments.Core.Handlers.StackAnalysis.Strategies;
 
 namespace Assignments.Core.Handlers
 {
@@ -19,6 +20,19 @@ namespace Assignments.Core.Handlers
 
     public class ThreadStackHandler
     {
+        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, StackAnalysisStrategy strategy)
+        {
+
+            _pid = pid;
+            _miniDump = new MiniDumpHandler();
+            InitMiniDumpHandler();
+            _wctApi = new WctApiHandler();
+            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
+            _strategy = strategy;
+            _debugClient = debugClient;
+            _runtime = runtime;
+        }
+
         public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, ProcessState state)
         {
 
@@ -47,6 +61,7 @@ namespace Assignments.Core.Handlers
         int _pid;
 
         ProcessState _state;
+        StackAnalysisStrategy _strategy;
 
         public List<UnifiedThread> Handle()
         {
