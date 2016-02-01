@@ -89,21 +89,59 @@ namespace Assignments.Core.Handlers
 
         private MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
-            var minidump_string = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(handle.ObjectNameRva, streamPointer, _safeMemoryMappedViewHandle);
 
-            var objectName = StreamHandler.ReadString(handle.ObjectNameRva, minidump_string.Length, _safeMemoryMappedViewHandle);
+            string objectName = GetString(handle.ObjectNameRva, streamPointer);
+            string typeName = GetString(handle.TypeNameRva, streamPointer);
 
-            var typeName = StreamHandler.ReadString(handle.TypeNameRva, minidump_string.Length, _safeMemoryMappedViewHandle);
+            if (handle.HandleCount > 0)
+            {
+                //TODO: The meaning of this member depends on the handle type and the operating system.
+                //This is the number of open handles to the object that this handle refers to. 
+                if (handle.ObjectInfoRva > 0)
+                {
+                    //var list = new List<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>();
+                    //var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
+
+                    //while(info.NextInfoRva != 0)
+                    //{
+                    //    info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
+
+                    //    list.Add(info);
+                    //}
+                }
+            }
+
+            if (handle.PointerCount > 0)
+            {
+                //TODO: The meaning of this member depends on the handle type and the operating system.
+                //This is the number kernel references to the object that this handle refers to. 
+            }
+
+            if (handle.GrantedAccess > 0)
+            {
+                //TODO: The meaning of this member depends on the handle type and the operating system.
+            }
+
+            if (handle.Attributes > 0)
+            {
+                //TODO: 
+                //The attributes for the handle, this corresponds to OBJ_INHERIT, OBJ_CASE_INSENSITIVE, etc. 
+            }
+            
 
             var result = new MiniDumpHandle(handle, objectName, typeName);
 
-            if (result.HasObjectInfo)
-            {
-                var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
-            }
             return result;
         }
 
+        private string GetString(uint rva, IntPtr streamPointer)
+        {
+            var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
+
+
+            return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
+
+        }
 
         private unsafe string GetName(uint rva, DbgHelp.MINIDUMP_STRING stringStruct)
         {
