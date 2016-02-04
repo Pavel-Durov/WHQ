@@ -20,39 +20,25 @@ namespace Assignments.Core.Handlers
 
     public class ThreadStackHandler
     {
-        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, StackAnalysisStrategy strategy)
-        {
-
-            _pid = pid;
-            _miniDump = new MiniDumpHandler();
-            InitMiniDumpHandler();
-            _wctApi = new WctApiHandler();
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
-            _strategy = strategy;
-            _debugClient = debugClient;
-            _runtime = runtime;
-        }
-
         public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, ProcessState state)
         {
-
-            _pid = pid;
-            _miniDump = new MiniDumpHandler();
-            InitMiniDumpHandler();
-            _wctApi = new WctApiHandler();
+            _pid = pid;   
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
             _state = state;
             _debugClient = debugClient;
             _runtime = runtime;
+
+            if (state == ProcessState.Dump)
+            {
+                _strategy = new BlockingObjectsFetcherProcessDumpStrategy(pid);
+            }
+            else
+            {
+                _strategy = new BlockingObjectsFetcherLiveProcessStrategy(pid);
+            }
         }
 
-        private void InitMiniDumpHandler()
-        {
-            _miniDump.Init((uint)_pid);
-            _miniDumpHandles = _miniDump.GetHandleData();
-        }
 
-        List<MiniDumpHandle> _miniDumpHandles;
         MiniDumpHandler _miniDump;
         WctApiHandler _wctApi;
         UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
@@ -61,7 +47,7 @@ namespace Assignments.Core.Handlers
         int _pid;
 
         ProcessState _state;
-        StackAnalysisStrategy _strategy;
+        BlockingObjectsFetcherStrategy _strategy;
 
         public List<UnifiedThread> Handle()
         {
@@ -99,18 +85,9 @@ namespace Assignments.Core.Handlers
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            var blockingObjecets = GetWCTBlockingObject(specific_info.OSThreadId);
+            var blockingObjects  = _strategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack);
 
-            if (_state == ProcessState.Dump)
-            {
-                var miniDimp_blockingObjects = GetMiniDumpBlockingObjects(specific_info, unmanagedStack);
-                if (miniDimp_blockingObjects != null)
-                {
-                    blockingObjecets.AddRange(miniDimp_blockingObjects);
-                }
-            }
-
-            result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjecets);
+            result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjects);
 
             return result;
         }
@@ -125,7 +102,7 @@ namespace Assignments.Core.Handlers
                 var managedStack = GetManagedStackTrace(clr_thread);
                 var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-                var blockingObjs = GetBlockingObjects(clr_thread);
+                var blockingObjs = _strategy.GetManagedBlockingObjects(clr_thread);
 
                 result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
@@ -147,98 +124,7 @@ namespace Assignments.Core.Handlers
                 ManagedThread = managedThread
             };
         }
-
-
-        #region Blocking Objects Methods
-
-        private List<UnifiedBlockingObject> GetBlockingObjects(ClrThread thread)
-        {
-            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
-
-            //Clr Blocking Objects
-            var clr_blockingObjects = GetClrBlockingObjects(thread);
-            if (clr_blockingObjects != null)
-            {
-                result.AddRange(clr_blockingObjects);
-            }
-
-            if (_state == ProcessState.Live)
-            {
-                //WCT API Blocking Objects
-                var wct_blockingObjects = GetWCTBlockingObject(thread.OSThreadId);
-            }
-            else if (_state == ProcessState.Dump)
-            {
-                //var miniDimp_blockingObjects = GetMiniDumpBlockingObjects(thread);
-                //if (miniDimp_blockingObjects != null)
-                //{
-                //    result.AddRange(miniDimp_blockingObjects);
-                //}
-            }
-            return result;
-        }
-
-        private List<UnifiedBlockingObject> GetMiniDumpBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
-        {
-            List<UnifiedBlockingObject> result = null;
-
-            var stackFrameHandles = from frame in unmanagedStack
-                                    where frame.Handles?.Count > 0
-                                    select frame;
-
-            
-            if (stackFrameHandles != null && stackFrameHandles.Any())
-            {
-                result = new List<UnifiedBlockingObject>();
-
-                foreach (var item in _miniDumpHandles)
-                {
-                    result.Add(new UnifiedBlockingObject(item));
-                }
-            }
-
-            return result;
-        }
-
-        private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)
-        {
-            List<UnifiedBlockingObject> result = null;
-
-            ThreadWCTInfo wct_threadInfo = null;
-            if (_wctApi.GetBlockingObjects(threadId, out wct_threadInfo))
-            {
-                result = new List<UnifiedBlockingObject>();
-
-                if (wct_threadInfo.WctBlockingObjects?.Count > 0)
-                {
-                    foreach (var blockingObj in wct_threadInfo.WctBlockingObjects)
-                    {
-                        result.Add(new UnifiedBlockingObject(blockingObj));
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private List<UnifiedBlockingObject> GetClrBlockingObjects(ClrThread thread)
-        {
-            List<UnifiedBlockingObject> result = null;
-            if (thread.BlockingObjects?.Count > 0)
-            {
-                result = new List<UnifiedBlockingObject>();
-
-                foreach (var item in thread.BlockingObjects)
-                {
-                    result.Add(new UnifiedBlockingObject(item));
-                }
-            }
-            return result;
-        }
-
-        #endregion
-
-
+        
         #region StackTrace
 
         public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)

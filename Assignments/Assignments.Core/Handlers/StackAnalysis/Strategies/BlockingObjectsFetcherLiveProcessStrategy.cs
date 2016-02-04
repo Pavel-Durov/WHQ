@@ -11,23 +11,26 @@ using Assignments.Core.Model.WCT;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
-    public class StackAnalysisLiveProcessStrategy : StackAnalysisStrategy
+    public class BlockingObjectsFetcherLiveProcessStrategy : BlockingObjectsFetcherStrategy
     {
-        public StackAnalysisLiveProcessStrategy()
+        public BlockingObjectsFetcherLiveProcessStrategy(int pid) : base(pid)
         {
             _wctApi = new WctApiHandler();
         }
-        public override List<UnifiedBlockingObject> GetBlockingObjects(ClrThread thread)
+
+        WctApiHandler _wctApi;
+
+
+        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {
             return GetWCTBlockingObject(thread.OSThreadId);
         }
 
-        public override UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo info)
-        {
-            throw new NotImplementedException();
-        }
 
-        WctApiHandler _wctApi;
+        public override List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread)
+        {
+            return base.GetClrBlockingObjects(thread);
+        }
 
         private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)
         {

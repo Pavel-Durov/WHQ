@@ -53,9 +53,12 @@
     <Compile Include="Handlers\MemoryMapFileHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
+    <Compile Include="Handlers\StackAnalysis\Strategies\Base\BlockingObjectsFetcherStrategy.cs" />
+    <Compile Include="Handlers\StackAnalysis\Strategies\BlockingObjectsFetcherLiveProcessStrategy.cs" />
+    <Compile Include="Handlers\StackAnalysis\Strategies\BlockingObjectsFetcherProcessDumpStrategy.cs" />
     <Compile Include="Handlers\StreamHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
-    <Compile Include="Handlers\ThreadStackHandler.cs" />
+    <Compile Include="Handlers\StackAnalysis\ThreadStackHandler.cs" />
     <Compile Include="Handlers\WctApiHandler.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
