@@ -8,12 +8,18 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class BlockingObjectsFetcherStrategy
     {
+        public BlockingObjectsFetcherStrategy(string pathToDump)
+        {
+            _pathToDump = pathToDump;
+        }
+
         public BlockingObjectsFetcherStrategy(int pid)
         {
-
+            _pid = pid;
         }
 
         protected int _pid;
+        protected string _pathToDump;
 
         public abstract List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread);
 

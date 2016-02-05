@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\AccessingNonReadableMemmory.cs" />
+    <Compile Include="Exceptions\UnsupportedOperationException.cs" />
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />

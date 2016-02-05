@@ -14,17 +14,25 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
     public class BlockingObjectsFetcherProcessDumpStrategy : BlockingObjectsFetcherStrategy
     {
 
-        public BlockingObjectsFetcherProcessDumpStrategy(int pid) : base(pid)
+        public BlockingObjectsFetcherProcessDumpStrategy(string dumpFilePath) : base(dumpFilePath)
         {
             _miniDump = new MiniDumpHandler();
-        }
 
-        private void InitMiniDumpHandler()
+            _miniDump.Init(dumpFilePath);
+            _miniDumpHandles = _miniDump.GetHandleData();
+        }
+        
+        public BlockingObjectsFetcherProcessDumpStrategy(int liveProcessPid) : base(liveProcessPid)
         {
+            _miniDump = new MiniDumpHandler();
+
             _miniDump.Init((uint)_pid);
             _miniDumpHandles = _miniDump.GetHandleData();
         }
 
+        
+
+        
         List<MiniDumpHandle> _miniDumpHandles;
         MiniDumpHandler _miniDump;
         

@@ -21,21 +21,10 @@ namespace Consumer
 
         static void Main(string[] args)
         {
-            int pid = GetPidFromDumpProcessTextFile();
-            if (pid != PID_NOT_FOUND)
-            {
-                Console.WriteLine("PID found in Assignment_3.DumpTest file :) ");
-            }
-            else
-            {
-                Console.WriteLine("--- Assignment_4 C# project ----");
-                Console.WriteLine("Please enter a PID: ");
-
-                pid = int.Parse(Console.ReadLine());
-            }
-
-            Global.Test.Run(pid);
-            //DumpFile64Bit.Test.Run(pid);
+            //Global.LiveProcessTest.Run();
+            Global.DumpFileTest.Run();
+            //Global.Test.Run(pid);
+            //umpFile64Bit.Test.Run(pid);
             Console.ReadKey();
         }
 

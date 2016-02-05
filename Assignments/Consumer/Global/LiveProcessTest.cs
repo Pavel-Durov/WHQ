@@ -7,15 +7,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Consumer.Global
 {
-    class Test
+    class LiveProcessTest
     {
-        const string SOME_86_DUMP = @"C:\temp\Dumps\Assignment_3.dmp";
+
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
-        public static void Run(int pid)
+
+        public static void Run()
         {
+
+            int pid = GetPidFromDumpProcessTextFile();
+
+            if (pid != PID_NOT_FOUND)
+            {
+                Console.WriteLine("PID found in Assignment_3.DumpTest file :) ");
+            }
+            else
+            {
+                Console.WriteLine("--- Assignment_4 C# project ----");
+                Console.WriteLine("Please enter a PID: ");
+
+                pid = int.Parse(Console.ReadLine());
+            }
+
             using (DataTarget target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT))
             {
                 DoAnaytics(target, pid);
@@ -40,15 +57,14 @@ namespace Consumer.Global
 
         private static void DoAnaytics(DataTarget target, int pid)
         {
-            
+
             var runtime = target.ClrVersions[0].CreateRuntime();
-            ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, pid, ProcessState.Dump);
+
+            //Live process handler
+            ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, pid);
 
             var result = handler.Handle();
-
             PrintHandler.Print(result, true);
-
-
 
             Console.ReadKey();
         }

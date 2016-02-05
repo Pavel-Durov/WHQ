@@ -8,6 +8,7 @@ using Assignments.Core.Model.Unified.Thread;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.WCT;
+using Assignments.Core.Exceptions;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
@@ -16,6 +17,11 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
         public BlockingObjectsFetcherLiveProcessStrategy(int pid) : base(pid)
         {
             _wctApi = new WctApiHandler();
+        }
+
+        public BlockingObjectsFetcherLiveProcessStrategy(string pathToDump) : base(pathToDump)
+        {
+            throw new UnsupportedOperationException("Cannot instantiate BlockingObjectsFetcherLiveProcessStrategy with pathToDump param");
         }
 
         WctApiHandler _wctApi;

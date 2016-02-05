@@ -20,34 +20,42 @@ namespace Assignments.Core.Handlers
 
     public class ThreadStackHandler
     {
-        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid, ProcessState state)
+        /// <summary>
+        /// Used for live process analysis
+        /// </summary>
+        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid)
         {
-            _pid = pid;   
+            _pid = pid;
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
-            _state = state;
+            _state = ProcessState.Live;
+            _debugClient = debugClient;
+            _runtime = runtime;
+            _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherLiveProcessStrategy(pid);
+
+        }
+
+        /// <summary>
+        /// Used for analysis from dump file
+        /// </summary>
+        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
+        {
+            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
             _debugClient = debugClient;
             _runtime = runtime;
 
-            if (state == ProcessState.Dump)
-            {
-                _strategy = new BlockingObjectsFetcherProcessDumpStrategy(pid);
-            }
-            else
-            {
-                _strategy = new BlockingObjectsFetcherLiveProcessStrategy(pid);
-            }
+            _state = ProcessState.Dump;
+
+            _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherProcessDumpStrategy(pathToDumpFile);
+
         }
 
-
-        MiniDumpHandler _miniDump;
-        WctApiHandler _wctApi;
         UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
         int _pid;
 
         ProcessState _state;
-        BlockingObjectsFetcherStrategy _strategy;
+        BlockingObjectsFetcherStrategy _blockingObjectsFetchingStrategy;
 
         public List<UnifiedThread> Handle()
         {
@@ -85,7 +93,7 @@ namespace Assignments.Core.Handlers
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            var blockingObjects  = _strategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack);
+            var blockingObjects = _blockingObjectsFetchingStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack);
 
             result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjects);
 
@@ -102,7 +110,7 @@ namespace Assignments.Core.Handlers
                 var managedStack = GetManagedStackTrace(clr_thread);
                 var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-                var blockingObjs = _strategy.GetManagedBlockingObjects(clr_thread);
+                var blockingObjs = _blockingObjectsFetchingStrategy.GetManagedBlockingObjects(clr_thread);
 
                 result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
@@ -124,7 +132,7 @@ namespace Assignments.Core.Handlers
                 ManagedThread = managedThread
             };
         }
-        
+
         #region StackTrace
 
         public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)

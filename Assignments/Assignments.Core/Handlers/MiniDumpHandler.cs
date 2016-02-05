@@ -18,9 +18,12 @@ namespace Assignments.Core.Handlers
 
         private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
-        public MiniDumpHandler()
+        public void Init(string dumpFileName)
         {
-
+            using (FileStream fs = new FileStream(dumpFileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+            {
+                _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fs, dumpFileName);
+            }
         }
 
         public void Init(uint pid)
@@ -127,7 +130,7 @@ namespace Assignments.Core.Handlers
                 //TODO: 
                 //The attributes for the handle, this corresponds to OBJ_INHERIT, OBJ_CASE_INSENSITIVE, etc. 
             }
-            
+
 
             var result = new MiniDumpHandle(handle, objectName, typeName);
 
