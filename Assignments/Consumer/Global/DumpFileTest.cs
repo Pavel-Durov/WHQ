@@ -27,7 +27,6 @@ namespace Consumer.Global
 
         private static void DoAnaytics(DataTarget target, string pathToDump)
         {
-
             var runtime = target.ClrVersions[0].CreateRuntime();
 
             //Dump process handler

@@ -20,9 +20,9 @@ namespace Assignments.Core.Handlers
 
         public void Init(string dumpFileName)
         {
-            using (FileStream fs = new FileStream(dumpFileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read))
+            using (FileStream fileStream = File.Open(dumpFileName, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fs, dumpFileName);
+                _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fileStream, dumpFileName);
             }
         }
 

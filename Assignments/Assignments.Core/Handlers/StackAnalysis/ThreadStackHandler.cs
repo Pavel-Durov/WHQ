@@ -108,7 +108,17 @@ namespace Assignments.Core.Handlers
             if (clr_thread != null)
             {
                 var managedStack = GetManagedStackTrace(clr_thread);
-                var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+                List<UnifiedStackFrame> unmanagedStack = null;
+
+                try
+                {
+                    unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+                }
+                catch (Exception e)
+                {
+
+                }
+
 
                 var blockingObjs = _blockingObjectsFetchingStrategy.GetManagedBlockingObjects(clr_thread);
 

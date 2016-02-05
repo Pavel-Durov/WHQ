@@ -14,9 +14,10 @@ namespace Assignments.Core.Handlers
 {
     public class MemoryMapFileHandler
     {
-        public static SafeMemoryMappedViewHandle MapFile(FileStream fs, string fileName)
+        public static SafeMemoryMappedViewHandle MapFile(FileStream fileStream, string fileName)
         {
-            MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fs, fileName, 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
+            MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fileStream, Path.GetFileName(fileName), 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
+
 
             SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
 

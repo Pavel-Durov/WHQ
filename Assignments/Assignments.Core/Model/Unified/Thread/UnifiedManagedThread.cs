@@ -12,21 +12,31 @@ namespace Assignments.Core.Model.Unified.Thread
     {
         public UnifiedManagedThread(ThreadInfo info, List<UnifiedStackFrame> managedStack, List<UnifiedStackFrame> unManagedStack, List<UnifiedBlockingObject> blockingObjects) : base(info)
         {
-            StackTrace = new List<UnifiedStackFrame>(managedStack);
-            StackTrace.AddRange(unManagedStack);
+            StackTrace = new List<UnifiedStackFrame>();
+
+            if (managedStack != null)
+            {
+                StackTrace.AddRange(managedStack);
+
+            }
+
+            if (unManagedStack != null)
+            {
+                StackTrace.AddRange(unManagedStack);
+            }
             BlockingObjects = blockingObjects;
         }
 
-        public UnifiedManagedThread(ClrThread waiter) 
+        public UnifiedManagedThread(ClrThread waiter)
             : base(new ThreadInfo()
             {
-                    OSThreadId = waiter.OSThreadId,
-                    ManagedThread = waiter
+                OSThreadId = waiter.OSThreadId,
+                ManagedThread = waiter
             })
         {
             //TODO: complete logic -> used with Blocking object Wiater    
 
-            
+
         }
     }
 }
