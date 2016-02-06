@@ -116,7 +116,7 @@ namespace Assignments.Core.Handlers
                 }
                 catch (Exception e)
                 {
-
+                    LogHandler.Log(e.ToString(), LOG_LEVELS.INFO);
                 }
 
 

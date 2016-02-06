@@ -70,9 +70,12 @@ namespace Assignments.Core.WinApi
         public struct MINIDUMP_HANDLE_OBJECT_INFORMATION
         {
             public uint NextInfoRva;
-            public UInt32 InfoType;
+            public MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE InfoType;
             public UInt32 SizeOfInfo;
         }
+
+
+
 
         public struct MINIDUMP_HANDLE_DESCRIPTOR
         {
@@ -114,7 +117,13 @@ namespace Assignments.Core.WinApi
             MiniDumpWithoutManagedState = 0x00004000,
         }
 
-        public enum MiniDumpHandleObjectInformationType : uint
+
+        // Per-handle object information varies according to
+        // the OS, the OS version, the processor type and
+        // so on.  The minidump gives a minidump identifier
+        // to each possible data format for identification
+        // purposes but does not control nor describe the actual data.
+        public enum MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE : uint
         {
             MiniHandleObjectInformationNone,
             MiniThreadInformation1,

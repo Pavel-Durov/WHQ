@@ -11,7 +11,7 @@ namespace Consumer.Global
 {
     class DumpFileTest
     {
-        const string SOME_86_DUMP = @"C:\temp\Dumps\tha-dump2.dmp";
+        const string SOME_86_DUMP = @"C:\temp\dumps\test\FullDump.dmp";
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
