@@ -20,7 +20,7 @@ namespace Assignments.Core.WinApi
             IntPtr hProcess,
             UInt32 ProcessId, // DWORD is a 32 bit unsigned integer
             SafeHandle hFile,
-            DbgHelp.MINIDUMP_STREAM_TYPE DumpType,
+            DbgHelp.MINIDUMP_TYPE DumpType,
             IntPtr exceptionParam,
             IntPtr userStream,
             IntPtr callback);
