@@ -19,31 +19,26 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
             _miniDump = new MiniDumpHandler();
 
             _miniDump.Init(dumpFilePath);
-            _miniDumpHandles = _miniDump.GetHandleData();
         }
 
-        List<MiniDumpHandle> _miniDumpHandles;
         MiniDumpHandler _miniDump;
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {
-            return GetMiniDumpBlockingObjects(thread, unmanagedStack);
-        }
+            var miniDumpHandles = _miniDump.GetHandleData();
 
-        private List<UnifiedBlockingObject> GetMiniDumpBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
-        {
             List<UnifiedBlockingObject> result = null;
 
+            //Snooped unmanaged stack data
             var stackFrameHandles = from frame in unmanagedStack
                                     where frame.Handles?.Count > 0
                                     select frame;
-
 
             if (stackFrameHandles != null && stackFrameHandles.Any())
             {
                 result = new List<UnifiedBlockingObject>();
 
-                foreach (var item in _miniDumpHandles)
+                foreach (var item in miniDumpHandles)
                 {
                     result.Add(new UnifiedBlockingObject(item));
                 }
@@ -51,6 +46,5 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
             return result;
         }
-
     }
 }

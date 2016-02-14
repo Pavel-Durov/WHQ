@@ -6,10 +6,6 @@ namespace Assignments.Core.msos
 {
     class SymbolCache
     {
-
-        //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-        //Taken from msos.SymbolCache class
-        //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
         private static HashSet<string> _failedToLoadSymbols = new HashSet<string>();
 
         public static SourceLocation GetFileAndLineNumberSafe(ClrStackFrame frame)
@@ -42,7 +38,5 @@ namespace Assignments.Core.msos
             }
 
         }
-        //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-        //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
     }
 }

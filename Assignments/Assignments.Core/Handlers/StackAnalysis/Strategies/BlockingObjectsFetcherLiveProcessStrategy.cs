@@ -24,15 +24,10 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {
-            return GetWCTBlockingObject(thread.OSThreadId);
-        }
-
-        private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)
-        {
             List<UnifiedBlockingObject> result = null;
 
             ThreadWCTInfo wct_threadInfo = null;
-            if (_wctApi.GetBlockingObjects(threadId, out wct_threadInfo))
+            if (_wctApi.GetBlockingObjects(thread.OSThreadId, out wct_threadInfo))
             {
                 result = new List<UnifiedBlockingObject>();
 

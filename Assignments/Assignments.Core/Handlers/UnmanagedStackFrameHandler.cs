@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Exceptions;
 using Assignments.Core.Model.Unified;
@@ -12,6 +10,9 @@ namespace Assignments.Core.Handlers
     {
         public const string SINGLE_WAIT_FUNCTION_NAME = "WaitForSingleObject";
         public const string MULTI_WAIT_FUNCTION_NAME = "WaitForMultipleObjects";
+
+        const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
+        const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
         public static void SetParams(UnifiedStackFrame frame, ClrRuntime runtime)
         {
@@ -31,14 +32,14 @@ namespace Assignments.Core.Handlers
 
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
         {
-            result = GetSingleStackFrameParams(frame, runtime);
+            result = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
             frame.Handles = new List<uint>();
             frame.Handles.Add(Convert(result[0]));
         }
 
         private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
         {
-            result = GetMultipleStackFrameParams(frame, runtime);
+            result = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
             frame.Handles = new List<uint>();
 
             var HandlesCunt = BitConverter.ToUInt32(result[0], 0);
@@ -65,49 +66,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-
-
-        public static List<byte[]> GetMultipleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
-        {
-            List<byte[]> result = new List<byte[]>();
-            var nativeParams = GetNativeParams(frame, runtime, 4);
-
-            //if (nativeParams != null && nativeParams.Count > 0)
-            //{
-
-            //    var HandlesCunt = BitConverter.ToUInt32(nativeParams[0], 0);
-            //    var HandleAddress = BitConverter.ToUInt32(nativeParams[1], 0);
-            //    var WaitallFlag = BitConverter.ToUInt32(nativeParams[2], 0);
-            //    var Timeout = BitConverter.ToUInt32(nativeParams[3], 0);
-            //}
-            return nativeParams;
-        }
-
-
-        public static List<byte[]> GetSingleStackFrameParams(UnifiedStackFrame frame, ClrRuntime runtime)
-        {
-
-            var nativeParams = GetNativeParams(frame, runtime, 2);
-
-            //if (nativeParams != null && nativeParams.Count > 0)
-            //{
-            //    //Handle Address 
-            //    var HandleAddress = BitConverter.ToUInt32(nativeParams[0], 0);
-            //    //Timeout Param
-            //    var Timeout = BitConverter.ToUInt32(nativeParams[1], 0);
-            //}
-
-            return nativeParams;
-        }
-
-
-        /// <summary>
-        /// Iterates paramCount times and reads the value from memmory using runtime.ReadMemory function
-        /// </summary>
-        /// <param name="stackFrame"></param>
-        /// <param name="runtime"></param>
-        /// <param name="paramCount">Number of params of the passed stackFrame</param>
-        /// <returns></returns>
         public static List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
@@ -130,14 +88,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-
-        /// <summary>
-        /// Reads 'count' times from the address using runtime.ReadMemory function 
-        /// </summary>
-        /// <param name="startAddress"></param>
-        /// <param name="handlesCunt"></param>
-        /// <param name="runtime"></param>
-        /// <returns>Array with memmory fetched parameters</returns>
         public static List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
         {
             List<byte[]> result = new List<byte[]>();

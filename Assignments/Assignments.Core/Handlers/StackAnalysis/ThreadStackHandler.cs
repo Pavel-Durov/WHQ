@@ -13,11 +13,6 @@ using Assignments.Core.Handlers.StackAnalysis.Strategies;
 
 namespace Assignments.Core.Handlers
 {
-    public enum ProcessState
-    {
-        Live, Dump
-    }
-
     public class ThreadStackHandler
     {
         /// <summary>
@@ -25,17 +20,14 @@ namespace Assignments.Core.Handlers
         /// </summary>
         public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid)
         {
-            _pid = pid;
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
-            _state = ProcessState.Live;
             _debugClient = debugClient;
             _runtime = runtime;
             _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherLiveProcessStrategy(pid);
-
         }
 
         /// <summary>
-        /// Used for analysis from dump file
+        /// Used for dump file analysis
         /// </summary>
         public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
         {
@@ -43,38 +35,30 @@ namespace Assignments.Core.Handlers
             _debugClient = debugClient;
             _runtime = runtime;
 
-            _state = ProcessState.Dump;
-
             _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherProcessDumpStrategy(pathToDumpFile);
-
         }
 
+        #region Members
+
         UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
+        BlockingObjectsFetcherStrategy _blockingObjectsFetchingStrategy;
+
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
-        int _pid;
 
-        ProcessState _state;
-        BlockingObjectsFetcherStrategy _blockingObjectsFetchingStrategy;
+        #endregion
 
         public List<UnifiedThread> Handle()
         {
             uint _numThreads = 0;
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).GetNumberThreads(out _numThreads));
 
-            var threads = new List<ThreadInfo>();
-
-            ThreadInfo specific_info = null;
-
             List<UnifiedThread> result = new List<UnifiedThread>();
-
-            var clrThreads = _runtime.Threads;
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
-                specific_info = GetThreadInfo(threadIdx);
-                threads.Add(specific_info);
-
+                ThreadInfo specific_info = GetThreadInfo(threadIdx);
+           
                 if (specific_info.IsManagedThread)
                 {
                     result.Add(HandleManagedThread(specific_info));
@@ -87,6 +71,8 @@ namespace Assignments.Core.Handlers
 
             return result;
         }
+
+        #region Thread Method
 
         private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
         {
@@ -142,6 +128,9 @@ namespace Assignments.Core.Handlers
                 ManagedThread = managedThread
             };
         }
+
+        #endregion
+
 
         #region StackTrace
 

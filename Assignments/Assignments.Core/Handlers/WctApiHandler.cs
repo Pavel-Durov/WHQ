@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.WinApi;
-using Assignments.Core.Model.Unified;
-using System.Collections.Generic;
 
 namespace Assignments.Core.Handlers
 {
-
     public class WctApiHandler
     {
-
         internal bool GetBlockingObjects(uint threadId, out ThreadWCTInfo info)
         {
             info = CollectWaitInformation(threadId);
@@ -90,61 +85,5 @@ namespace Assignments.Core.Handlers
                 Count = Advapi32.WCT_MAX_NODE_COUNT;
             }
         }
-
-
-
-
-        #region WCT Async Call
-
-        //IntPtr _eventHandler;
-
-        ///// <summary>
-        ///// Causes process hang 
-        ///// </summary>
-        ///// <param name="thread"></param>
-        //internal void CollectWaitAsyncInformation(ClrThread thread)
-        //{
-            
-        //    var handle = Advapi32.OpenThreadWaitChainSession(WCT_SESSION_OPEN_FLAGS.WCT_ASYNC_OPEN_FLAG, AppCallback);
-
-        //    uint threadID = thread.OSThreadId;
-
-        //    WAITCHAIN_NODE_INFO[] NodeInfoArray = new WAITCHAIN_NODE_INFO[WctApiConst.WCT_MAX_NODE_COUNT];
-
-        //    int isCycle = 0;
-        //    int Count = WctApiConst.WCT_MAX_NODE_COUNT;
-
-        //    _eventHandler = Kernel32.CreateEvent(IntPtr.Zero, true, true, "MyEvent");
-
-        //    //This is where the applciation hangs
-        //    bool waitChainResult = Advapi32.GetThreadWaitChain(handle,
-        //                            _eventHandler, 0,
-        //                            threadID, ref Count, NodeInfoArray, out isCycle);
-
-        //    CheckCount(ref Count);
-
-        //    if (!waitChainResult)
-        //    {
-
-        //        var lastErrorCode = WinApi.Advapi32.GetLastError();
-
-        //        if (lastErrorCode == (uint)SYSTEM_ERROR_CODES.ERROR_IO_PENDING)
-        //        {
-        //            // Wait for callback to run...
-        //            WinApi.Kernel32.WaitForSingleObject(_eventHandler, int.MaxValue);
-        //        }
-        //        Kernel32.WaitForSingleObject(_eventHandler, uint.MaxValue);
-        //    }
-        //}
-
-        ///////////////////////////////////////////////////////////
-        //// WCT Async CallBack implementation
-
-        //static void AppCallback(IntPtr WctHnd, IntPtr Context, Int32 CallbackStatus, Int32 NodeCount, IntPtr NodeInfoArray, bool IsCycle)
-        //{
-
-        //}
-
-        #endregion
     }
 }

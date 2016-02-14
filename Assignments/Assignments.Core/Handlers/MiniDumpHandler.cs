@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
-using System.IO.MemoryMappedFiles;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
-using System.Threading.Tasks;
-using System.Text;
 
 namespace Assignments.Core.Handlers
 {
@@ -145,23 +142,8 @@ namespace Assignments.Core.Handlers
         private string GetString(uint rva, IntPtr streamPointer)
         {
             var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
-
-
+            
             return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
-
-        }
-
-        private unsafe string GetName(uint rva, DbgHelp.MINIDUMP_STRING stringStruct)
-        {
-            string result = null;
-            //unsafe
-            //{
-            //    result = Marshal.PtrToStringUni((IntPtr)stringStruct.Buffer, (int) stringStruct.Length);
-            //}
-            //result = Utils.StringUtil.ConvertCStringToString(stringStruct.Buffer, Encoding.Unicode);
-
-
-            return result;
         }
 
         protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
@@ -207,9 +189,6 @@ namespace Assignments.Core.Handlers
                 dirInfo.Create();
             }
         }
-
-
     }
-
 }
 

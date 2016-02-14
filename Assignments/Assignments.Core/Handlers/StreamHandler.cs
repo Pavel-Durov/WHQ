@@ -20,7 +20,7 @@ namespace Assignments.Core.Handlers
             }, safeHandle);
         }
 
-        public static unsafe T[] ReadArray<T>(IntPtr absoluteAddress, 
+        public static unsafe T[] ReadArray<T>(IntPtr absoluteAddress,
             int count, SafeMemoryMappedViewHandle safeHandle) where T : struct
         {
             return RunSafe<T>(() =>
@@ -48,7 +48,7 @@ namespace Assignments.Core.Handlers
             }, safeHandle);
         }
 
-        private static T RunSafe<T>(Func<T> func, SafeMemoryMappedViewHandle safeHandle)
+        public static T RunSafe<T>(Func<T> func, SafeMemoryMappedViewHandle safeHandle)
         {
             T result = default(T);
             try
@@ -62,12 +62,12 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private static T[] RunSafe<T>(Func<T[]> function, SafeMemoryMappedViewHandle safeHandle, int count) where T : struct
+        public static T[] RunSafe<T>(Func<T[]> function, SafeMemoryMappedViewHandle safeHandle, int count) where T : struct
         {
             T[] result = new T[count];
             try
             {
-                return result = function();
+                result = function();
             }
             finally
             {
@@ -76,5 +76,16 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
+        public static void RunSafe(Action action, SafeMemoryMappedViewHandle safeHandle)
+        {
+            try
+            {
+                action();
+            }
+            finally
+            {
+                safeHandle.ReleasePointer();
+            }
+        }
     }
 }
