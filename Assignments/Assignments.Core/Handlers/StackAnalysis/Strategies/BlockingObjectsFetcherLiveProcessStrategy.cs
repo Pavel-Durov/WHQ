@@ -14,14 +14,9 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public class BlockingObjectsFetcherLiveProcessStrategy : BlockingObjectsFetcherStrategy
     {
-        public BlockingObjectsFetcherLiveProcessStrategy(int pid) : base(pid)
+        public BlockingObjectsFetcherLiveProcessStrategy(int pid) 
         {
             _wctApi = new WctApiHandler();
-        }
-
-        public BlockingObjectsFetcherLiveProcessStrategy(string pathToDump) : base(pathToDump)
-        {
-            throw new UnsupportedOperationException("Cannot instantiate BlockingObjectsFetcherLiveProcessStrategy with pathToDump param");
         }
 
         WctApiHandler _wctApi;
@@ -30,12 +25,6 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {
             return GetWCTBlockingObject(thread.OSThreadId);
-        }
-
-
-        public override List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread)
-        {
-            return base.GetClrBlockingObjects(thread);
         }
 
         private List<UnifiedBlockingObject> GetWCTBlockingObject(uint threadId)

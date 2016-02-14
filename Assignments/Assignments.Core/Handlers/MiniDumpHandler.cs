@@ -112,7 +112,7 @@ namespace Assignments.Core.Handlers
                     //uint rva = handle.ObjectInfoRva;
                     //while (rva != 0)
                     //{
-                    //    rva +=  info.NextInfoRva;
+                    //    rva += info.NextInfoRva;
                     //    info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(rva, streamPointer, _safeMemoryMappedViewHandle);
 
                     //    list.Add(info);

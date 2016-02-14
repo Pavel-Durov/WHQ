@@ -8,25 +8,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class BlockingObjectsFetcherStrategy
     {
-        public BlockingObjectsFetcherStrategy(string pathToDump)
-        {
-            _pathToDump = pathToDump;
-        }
-
-        public BlockingObjectsFetcherStrategy(int pid)
-        {
-            _pid = pid;
-        }
-
-        protected int _pid;
-        protected string _pathToDump;
-
-        public abstract List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread);
-
-        public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack);
-
-
-        protected List<UnifiedBlockingObject> GetClrBlockingObjects(ClrThread thread)
+        public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread)
         {
             List<UnifiedBlockingObject> result = null;
             if (thread.BlockingObjects?.Count > 0)
@@ -40,5 +22,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
             }
             return result;
         }
+
+        public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack);
     }
 }
