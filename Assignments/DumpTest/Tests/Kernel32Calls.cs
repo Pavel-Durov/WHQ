@@ -41,13 +41,6 @@ namespace DumpTest.Tests
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseHandle(IntPtr hObject);
 
-        //Sigle WAit////////////////////////////////////////////////////////////
-        //http://www.pinvoke.net/default.aspx/coredll/WaitForSingleObject.html
-        ////////////////////////////////////////////////////////////////////////
-        //[DllImport("coredll.dll", SetLastError = true)]
-        //public static extern Int32 WaitForSingleObject(IntPtr Handle, Int32 Wait);
-
-
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 

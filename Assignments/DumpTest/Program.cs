@@ -15,18 +15,14 @@ namespace DumpTest
 {
     public class Program
     {
-
         const String PID_FILE_PATH = @"./../../../dump_pid.txt";
 
         static void Main(string[] args)
         {
-
             Console.WriteLine("Test started");
-        
 
             DealWithPID();
 
-            
             Kernel32Calls.Run();
             //MutexWait.Run();
             //ThreadEventWait.Run();

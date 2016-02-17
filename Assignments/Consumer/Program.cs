@@ -15,19 +15,36 @@ namespace Consumer
 {
     class Program
     {
-        const string SOME_86_DUMP = @"C:\temp\dumps\DumpTest.dmp";
         const int PID_NOT_FOUND = 0;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
         static void Main(string[] args)
         {
-            //Global.LiveProcessTest.Run();
-            Global.DumpFileTest.Run();
-            //Global.Test.Run(pid);
-            //umpFile64Bit.Test.Run(pid);
+
+            if(args != null && args.Length == 2 && !String.IsNullOrEmpty(args[0]))
+            {
+                if (args[0] == "-dump" && !String.IsNullOrEmpty(args[1]))
+                {
+                    using (DataTarget target = DataTarget.LoadCrashDump(args[1]))
+                    {
+                        Global.DumpFile.DoAnaytics(target, args[1]);
+                    }
+                }
+                else if(args[0] == "-pid")
+                {
+                    int parsed = 0;
+                    if(int.TryParse(args[0], out parsed))
+                    {
+                        Global.LiveProcess.Run(parsed);
+                    }
+                }
+            }
+
+
             Console.ReadKey();
         }
 
+      
         private static int GetPidFromDumpProcessTextFile()
         {
             int pid = PID_NOT_FOUND;

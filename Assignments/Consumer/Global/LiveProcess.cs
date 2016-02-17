@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace Consumer.Global
 {
-    class LiveProcessTest
+    class LiveProcess
     {
 
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
-        public static void Run()
+        public static void Run(int pid)
         {
 
-            int pid = GetPidFromDumpProcessTextFile();
+            //int pid = GetPidFromDumpProcessTextFile();
 
             if (pid != PID_NOT_FOUND)
             {

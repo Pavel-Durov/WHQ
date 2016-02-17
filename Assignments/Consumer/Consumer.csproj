@@ -47,8 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Global\LiveProcessTest.cs" />
-    <Compile Include="Global\DumpFileTest.cs" />
+    <Compile Include="Global\LiveProcess.cs" />
+    <Compile Include="Global\DumpFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

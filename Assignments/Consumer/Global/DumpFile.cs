@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Consumer.Global
 {
-    class DumpFileTest
+    class DumpFile
     {
         const string SOME_86_DUMP = @"C:\temp\dumps\tha-dump4.dmp";
         const int PID_NOT_FOUND = -1;
@@ -25,7 +25,7 @@ namespace Consumer.Global
             Console.ReadKey();
         }
 
-        private static void DoAnaytics(DataTarget target, string pathToDump)
+        public static void DoAnaytics(DataTarget target, string pathToDump)
         {
             var runtime = target.ClrVersions[0].CreateRuntime();
 
