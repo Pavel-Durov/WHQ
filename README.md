@@ -12,6 +12,6 @@ For live usage you'll need to pass the PID as the Command-Line parameter by this
 
 If you want to use dump file as a source:
 	
-	-d <absolete-path-to-dump-file>
+	-d <absolute-path-to-dump-file>
 	
 Afterward you'll see the output on the console with handles data and such, you can also find the result in the log files, located at : "Assignments/Logs" project directory
