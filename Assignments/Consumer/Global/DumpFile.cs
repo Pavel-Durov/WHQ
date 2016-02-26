@@ -11,31 +11,22 @@ namespace Consumer.Global
 {
     class DumpFile
     {
-        const string SOME_86_DUMP = @"C:\temp\dumps\tha-dump4.dmp";
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
-        public static void Run()
+        internal static void DoAnaytics(string dumpFile)
         {
-            using (DataTarget target = DataTarget.LoadCrashDump(SOME_86_DUMP))
+            using (DataTarget target = DataTarget.LoadCrashDump(dumpFile)) 
             {
-                DoAnaytics(target, SOME_86_DUMP);
+                var runtime = target.ClrVersions[0].CreateRuntime();
+
+                //Dump process handler
+                ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, dumpFile);
+
+                var result = handler.Handle();
+
+                PrintHandler.Print(result, true);
             }
-
-            Console.ReadKey();
-        }
-
-        public static void DoAnaytics(DataTarget target, string pathToDump)
-        {
-            var runtime = target.ClrVersions[0].CreateRuntime();
-
-            //Dump process handler
-            ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, pathToDump);
-
-            var result = handler.Handle();
-
-            PrintHandler.Print(result, true);
-            Console.ReadKey();
         }
 
         private static int GetPidFromDumpProcessTextFile()

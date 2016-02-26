@@ -1,13 +1,6 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assignments.Core;
-using System.IO;
-using Assignments.Core.Handlers;
-using Microsoft.Diagnostics.Runtime;
+using Consumer.CmdParams;
 
 namespace Consumer
 {
@@ -15,25 +8,19 @@ namespace Consumer
     {
         static void Main(string[] args)
         {
-            if(args != null && args.Length == 2 && !String.IsNullOrEmpty(args[0]))
+            var options = new Options();
+
+            if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-                if (args[0] == "-dump" && !String.IsNullOrEmpty(args[1]))
+                if (options.DumpFile != null)
                 {
-                    using (DataTarget target = DataTarget.LoadCrashDump(args[1]))
-                    {
-                        Global.DumpFile.DoAnaytics(target, args[1]);
-                    }
+                    Global.DumpFile.DoAnaytics(options.DumpFile);
                 }
-                else if(args[0] == "-pid")
+                else if(options.LivePid != Options.INVALID_PID)
                 {
-                    int parsed = 0;
-                    if(int.TryParse(args[0], out parsed))
-                    {
-                        Global.LiveProcess.Run(parsed);
-                    }
+                    Global.LiveProcess.Run(options.LivePid);
                 }
             }
-
 
             Console.ReadKey();
         }

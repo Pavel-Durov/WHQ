@@ -1,0 +1,6 @@
+﻿Attempting to gather dependencies information for package 'CommandLineParser.1.9.71' with respect to project 'Assignments.Core', targeting '.NETFramework,Version=v4.5.2'
+Resolving actions to uninstall package 'CommandLineParser.1.9.71'
+Resolved actions to uninstall package 'CommandLineParser.1.9.71'
+Removed package 'CommandLineParser.1.9.71' from 'packages.config'
+Successfully uninstalled 'CommandLineParser.1.9.71' from Assignments.Core
+========== Finished ==========

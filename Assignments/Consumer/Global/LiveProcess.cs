@@ -18,9 +18,6 @@ namespace Consumer.Global
 
         public static void Run(int pid)
         {
-
-            //int pid = GetPidFromDumpProcessTextFile();
-
             if (pid != PID_NOT_FOUND)
             {
                 Console.WriteLine("PID found in Assignment_3.DumpTest file :) ");
