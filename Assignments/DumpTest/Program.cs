@@ -23,10 +23,24 @@ namespace DumpTest
 
             DealWithPID();
 
-            Kernel32Calls.Run();
-            //MutexWait.Run();
-            //ThreadEventWait.Run();
-            //ThreadMonitorWait.Run();
+            var kernel32Task = Task.Run(() => {
+                Kernel32Calls.Run();
+            });
+
+           var mutexWaitRun = Task.Run(async () => {
+                await MutexWait.Run();
+            });
+
+            var threadEventWaitTask = Task.Run(() => {
+                ThreadEventWait.Run();
+            });
+
+            var threadMonitorWaitTask = Task.Run(() => {
+                ThreadMonitorWait.Run();
+            });
+
+            var result = Task.WaitAny(kernel32Task, mutexWaitRun, threadEventWaitTask, threadMonitorWaitTask);
+
             Console.ReadLine();
         }
 

@@ -63,7 +63,7 @@ namespace Assignments.Core.Model.MiniDump
 
         public MiniDumpHandleInfo HandleInfo { get; private set; }
 
-        internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info)
+        internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info, string infoName)
         {
             HandleInfo = new MiniDumpHandleInfo(info);
         }

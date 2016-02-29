@@ -101,15 +101,18 @@ namespace Assignments.Core.Handlers
                 //This is the number of open handles to the object that this handle refers to. 
                 if (handle.ObjectInfoRva > 0)
                 {
-                    var list = new List<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>();
-
                     var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
-
-                    result.AddInfo(info);
+                    if (info.NextInfoRva != 0)
+                    {
+                        var str = StreamHandler.ReadString(info.NextInfoRva, info.SizeOfInfo, _safeMemoryMappedViewHandle);
+                        result.AddInfo(info, str);
+                    }
+                    
                     //uint rva = handle.ObjectInfoRva;
                     //while (rva != 0)
                     //{
-                    //    rva += info.NextInfoRva;
+                    //    rva = info.NextInfoRva;
+
                     //    info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(rva, streamPointer, _safeMemoryMappedViewHandle);
 
                     //    list.Add(info);
@@ -135,14 +138,14 @@ namespace Assignments.Core.Handlers
             }
 
 
-            
+
             return result;
         }
 
         private string GetString(uint rva, IntPtr streamPointer)
         {
             var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
-            
+
             return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
         }
 

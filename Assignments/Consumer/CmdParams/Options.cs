@@ -12,7 +12,6 @@ namespace Consumer.CmdParams
         public string DumpFile { get; set; }
 
         [Option('p', "live", DefaultValue = -1, HelpText = "Enter Live process pid.")]
-
         public int LivePid { get; set; }
 
         [ParserState]
