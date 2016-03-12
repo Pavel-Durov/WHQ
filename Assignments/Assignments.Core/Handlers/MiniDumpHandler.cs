@@ -154,23 +154,64 @@ namespace Assignments.Core.Handlers
             switch (pObjectInfo.InfoType)
             {
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone:
-                    break;
+                    //ReportInformational("\t<No object specific information found>\n");
+                    //break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1:
-                    break;
+                    //ReportInformational("\tThread information 1:\n");
+                    //{
+                    //    THREAD_ADDITIONAL_INFO* pInfo = (THREAD_ADDITIONAL_INFO*)(((char*)pObjectInfo) + sizeof(*pObjectInfo));
+                    //    ReportInformational("\t\tProcess id: %x\n", pInfo->ProcessId);
+                    //    ReportInformational("\t\tThread id: %x\n", pInfo->ThreadId);
+                    //    ReportInformational("\t\tThread priority: %d\n", pInfo->Priority);
+                    //    synchronizationObject.OwnerProcessId = pInfo->ProcessId;
+                    //    synchronizationObject.OwnerThreadId = pInfo->ThreadId;
+                    //    WCHAR threadName[50];
+                    //    wsprintf(threadName, L"%x.%x", pInfo->ProcessId, pInfo->ThreadId);
+                    //    synchronizationObject.Name = _wcsdup(threadName);
+                    //}
+                    //break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1:
-                    break;
+                    //ReportInformational("\tMutex information 1:\n");
+                    //{
+                    //    MUTEX_ADDITIONAL_INFO_1* pInfo = (MUTEX_ADDITIONAL_INFO_1*)(((char*)pObjectInfo) + sizeof(*pObjectInfo));
+                    //    ReportInformational("\t\tUnknown field 1: %x\n", pInfo->Unknown1);
+                    //    ReportInformational("\t\tUnknown field 2: %x\n", pInfo->Unknown2);
+                    //}
+                    //break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2:
-                    break;
+                    //ReportInformational("\tMutex information 2:\n");
+                    //{
+                    //    MUTEX_ADDITIONAL_INFO_2* pInfo = (MUTEX_ADDITIONAL_INFO_2*)(((char*)pObjectInfo) + sizeof(*pObjectInfo));
+                    //    ReportInformational("\t\tOwner process id: %x\n", pInfo->OwnerProcessId);
+                    //    ReportInformational("\t\tOwner thread id: %x\n", pInfo->OwnerThreadId);
+                    //    synchronizationObject.OwnerProcessId = pInfo->OwnerProcessId;
+                    //    synchronizationObject.OwnerThreadId = pInfo->OwnerThreadId;
+                    //}
+                    //break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1:
-                    break;
+                    //ReportInformational("\tProcess information 1:\n");
+                    //break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2:
-                    break;
+                    //ReportInformational("\tProcess information 2:\n");
+                    //{
+                    //    PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)pObjectInfo) + sizeof(*pObjectInfo));
+                    //    ReportInformational("\t\tProcess id: %x\n", pInfo->ProcessId);
+                    //    ReportInformational("\t\tParent process id: %x\n", pInfo->ParentProcessId);
+                    //    synchronizationObject.OwnerProcessId = pInfo->ProcessId;
+                    //    synchronizationObject.OwnerThreadId = 0;
+                    //    WCHAR processName[50];
+                    //    wsprintf(processName, L"%x", pInfo->ProcessId);
+                    //    synchronizationObject.Name = _wcsdup(processName);
+                    //}
+                    //break; 
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1:
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1:
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax:
                     break;
+
+
                 default:
                     break;
             }
