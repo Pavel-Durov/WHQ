@@ -48,6 +48,13 @@ namespace Assignments.Core.Handlers
             }, safeHandle);
         }
 
+        public static unsafe T ReadStruct<T>(uint rva) where T : struct
+        {
+            IntPtr positionToReadFrom = new IntPtr((int)(rva));
+            return Marshal.PtrToStructure<T>(positionToReadFrom);
+        }
+
+
         public static T RunSafe<T>(Func<T> func, SafeMemoryMappedViewHandle safeHandle)
         {
             T result = default(T);
