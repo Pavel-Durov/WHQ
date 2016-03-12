@@ -115,7 +115,9 @@ namespace Assignments.Core.Handlers
 
                         do
                         {
-                            pObjectInfo = DealWithHandleInfo(pObjectInfo);
+                            pObjectInfo = DealWithHandleInfo(pObjectInfo, result);
+
+                            if (pObjectInfo.NextInfoRva == 0) break;
                         }
                         while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
                     }
@@ -144,8 +146,10 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo)
+        private DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle)
         {
+            //TODO: update handle according to InfoType value
+
             Debug.WriteLine(pObjectInfo.InfoType);
             switch (pObjectInfo.InfoType)
             {
