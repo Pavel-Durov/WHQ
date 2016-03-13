@@ -8,6 +8,19 @@ using Assignments.Core.Handlers;
 
 namespace Assignments.Core.Model.MiniDump
 {
+    public enum MiniDumpHandleType
+    {
+        NONE,
+        THREAD,
+        MUTEX1,
+        MUTEX2,
+        PROCESS1,
+        PROCESS2,
+        EVENT,
+        SECTION,
+        TYPE_MAX
+    }
+
     public class MiniDumpHandle
     {
 
@@ -55,6 +68,8 @@ namespace Assignments.Core.Model.MiniDump
         public uint TypeNameRva { get; private set; }
         public uint Attributes { get; private set; }
         public uint GrantedAccess { get; private set; }
+
+        public MiniDumpHandleType Type { get; set; }
         /// <summary>
         /// An RVA to a MINIDUMP_HANDLE_OBJECT_INFORMATION structure that specifies object-specific information. This member can be 0 if there is no extra information.
         /// </summary>
@@ -62,10 +77,20 @@ namespace Assignments.Core.Model.MiniDump
         public bool HasObjectInfo{ get { return ObjectInfoRva > 0; } }
 
         public MiniDumpHandleInfo HandleInfo { get; private set; }
+        public uint OwnerProcessId { get; internal set; }
+        public uint OwnerThreadId { get; internal set; }
+        public MutexUnknownFields MutexUnknown { get; internal set; }
+        public string Name { get; internal set; }
 
         internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info, string infoName)
         {
             HandleInfo = new MiniDumpHandleInfo(info);
         }
+    }
+
+    public class MutexUnknownFields
+    {
+        public object Field1 { get; internal set; }
+        public object Field2 { get; internal set; }
     }
 }

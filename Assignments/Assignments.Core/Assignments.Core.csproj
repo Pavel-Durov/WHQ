@@ -77,6 +77,8 @@
     <Compile Include="WinApi\Advapi32.cs" />
     <Compile Include="WinApi\DbgHelp.cs" />
     <Compile Include="WinApi\Kernel32.cs" />
+    <Compile Include="WinApi\Strings.cs" />
+    <Compile Include="WinApi\Structs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

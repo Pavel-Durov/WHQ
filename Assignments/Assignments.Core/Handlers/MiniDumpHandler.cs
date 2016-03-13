@@ -6,6 +6,7 @@ using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
+using System.Text;
 
 namespace Assignments.Core.Handlers
 {
@@ -14,6 +15,8 @@ namespace Assignments.Core.Handlers
         const string DUMPS_DIR = "Dums";
 
         private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+        SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
+        private IntPtr _baseOfView;
 
         public void Init(string dumpFileName)
         {
@@ -43,7 +46,6 @@ namespace Assignments.Core.Handlers
             }
         }
 
-        SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
 
 
         public unsafe List<MiniDumpHandle> GetHandleData()
@@ -85,11 +87,11 @@ namespace Assignments.Core.Handlers
                 }
             }
 
-            
+
             return result;
         }
 
-       
+
         private unsafe MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
 
@@ -107,15 +109,15 @@ namespace Assignments.Core.Handlers
                     var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
                     if (info.NextInfoRva != 0)
                     {
-                        var str = StreamHandler.ReadString(info.NextInfoRva, info.SizeOfInfo, _safeMemoryMappedViewHandle);
-                        result.AddInfo(info, str);
+                        //var str = StreamHandler.ReadString(info.NextInfoRva, info.SizeOfInfo, _safeMemoryMappedViewHandle);
+                        //result.AddInfo(info, str);
 
-
-                        DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)_baseOfView + handle.ObjectInfoRva);
+                        uint address = (uint)_baseOfView + handle.ObjectInfoRva;
+                        DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(address);
 
                         do
                         {
-                            pObjectInfo = DealWithHandleInfo(pObjectInfo, result);
+                            pObjectInfo = DealWithHandleInfo(pObjectInfo, result, address);
 
                             if (pObjectInfo.NextInfoRva == 0) break;
                         }
@@ -146,7 +148,7 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        private DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle)
+        unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address)
         {
             //TODO: update handle according to InfoType value
 
@@ -154,27 +156,75 @@ namespace Assignments.Core.Handlers
             switch (pObjectInfo.InfoType)
             {
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone:
+                    handle.Type = MiniDumpHandleType.NONE;
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1:
+                    {
+                        handle.Type = MiniDumpHandleType.THREAD;
+
+                        THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+                        handle.OwnerProcessId = threadInfo->ProcessId;
+                        handle.OwnerThreadId = threadInfo->ThreadId;
+
+                        //WCHAR threadName[50];
+                        //wsprintf(threadName, L"%x.%x", pInfo->ProcessId, pInfo->ThreadId);
+                        //synchronizationObject.Name = _wcsdup(threadName);
+                    }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1:
+                    {
+                        handle.Type = MiniDumpHandleType.MUTEX1;
+
+                        MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+                        handle.MutexUnknown = new MutexUnknownFields()
+                        {
+                            Field1 = mutexInfo1->Unknown1,
+                            Field2 = mutexInfo1->Unknown2
+                        };
+                    }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2:
+                    {
+                        handle.Type = MiniDumpHandleType.MUTEX2;
+
+                        MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+                        handle.OwnerProcessId = mutexInfo2->OwnerProcessId;
+                        handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
+
+                    }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1:
+                    handle.Type = MiniDumpHandleType.PROCESS1;
+
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2:
+                    {
+                        handle.Type = MiniDumpHandleType.PROCESS2;
+                        PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+                        handle.OwnerProcessId = pInfo->ProcessId;
+                        handle.OwnerThreadId = 0;
+                        //WCHAR processName[50];
+                        //wsprintf(processName, L"%x", pInfo->ProcessId);
+                        //handle.Name = _wcsdup(processName);
+                    }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1:
+                    handle.Type = MiniDumpHandleType.EVENT;
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1:
+                    handle.Type = MiniDumpHandleType.SECTION;
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax:
+                    handle.Type = MiniDumpHandleType.TYPE_MAX;
                     break;
                 default:
                     break;
             }
-        
+
             if (pObjectInfo.NextInfoRva == 0)
             {
                 return default(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION);
@@ -186,13 +236,14 @@ namespace Assignments.Core.Handlers
             return pObjectInfo;
         }
 
+
         private string GetString(uint rva, IntPtr streamPointer)
         {
             var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
 
             return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
         }
-        private IntPtr _baseOfView;
+  
         protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {
             bool result = false;
