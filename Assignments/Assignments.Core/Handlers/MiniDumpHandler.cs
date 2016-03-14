@@ -92,9 +92,8 @@ namespace Assignments.Core.Handlers
         }
 
 
-        private unsafe MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
+        private MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
-
             string objectName = GetString(handle.ObjectNameRva, streamPointer);
             string typeName = GetString(handle.TypeNameRva, streamPointer);
 
@@ -102,23 +101,17 @@ namespace Assignments.Core.Handlers
 
             if (handle.HandleCount > 0)
             {
-                //TODO: The meaning of this member depends on the handle type and the operating system.
-                //This is the number of open handles to the object that this handle refers to. 
                 if (handle.ObjectInfoRva > 0)
                 {
                     var info = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
                     if (info.NextInfoRva != 0)
                     {
-                        //var str = StreamHandler.ReadString(info.NextInfoRva, info.SizeOfInfo, _safeMemoryMappedViewHandle);
-                        //result.AddInfo(info, str);
-
                         uint address = (uint)_baseOfView + handle.ObjectInfoRva;
                         DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>(address);
 
                         do
                         {
                             pObjectInfo = DealWithHandleInfo(pObjectInfo, result, address);
-
                             if (pObjectInfo.NextInfoRva == 0) break;
                         }
                         while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
@@ -143,16 +136,13 @@ namespace Assignments.Core.Handlers
                 //The attributes for the handle, this corresponds to OBJ_INHERIT, OBJ_CASE_INSENSITIVE, etc. 
             }
 
-
-
             return result;
         }
 
+        #region MINIDUMP_HANDLE_OBJECT_INFORMATION 
+
         unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address)
         {
-            //TODO: update handle according to InfoType value
-
-            Debug.WriteLine(pObjectInfo.InfoType);
             switch (pObjectInfo.InfoType)
             {
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone:
@@ -160,56 +150,26 @@ namespace Assignments.Core.Handlers
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1:
                     {
-                        handle.Type = MiniDumpHandleType.THREAD;
-
-                        THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-                        handle.OwnerProcessId = threadInfo->ProcessId;
-                        handle.OwnerThreadId = threadInfo->ThreadId;
-
-                        //WCHAR threadName[50];
-                        //wsprintf(threadName, L"%x.%x", pInfo->ProcessId, pInfo->ThreadId);
-                        //synchronizationObject.Name = _wcsdup(threadName);
+                        SetMiniThreadInformation1(handle, address);
                     }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1:
                     {
-                        handle.Type = MiniDumpHandleType.MUTEX1;
-
-                        MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-                        handle.MutexUnknown = new MutexUnknownFields()
-                        {
-                            Field1 = mutexInfo1->Unknown1,
-                            Field2 = mutexInfo1->Unknown2
-                        };
+                        SetMiniMutantInformation1(handle, address);
                     }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2:
                     {
-                        handle.Type = MiniDumpHandleType.MUTEX2;
-
-                        MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-                        handle.OwnerProcessId = mutexInfo2->OwnerProcessId;
-                        handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
-
+                        SetMiniMutantInformation2(handle, address);
                     }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1:
-                    handle.Type = MiniDumpHandleType.PROCESS1;
+                    SetMiniProcessInformation1(handle, address);
 
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2:
                     {
-                        handle.Type = MiniDumpHandleType.PROCESS2;
-                        PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-                        handle.OwnerProcessId = pInfo->ProcessId;
-                        handle.OwnerThreadId = 0;
-                        //WCHAR processName[50];
-                        //wsprintf(processName, L"%x", pInfo->ProcessId);
-                        //handle.Name = _wcsdup(processName);
+                        SetMiniProcessInformation2(handle, address);
                     }
                     break;
                 case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1:
@@ -236,14 +196,61 @@ namespace Assignments.Core.Handlers
             return pObjectInfo;
         }
 
+        private unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, uint address)
+        {
+            handle.Type = MiniDumpHandleType.PROCESS2;
+            PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
 
+            handle.OwnerProcessId = pInfo->ProcessId;
+            handle.OwnerThreadId = 0;
+        }
+
+        private void SetMiniProcessInformation1(MiniDumpHandle handle, uint address)
+        {
+            handle.Type = MiniDumpHandleType.PROCESS1;
+        }
+
+        private unsafe void SetMiniMutantInformation2(MiniDumpHandle handle, uint address)
+        {
+            handle.Type = MiniDumpHandleType.MUTEX2;
+
+            MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+            handle.OwnerProcessId = mutexInfo2->OwnerProcessId;
+            handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
+        }
+
+        private unsafe void SetMiniMutantInformation1(MiniDumpHandle handle, uint address)
+        {
+            handle.Type = MiniDumpHandleType.MUTEX1;
+
+            MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+            handle.MutexUnknown = new MutexUnknownFields()
+            {
+                Field1 = mutexInfo1->Unknown1,
+                Field2 = mutexInfo1->Unknown2
+            };
+        }
+
+        private unsafe void SetMiniThreadInformation1(MiniDumpHandle handle, uint address)
+        {
+            handle.Type = MiniDumpHandleType.THREAD;
+
+            THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+
+            handle.OwnerProcessId = threadInfo->ProcessId;
+            handle.OwnerThreadId = threadInfo->ThreadId;
+        }
+
+        #endregion
         private string GetString(uint rva, IntPtr streamPointer)
         {
             var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
 
             return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
         }
-  
+
         protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {
             bool result = false;

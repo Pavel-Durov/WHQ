@@ -35,7 +35,7 @@ namespace Assignments.Core.Extentions
 
             for (int i = 0; i < blockingObjects.Count; i++)
             {
-                sb.AppendWithNewLine($"{prefix}blockingObject: {i}");
+                sb.AppendWithNewLine($"{Environment.NewLine}{prefix}blockingObject: {i}");
                 var loopObj = blockingObjects[i];
                 sb.Append(loopObj.AsString(itemPrefix));
             }
@@ -52,7 +52,8 @@ namespace Assignments.Core.Extentions
             {
                 sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
             }
-            sb.AppendWithNewLine($"{prefix}RecursionCount: {blockingObject.RecursionCount}");
+            
+            sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
             sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
 
             //TODO: Complete the info

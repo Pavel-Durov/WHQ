@@ -1,7 +1,6 @@
 ﻿using Assignments.Core.Model.Unified.Thread;
 using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
-using System;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.Model.MiniDump;
 
@@ -30,7 +29,6 @@ namespace Assignments.Core.Model.Unified
 
         public UnifiedBlockingObject(WaitChainInfoObject obj)
         {
-            ManagedObjectAddress = 0;
             KernelObjectName = obj.ObjectName;
             WaitReason = obj.UnifiedType;
             Type = UnifiedBlockingType.WaitChainInfoObject;
@@ -96,7 +94,7 @@ namespace Assignments.Core.Model.Unified
 
     public enum UnifiedBlockingReason
     {
-        //ClrThread BlockingReason Enumerations
+        //Based on ClrThread BlockingReason Enumerations
         None = 0,
         Unknown = 1,
         Monitor = 2,
@@ -108,7 +106,7 @@ namespace Assignments.Core.Model.Unified
         ReaderAcquired = 8,
         WriterAcquired = 9,
 
-        // WCT_OBJECT_TYPE Enumerations
+        //Based on WCT_OBJECT_TYPE Enumerations
         CriticalSectionType = 20,
         SendMessageType = 11,
         MutexType = 12,
