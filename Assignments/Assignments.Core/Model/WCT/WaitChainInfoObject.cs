@@ -3,6 +3,7 @@ using Assignments.Core.Handlers;
 using System.Runtime.InteropServices;
 using System;
 using Assignments.Core.WinApi;
+using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Model.WCT
 {
@@ -73,6 +74,14 @@ namespace Assignments.Core.Model.WCT
         /// This member is reserved for future use.
         /// </summary>
         public uint AlertTable { get; private set; }
+        public UnifiedBlockingReason UnifiedType
+        {
+            get
+            {
+                var wctIndex = (int)this.ObjectType;
+                return (UnifiedBlockingReason)(UnifiedBlockingObject.BLOCK_REASON_WCT_SECTION_START_INDEX + wctIndex);
+            }
+        }
     }
 
 

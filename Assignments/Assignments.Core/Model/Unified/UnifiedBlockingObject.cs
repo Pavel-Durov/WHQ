@@ -32,19 +32,15 @@ namespace Assignments.Core.Model.Unified
         {
             ManagedObjectAddress = 0;
             KernelObjectName = obj.ObjectName;
-
-            var wctIndex = (int)obj.ObjectType;
-            WaitReason = (UnifiedBlockingReason)(BLOCK_REASON_WCT_SECTION_START_INDEX + wctIndex);
-
+            WaitReason = obj.UnifiedType;
             Type = UnifiedBlockingType.WaitChainInfoObject;
         }
         
-        public UnifiedBlockingObject(MiniDumpHandle item)
+        public UnifiedBlockingObject(MiniDumpHandle handle)
         {
-            //item.Handle
-            KernelObjectName = item.ObjectName;
-            KernelObjectTypeName = item.TypeName;
-
+            KernelObjectName = handle.ObjectName;
+            KernelObjectTypeName = handle.TypeName;
+            WaitReason = handle.UnifiedType;
             Type = UnifiedBlockingType.MiniDumpHandle;
         }
 
@@ -94,7 +90,7 @@ namespace Assignments.Core.Model.Unified
 
         public string KernelObjectTypeName { get; private set; }
 
-        const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
+        public const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
     }
 
 
@@ -113,15 +109,15 @@ namespace Assignments.Core.Model.Unified
         WriterAcquired = 9,
 
         // WCT_OBJECT_TYPE Enumerations
-        WctCriticalSectionType = 20,
-        WctSendMessageType = 11,
-        WctMutexType = 12,
-        WctAlpcType = 13,
-        WctComType = 14,
-        WctThreadWaitType = 15,
-        WctProcessWaitType = 16,
-        WctThreadType = 17,
-        WctComActivationType = 18,
-        WctUnknownType = 19
+        CriticalSectionType = 20,
+        SendMessageType = 11,
+        MutexType = 12,
+        AlpcType = 13,
+        ComType = 14,
+        ThreadWaitType = 15,
+        ProcessWaitType = 16,
+        ThreadType = 17,
+        ComActivationType = 18,
+        UnknownType = 19
     }
 }

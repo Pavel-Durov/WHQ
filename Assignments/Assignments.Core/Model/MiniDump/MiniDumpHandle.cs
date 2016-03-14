@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignments.Core.WinApi;
 using Assignments.Core.Handlers;
+using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Model.MiniDump
 {
@@ -81,6 +82,47 @@ namespace Assignments.Core.Model.MiniDump
         public uint OwnerThreadId { get; internal set; }
         public MutexUnknownFields MutexUnknown { get; internal set; }
         public string Name { get; internal set; }
+        public UnifiedBlockingReason UnifiedType { get { return GetAsUnified(Type); } }
+
+        public static UnifiedBlockingReason GetAsUnified(MiniDumpHandleType type)
+        {
+            UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
+
+            switch (type)
+            {
+                case MiniDumpHandleType.NONE:
+                    break;
+                case MiniDumpHandleType.THREAD:
+                    result = UnifiedBlockingReason.ThreadType;
+                    break;
+                case MiniDumpHandleType.MUTEX1:
+                    result = UnifiedBlockingReason.MutexType;
+                    break;
+                case MiniDumpHandleType.MUTEX2:
+                    result = UnifiedBlockingReason.MutexType;
+                    break;
+                case MiniDumpHandleType.PROCESS1:
+                    result = UnifiedBlockingReason.ProcessWaitType;
+                    break;
+                case MiniDumpHandleType.PROCESS2:
+                    result = UnifiedBlockingReason.ProcessWaitType;
+                    break;
+                case MiniDumpHandleType.EVENT:
+                    result = UnifiedBlockingReason.ThreadWaitType;
+                    break;
+                case MiniDumpHandleType.SECTION:
+                    result = UnifiedBlockingReason.CriticalSectionType;
+                    break;
+                case MiniDumpHandleType.TYPE_MAX:
+                    break;
+                default:
+                    break;
+            }
+            return result;
+        }
+
+
+
 
         internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info, string infoName)
         {
