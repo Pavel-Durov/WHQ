@@ -10,11 +10,21 @@ namespace Assignments.Core.Model.Unified
     {
         WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle
     }
+    public enum OriginSource
+    {
+        WCT, MiniDump, ClrMD
+    }
 
     public class UnifiedBlockingObject
     {
-        public UnifiedBlockingObject(BlockingObject obj)
+        private UnifiedBlockingObject(OriginSource source)
         {
+            Origin = source;
+        }
+
+        public UnifiedBlockingObject(BlockingObject obj) : this(OriginSource.ClrMD)
+        {
+
             SetOwners(obj);
             SetWaiters(obj);
 
@@ -24,17 +34,18 @@ namespace Assignments.Core.Model.Unified
             KernelObjectName = null;
 
             Type = UnifiedBlockingType.ClrBlockingObject;
+
         }
 
 
-        public UnifiedBlockingObject(WaitChainInfoObject obj)
+        public UnifiedBlockingObject(WaitChainInfoObject obj) : this(OriginSource.WCT)
         {
             KernelObjectName = obj.ObjectName;
             WaitReason = obj.UnifiedType;
             Type = UnifiedBlockingType.WaitChainInfoObject;
         }
-        
-        public UnifiedBlockingObject(MiniDumpHandle handle)
+
+        public UnifiedBlockingObject(MiniDumpHandle handle) : this(OriginSource.MiniDump)
         {
             KernelObjectName = handle.ObjectName;
             KernelObjectTypeName = handle.TypeName;
@@ -69,7 +80,7 @@ namespace Assignments.Core.Model.Unified
             }
         }
 
-
+        public OriginSource Origin { get; private set; }
         public UnifiedBlockingType Type { get; private set; }
 
         public List<UnifiedThread> Owners { get; private set; }
