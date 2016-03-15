@@ -10,6 +10,7 @@ namespace Assignments.Core.Model.Unified
     {
         WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle
     }
+
     public enum OriginSource
     {
         WCT, MiniDump, ClrMD
