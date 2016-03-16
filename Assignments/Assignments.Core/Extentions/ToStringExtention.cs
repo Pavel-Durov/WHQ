@@ -54,7 +54,7 @@ namespace Assignments.Core.Extentions
                 sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
             }
             
-            sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
+            sb.AppendWithNewLine($"{prefix}KernelObjectTypeName: {blockingObject.KernelObjectTypeName}");
             sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
 
             //TODO: Complete the info

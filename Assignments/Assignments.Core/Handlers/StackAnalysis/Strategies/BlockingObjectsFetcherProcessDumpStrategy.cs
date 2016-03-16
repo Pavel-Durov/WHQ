@@ -8,6 +8,7 @@ using Assignments.Core.Model.Unified.Thread;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.MiniDump;
+using Assignments.Core.Handlers.MiniDump;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {

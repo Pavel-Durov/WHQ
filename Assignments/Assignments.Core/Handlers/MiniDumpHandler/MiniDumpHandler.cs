@@ -8,7 +8,8 @@ using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
 using System.Text;
 
-namespace Assignments.Core.Handlers
+
+namespace Assignments.Core.Handlers.MiniDump
 {
     public class MiniDumpHandler
     {
@@ -111,7 +112,7 @@ namespace Assignments.Core.Handlers
 
                         do
                         {
-                            pObjectInfo = DealWithHandleInfo(pObjectInfo, result, address);
+                            pObjectInfo = ObjectInformationHandler.DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
                             if (pObjectInfo.NextInfoRva == 0) break;
                         }
                         while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
@@ -139,111 +140,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        #region MINIDUMP_HANDLE_OBJECT_INFORMATION 
-
-        unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address)
-        {
-            switch (pObjectInfo.InfoType)
-            {
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone:
-                    handle.Type = MiniDumpHandleType.NONE;
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1:
-                    {
-                        SetMiniThreadInformation1(handle, address);
-                    }
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1:
-                    {
-                        SetMiniMutantInformation1(handle, address);
-                    }
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2:
-                    {
-                        SetMiniMutantInformation2(handle, address);
-                    }
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1:
-                    SetMiniProcessInformation1(handle, address);
-
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2:
-                    {
-                        SetMiniProcessInformation2(handle, address);
-                    }
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1:
-                    handle.Type = MiniDumpHandleType.EVENT;
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1:
-                    handle.Type = MiniDumpHandleType.SECTION;
-                    break;
-                case DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax:
-                    handle.Type = MiniDumpHandleType.TYPE_MAX;
-                    break;
-                default:
-                    break;
-            }
-
-            if (pObjectInfo.NextInfoRva == 0)
-            {
-                return default(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION);
-            }
-            else
-            {
-                pObjectInfo = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)_baseOfView + pObjectInfo.NextInfoRva);
-            }
-            return pObjectInfo;
-        }
-
-        private unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, uint address)
-        {
-            handle.Type = MiniDumpHandleType.PROCESS2;
-            PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-            handle.OwnerProcessId = pInfo->ProcessId;
-            handle.OwnerThreadId = 0;
-        }
-
-        private void SetMiniProcessInformation1(MiniDumpHandle handle, uint address)
-        {
-            handle.Type = MiniDumpHandleType.PROCESS1;
-        }
-
-        private unsafe void SetMiniMutantInformation2(MiniDumpHandle handle, uint address)
-        {
-            handle.Type = MiniDumpHandleType.MUTEX2;
-
-            MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-            handle.OwnerProcessId = mutexInfo2->OwnerProcessId;
-            handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
-        }
-
-        private unsafe void SetMiniMutantInformation1(MiniDumpHandle handle, uint address)
-        {
-            handle.Type = MiniDumpHandleType.MUTEX1;
-
-            MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-            handle.MutexUnknown = new MutexUnknownFields()
-            {
-                Field1 = mutexInfo1->Unknown1,
-                Field2 = mutexInfo1->Unknown2
-            };
-        }
-
-        private unsafe void SetMiniThreadInformation1(MiniDumpHandle handle, uint address)
-        {
-            handle.Type = MiniDumpHandleType.THREAD;
-
-            THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
-
-            handle.OwnerProcessId = threadInfo->ProcessId;
-            handle.OwnerThreadId = threadInfo->ThreadId;
-        }
-
-        #endregion
         private string GetString(uint rva, IntPtr streamPointer)
         {
             var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);

@@ -52,7 +52,8 @@
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Handlers\MemoryMapFileHandler.cs" />
-    <Compile Include="Handlers\MiniDumpHandler.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\StackAnalysis\Strategies\Base\BlockingObjectsFetcherStrategy.cs" />
     <Compile Include="Handlers\StackAnalysis\Strategies\BlockingObjectsFetcherLiveProcessStrategy.cs" />
