@@ -38,6 +38,64 @@ namespace Assignments.Core.WinApi
 
         #region Structs
 
+        public enum MiniDumpProcessorArchitecture
+        {
+            PROCESSOR_ARCHITECTURE_INTEL = 0,
+            PROCESSOR_ARCHITECTURE_IA64 = 6,
+            PROCESSOR_ARCHITECTURE_AMD64 = 9,
+            PROCESSOR_ARCHITECTURE_UNKNOWN = 0xfff
+        }
+
+        public enum MiniDumpProductType
+        {
+            VER_NT_WORKSTATION = 0x0000001,
+            VER_NT_DOMAIN_CONTROLLER = 0x0000002,
+            VER_NT_SERVER = 0x0000003
+        }
+
+        public enum MiniDumpPlatform
+        {
+            VER_PLATFORM_WIN32s = 0,
+            VER_PLATFORM_WIN32_WINDOWS = 1,
+            VER_PLATFORM_WIN32_NT = 2
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
+        internal struct MINIDUMP_SYSTEM_INFO
+        {
+            public ushort ProcessorArchitecture;
+            public ushort ProcessorLevel;
+            public ushort ProcessorRevision;
+            public byte NumberOfProcessors;
+            public byte ProductType;
+            public UInt32 MajorVersion;
+            public UInt32 MinorVersion;
+            public UInt32 BuildNumber;
+            public UInt32 PlatformId;
+            public uint CSDVersionRva;
+            public ushort SuiteMask;
+            public ushort Reserved2;
+            public CPU_INFORMATION Cpu;
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal unsafe struct CPU_INFORMATION
+        {
+            // OtherCpuInfo
+            [FieldOffset(0)]
+            public fixed ulong ProcessorFeatures[2];
+            // X86CpuInfo, Official VendorId is 3 * 32bit long's (EAX, EBX and ECX).
+            // It actually stores a 12 byte ASCII string though, so it's easier for us to treat it as a 12 byte array instead.
+            [FieldOffset(0)]
+            public fixed byte VendorId[12];
+            [FieldOffset(12)]
+            public UInt32 VersionInformation;
+            [FieldOffset(16)]
+            public UInt32 FeatureInformation;
+            [FieldOffset(20)]
+            public UInt32 AMDExtendedCpuFeatures;
+        }
+
         public unsafe struct MINIDUMP_STRING
         {
             public UInt32 Length;

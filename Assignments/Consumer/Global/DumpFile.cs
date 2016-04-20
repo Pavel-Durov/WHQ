@@ -18,7 +18,7 @@ namespace Consumer.Global
         {
             using (DataTarget target = DataTarget.LoadCrashDump(dumpFile)) 
             {
-                var runtime = target.ClrVersions[0].CreateRuntime();
+                ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
                 //Dump process handler
                 ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, dumpFile);

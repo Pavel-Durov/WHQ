@@ -17,12 +17,12 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
         public BlockingObjectsFetcherProcessDumpStrategy(string dumpFilePath)
         {
-            _miniDump = new MiniDumpHandler();
+            _miniDump = new MiniDump.MiniDumpHandler();
 
             _miniDump.Init(dumpFilePath);
         }
 
-        MiniDumpHandler _miniDump;
+        MiniDump.MiniDumpHandler _miniDump;
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {

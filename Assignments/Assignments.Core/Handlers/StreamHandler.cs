@@ -1,11 +1,46 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
+using Assignments.Core.WinApi;
 
 namespace Assignments.Core.Handlers
 {
     public class StreamHandler
     {
+        public static unsafe bool ReadMiniDumpStream<T>(SafeMemoryMappedViewHandle safeHandle ,DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize)
+        {
+            bool result = false;
+
+            DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
+            streamPointer = IntPtr.Zero;
+            streamSize = 0;
+
+            try
+            {
+                byte* baseOfView = null;
+                safeHandle.AcquirePointer(ref baseOfView);
+
+                if (baseOfView == null)
+                    throw new Exception("Unable to aquire pointer to memory mapped view");
+
+                if (!DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize))
+                {
+                    int lastError = Marshal.GetLastWin32Error();
+                    result = false;
+                }
+
+                streamData = (T)Marshal.PtrToStructure(streamPointer, typeof(T));
+
+            }
+            finally
+            {
+                safeHandle.ReleasePointer();
+            }
+
+            return result;
+        }
+
+
         public static unsafe string ReadString(uint rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {
             return RunSafe<string>(() =>
@@ -69,6 +104,7 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
+       
         public static T[] RunSafe<T>(Func<T[]> function, SafeMemoryMappedViewHandle safeHandle, int count) where T : struct
         {
             T[] result = new T[count];

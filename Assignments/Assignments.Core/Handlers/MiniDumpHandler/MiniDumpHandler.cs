@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
 using System.Text;
-
+using Assignments.Core.Handlers.MiniDump;
 
 namespace Assignments.Core.Handlers.MiniDump
 {
@@ -48,9 +48,31 @@ namespace Assignments.Core.Handlers.MiniDump
         }
 
 
+        public unsafe void ReadSystemInfo()
+        {
+            DbgHelp.MINIDUMP_SYSTEM_INFO systemInfo;
+            IntPtr streamPointer;
+            uint streamSize;
+
+
+            streamPointer = IntPtr.Zero;
+            streamSize = 0;
+
+            bool result = StreamHandler.ReadMiniDumpStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(
+                _safeMemoryMappedViewHandle,
+                DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream,
+                out systemInfo, out streamPointer, out streamSize);
+
+            var info = new MiniDumpSystemInfoStream(systemInfo);
+            
+
+        }
+
 
         public unsafe List<MiniDumpHandle> GetHandleData()
         {
+            ReadSystemInfo();
+
             List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
             DbgHelp.MINIDUMP_HANDLE_DATA_STREAM handleData;
@@ -159,6 +181,7 @@ namespace Assignments.Core.Handlers.MiniDump
             {
                 byte* baseOfView = null;
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
+
 
                 result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
                 _baseOfView = (IntPtr)baseOfView;

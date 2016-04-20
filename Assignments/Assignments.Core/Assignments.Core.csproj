@@ -52,6 +52,9 @@
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Handlers\MemoryMapFileHandler.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\Cpu\NonX86CpuInfo.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\Cpu\X86CpuInfo.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\MiniDumpSystemInfoStream.cs" />
     <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
@@ -76,9 +79,9 @@
     <Compile Include="msos\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinApi\Advapi32.cs" />
+    <Compile Include="WinApi\Const.cs" />
     <Compile Include="WinApi\DbgHelp.cs" />
     <Compile Include="WinApi\Kernel32.cs" />
-    <Compile Include="WinApi\Strings.cs" />
     <Compile Include="WinApi\Structs.cs" />
   </ItemGroup>
   <ItemGroup>
