@@ -17,9 +17,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
         public BlockingObjectsFetcherProcessDumpStrategy(string dumpFilePath)
         {
-            _miniDump = new MiniDump.MiniDumpHandler();
-
-            _miniDump.Init(dumpFilePath);
+            _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
         }
 
         MiniDump.MiniDumpHandler _miniDump;

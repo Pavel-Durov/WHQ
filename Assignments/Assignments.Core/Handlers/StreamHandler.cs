@@ -7,39 +7,34 @@ namespace Assignments.Core.Handlers
 {
     public class StreamHandler
     {
-        public static unsafe bool ReadMiniDumpStream<T>(SafeMemoryMappedViewHandle safeHandle ,DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize)
+        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle, out IntPtr viewBase)
         {
             bool result = false;
-
             DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
+            streamData = default(T);
             streamPointer = IntPtr.Zero;
             streamSize = 0;
 
             try
             {
                 byte* baseOfView = null;
-                safeHandle.AcquirePointer(ref baseOfView);
+                safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
-                if (baseOfView == null)
-                    throw new Exception("Unable to aquire pointer to memory mapped view");
 
-                if (!DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize))
+                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
+                viewBase = (IntPtr)baseOfView;
+                if (result)
                 {
-                    int lastError = Marshal.GetLastWin32Error();
-                    result = false;
+                    streamData = (T)Marshal.PtrToStructure(streamPointer, typeof(T));
                 }
-
-                streamData = (T)Marshal.PtrToStructure(streamPointer, typeof(T));
-
             }
             finally
             {
-                safeHandle.ReleasePointer();
+                safeMemoryMappedViewHandle.ReleasePointer();
             }
 
             return result;
         }
-
 
         public static unsafe string ReadString(uint rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {

@@ -19,11 +19,19 @@ namespace Assignments.Core.Handlers.MiniDump
         SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
         private IntPtr _baseOfView;
 
+
+        public MiniDumpHandler(uint pid) { Init(pid); }
+
+        public MiniDumpHandler(string dumpFileName) { Init(dumpFileName); }
+
+        public MiniDumpSystemInfoStream Info { get; private set; }
+
         public void Init(string dumpFileName)
         {
             using (FileStream fileStream = File.Open(dumpFileName, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fileStream, dumpFileName);
+                ReadSystemInfo();
             }
         }
 
@@ -43,10 +51,10 @@ namespace Assignments.Core.Handlers.MiniDump
                 if (miniDumpCreated)
                 {
                     _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fs, fileName);
+                    ReadSystemInfo();
                 }
             }
         }
-
 
         public unsafe void ReadSystemInfo()
         {
@@ -57,29 +65,24 @@ namespace Assignments.Core.Handlers.MiniDump
 
             streamPointer = IntPtr.Zero;
             streamSize = 0;
+            IntPtr baseOfView;
 
-            bool result = StreamHandler.ReadMiniDumpStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(
-                _safeMemoryMappedViewHandle,
+            bool result = StreamHandler.ReadStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(
                 DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream,
-                out systemInfo, out streamPointer, out streamSize);
+                out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView);
 
-            var info = new MiniDumpSystemInfoStream(systemInfo);
-            
-
+            Info = new MiniDumpSystemInfoStream(systemInfo);
         }
-
 
         public unsafe List<MiniDumpHandle> GetHandleData()
         {
-            ReadSystemInfo();
-
             List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
             DbgHelp.MINIDUMP_HANDLE_DATA_STREAM handleData;
             IntPtr streamPointer;
             uint streamSize;
 
-            var readStrem = ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, _safeMemoryMappedViewHandle);
+            var readStrem = StreamHandler.ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out _baseOfView);
 
             if (!readStrem)
             {
@@ -168,36 +171,6 @@ namespace Assignments.Core.Handlers.MiniDump
 
             return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
         }
-
-        protected unsafe bool ReadStream(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out DbgHelp.MINIDUMP_HANDLE_DATA_STREAM streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
-        {
-            bool result = false;
-            DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
-            streamData = default(DbgHelp.MINIDUMP_HANDLE_DATA_STREAM);
-            streamPointer = IntPtr.Zero;
-            streamSize = 0;
-
-            try
-            {
-                byte* baseOfView = null;
-                safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
-
-
-                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
-                _baseOfView = (IntPtr)baseOfView;
-                if (result)
-                {
-                    streamData = (DbgHelp.MINIDUMP_HANDLE_DATA_STREAM)Marshal.PtrToStructure(streamPointer, typeof(DbgHelp.MINIDUMP_HANDLE_DATA_STREAM));
-                }
-            }
-            finally
-            {
-                safeMemoryMappedViewHandle.ReleasePointer();
-            }
-
-            return result;
-        }
-
 
         private static string GetDumpFileName(uint pid, ref string fileName)
         {
