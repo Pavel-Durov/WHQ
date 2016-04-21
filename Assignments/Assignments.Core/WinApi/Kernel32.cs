@@ -91,6 +91,24 @@ namespace Assignments.Core.WinApi
 
         #region Structs
 
+        public struct VS_FIXEDFILEINFO
+        {
+            public UInt32 dwSignature;
+            public UInt32 dwStrucVersion;
+            public UInt32 dwFileVersionMS;
+            public UInt32 dwFileVersionLS;
+            public UInt32 dwProductVersionMS;
+            public UInt32 dwProductVersionLS;
+            public UInt32 dwFileFlagsMask;
+            public UInt32 dwFileFlags;
+            public UInt32 dwFileOS;
+            public UInt32 dwFileType;
+            public UInt32 dwFileSubtype;
+            public UInt32 dwFileDateMS;
+            public UInt32 dwFileDateLS;
+        };
+
+
         [StructLayout(LayoutKind.Sequential)]
         public struct SECURITY_ATTRIBUTES
         {

@@ -67,14 +67,12 @@ namespace Assignments.Core.Handlers.MiniDump
             streamSize = 0;
             IntPtr baseOfView;
 
-            bool result = StreamHandler.ReadStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(
-                DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream,
-                out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView);
+            bool result = StreamHandler.ReadStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream, out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView);
 
             Info = new MiniDumpSystemInfoStream(systemInfo);
         }
 
-        public unsafe List<MiniDumpHandle> GetHandleData()
+        public unsafe List<MiniDumpHandle> GetHandles()
         {
             List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
@@ -116,6 +114,34 @@ namespace Assignments.Core.Handlers.MiniDump
 
             return result;
         }
+
+
+        public List<MiniDumpModule> GetModuleList()
+        {
+            DbgHelp.MINIDUMP_MODULE_LIST moduleList;
+            IntPtr streamPointer;
+            uint streamSize;
+            IntPtr baseOfView;
+            List<MiniDumpModule> result = null;
+
+            if (StreamHandler.ReadStream<DbgHelp.MINIDUMP_MODULE_LIST>(DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream, out moduleList, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView))
+            {
+                //skiping the NumberOfModules field (which is 4 bytes)
+                var offset = streamPointer + 4;
+                var modules = StreamHandler.ReadArray<DbgHelp.MINIDUMP_MODULE>(offset, (int)moduleList.NumberOfModules, _safeMemoryMappedViewHandle);
+             
+                result = new List<MiniDumpModule>();
+                foreach (var module in modules)
+                {
+                    //var name = GetString(module.ModuleNameRva, _baseOfView);
+                    //result.Add(new MiniDumpModule(module, name));
+                }
+            }
+
+            return result;
+        }
+
+
 
 
         private MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
@@ -167,9 +193,18 @@ namespace Assignments.Core.Handlers.MiniDump
 
         private string GetString(uint rva, IntPtr streamPointer)
         {
-            var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
+            string result = String.Empty;
+            try
+            {
+                var typeNameMinidumpString = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_STRING>(rva, streamPointer, _safeMemoryMappedViewHandle);
 
-            return StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
+                result = StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result;
         }
 
         private static string GetDumpFileName(uint pid, ref string fileName)

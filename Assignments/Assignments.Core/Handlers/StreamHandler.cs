@@ -35,6 +35,22 @@ namespace Assignments.Core.Handlers
 
             return result;
         }
+        public static unsafe string ReadString(uint rva, SafeMemoryMappedViewHandle safeHandle)
+        {
+            return RunSafe<string>(() =>
+            {
+                byte* baseOfView = null;
+
+                safeHandle.AcquirePointer(ref baseOfView);
+
+                IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
+                int len = Marshal.ReadInt32(positionToReadFrom) / 2;
+                positionToReadFrom += 4;
+
+                // Read and marshal the string
+                return Marshal.PtrToStringUni(positionToReadFrom, len);
+            }, safeHandle);
+        }
 
         public static unsafe string ReadString(uint rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {

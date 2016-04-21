@@ -7,8 +7,6 @@ using Assignments.Core.Model.Unified;
 using Assignments.Core.Model.Unified.Thread;
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
-using Assignments.Core.Model.MiniDump;
-using Assignments.Core.Handlers.MiniDump;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
@@ -24,7 +22,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
         {
-            var miniDumpHandles = _miniDump.GetHandleData();
+            var miniDumpHandles = _miniDump.GetHandles();
 
             List<UnifiedBlockingObject> result = null;
 
@@ -43,6 +41,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                 }
             }
 
+            var modules = _miniDump.GetModuleList();
             return result;
         }
     }

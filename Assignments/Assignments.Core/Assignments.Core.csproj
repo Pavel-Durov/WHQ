@@ -67,6 +67,7 @@
     <Compile Include="Handlers\WctApiHandler.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpModule.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />
@@ -86,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Handlers\MiniDumpHandler\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

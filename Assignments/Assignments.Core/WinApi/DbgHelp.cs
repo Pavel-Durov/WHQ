@@ -38,26 +38,25 @@ namespace Assignments.Core.WinApi
 
         #region Structs
 
-        public enum MiniDumpProcessorArchitecture
+        public struct MINIDUMP_MODULE
         {
-            PROCESSOR_ARCHITECTURE_INTEL = 0,
-            PROCESSOR_ARCHITECTURE_IA64 = 6,
-            PROCESSOR_ARCHITECTURE_AMD64 = 9,
-            PROCESSOR_ARCHITECTURE_UNKNOWN = 0xfff
+            public UInt64 BaseOfImage;
+            public UInt32 SizeOfImage;
+            public UInt32 CheckSum;
+            public UInt32 TimeDateStamp;
+            public uint ModuleNameRva;
+            public Kernel32.VS_FIXEDFILEINFO VersionInfo;
+            public MINIDUMP_LOCATION_DESCRIPTOR CvRecord;
+            public MINIDUMP_LOCATION_DESCRIPTOR MiscRecord;
+            public UInt64 Reserved0;
+            public UInt64 Reserved1;
         }
 
-        public enum MiniDumpProductType
-        {
-            VER_NT_WORKSTATION = 0x0000001,
-            VER_NT_DOMAIN_CONTROLLER = 0x0000002,
-            VER_NT_SERVER = 0x0000003
-        }
 
-        public enum MiniDumpPlatform
+        internal struct MINIDUMP_MODULE_LIST
         {
-            VER_PLATFORM_WIN32s = 0,
-            VER_PLATFORM_WIN32_WINDOWS = 1,
-            VER_PLATFORM_WIN32_NT = 2
+            public UInt32 NumberOfModules;
+            public IntPtr Modules;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -246,7 +245,7 @@ namespace Assignments.Core.WinApi
 
         #region Enums + Constants
 
-        public enum MINIDUMP_STREAM_TYPE
+        public enum MINIDUMP_STREAM_TYPE : uint
         {
             UnusedStream = 0,
             ReservedStream0 = 1,
@@ -270,6 +269,28 @@ namespace Assignments.Core.WinApi
             LastReservedStream = 0xffff
         }
 
+        public enum MiniDumpProcessorArchitecture
+        {
+            PROCESSOR_ARCHITECTURE_INTEL = 0,
+            PROCESSOR_ARCHITECTURE_IA64 = 6,
+            PROCESSOR_ARCHITECTURE_AMD64 = 9,
+            PROCESSOR_ARCHITECTURE_UNKNOWN = 0xfff
+        }
+
+        public enum MiniDumpProductType
+        {
+            VER_NT_WORKSTATION = 0x0000001,
+            VER_NT_DOMAIN_CONTROLLER = 0x0000002,
+            VER_NT_SERVER = 0x0000003
+        }
+
+        public enum MiniDumpPlatform
+        {
+            VER_PLATFORM_WIN32s = 0,
+            VER_PLATFORM_WIN32_WINDOWS = 1,
+            VER_PLATFORM_WIN32_NT = 2
+        }
+        
         public const int ERR_ELEMENT_NOT_FOUND = 1168;
 
         #endregion
