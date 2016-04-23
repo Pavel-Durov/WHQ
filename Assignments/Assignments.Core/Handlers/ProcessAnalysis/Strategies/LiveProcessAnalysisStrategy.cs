@@ -12,9 +12,9 @@ using Assignments.Core.Exceptions;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
-    public class BlockingObjectsFetcherLiveProcessStrategy : BlockingObjectsFetcherStrategy
+    public class LiveProcessAnalysisStrategy : ProcessAnalysisStrategy
     {
-        public BlockingObjectsFetcherLiveProcessStrategy(int pid) 
+        public LiveProcessAnalysisStrategy(int pid) 
         {
             _wctApi = new WctApiHandler();
         }

@@ -13,35 +13,35 @@ using Assignments.Core.Handlers.StackAnalysis.Strategies;
 
 namespace Assignments.Core.Handlers
 {
-    public class ThreadStackHandler
+    public class ProcessAnalyzer
     {
         /// <summary>
         /// Used for live process analysis
         /// </summary>
-        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, int pid)
+        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, int pid)
         {
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
             _debugClient = debugClient;
             _runtime = runtime;
-            _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherLiveProcessStrategy(pid);
+            _blockingObjectsFetchingStrategy = new LiveProcessAnalysisStrategy(pid);
         }
 
         /// <summary>
         /// Used for dump file analysis
         /// </summary>
-        public ThreadStackHandler(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
+        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
         {
             _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
             _debugClient = debugClient;
             _runtime = runtime;
 
-            _blockingObjectsFetchingStrategy = new BlockingObjectsFetcherProcessDumpStrategy(pathToDumpFile);
+            _blockingObjectsFetchingStrategy = new DumpFileProcessAnalysisStrategy(pathToDumpFile);
         }
 
         #region Members
 
         UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
-        BlockingObjectsFetcherStrategy _blockingObjectsFetchingStrategy;
+        ProcessAnalysisStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
@@ -68,7 +68,7 @@ namespace Assignments.Core.Handlers
                     result.Add(HandleUnManagedThread(specific_info));
                 }
             }
-
+          
             return result;
         }
 

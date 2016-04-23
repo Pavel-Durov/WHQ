@@ -7,7 +7,14 @@ namespace Assignments.Core.Handlers
 {
     public class StreamHandler
     {
-        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamToRead, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle, out IntPtr viewBase)
+
+        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        {
+            IntPtr viewBase;
+            return ReadStream<T>(streamType, out streamData, out streamPointer, out streamSize, safeMemoryMappedViewHandle, out viewBase);
+        }
+
+        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle, out IntPtr viewBase)
         {
             bool result = false;
             DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
@@ -21,7 +28,7 @@ namespace Assignments.Core.Handlers
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
 
-                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamToRead, ref directory, ref streamPointer, ref streamSize);
+                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamType, ref directory, ref streamPointer, ref streamSize);
                 viewBase = (IntPtr)baseOfView;
                 if (result)
                 {
@@ -35,6 +42,8 @@ namespace Assignments.Core.Handlers
 
             return result;
         }
+
+
         public static unsafe string ReadString(uint rva, SafeMemoryMappedViewHandle safeHandle)
         {
             return RunSafe<string>(() =>

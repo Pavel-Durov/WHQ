@@ -6,8 +6,6 @@ using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Assignments.Core.Model.MiniDump;
-using System.Text;
-using Assignments.Core.Handlers.MiniDump;
 
 namespace Assignments.Core.Handlers.MiniDump
 {
@@ -15,23 +13,24 @@ namespace Assignments.Core.Handlers.MiniDump
     {
         const string DUMPS_DIR = "Dums";
 
+        #region Members
+
         private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
         SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
         private IntPtr _baseOfView;
 
+        #endregion
 
         public MiniDumpHandler(uint pid) { Init(pid); }
 
         public MiniDumpHandler(string dumpFileName) { Init(dumpFileName); }
-
-        public MiniDumpSystemInfoStream Info { get; private set; }
 
         public void Init(string dumpFileName)
         {
             using (FileStream fileStream = File.Open(dumpFileName, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fileStream, dumpFileName);
-                ReadSystemInfo();
+                GetSystemInfo();
             }
         }
 
@@ -51,26 +50,11 @@ namespace Assignments.Core.Handlers.MiniDump
                 if (miniDumpCreated)
                 {
                     _safeMemoryMappedViewHandle = MemoryMapFileHandler.MapFile(fs, fileName);
-                    ReadSystemInfo();
                 }
             }
         }
 
-        public unsafe void ReadSystemInfo()
-        {
-            DbgHelp.MINIDUMP_SYSTEM_INFO systemInfo;
-            IntPtr streamPointer;
-            uint streamSize;
-
-
-            streamPointer = IntPtr.Zero;
-            streamSize = 0;
-            IntPtr baseOfView;
-
-            bool result = StreamHandler.ReadStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream, out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView);
-
-            Info = new MiniDumpSystemInfoStream(systemInfo);
-        }
+        #region MiniDump Handles
 
         public unsafe List<MiniDumpHandle> GetHandles()
         {
@@ -115,39 +99,10 @@ namespace Assignments.Core.Handlers.MiniDump
             return result;
         }
 
-
-        public List<MiniDumpModule> GetModuleList()
-        {
-            DbgHelp.MINIDUMP_MODULE_LIST moduleList;
-            IntPtr streamPointer;
-            uint streamSize;
-            IntPtr baseOfView;
-            List<MiniDumpModule> result = null;
-
-            if (StreamHandler.ReadStream<DbgHelp.MINIDUMP_MODULE_LIST>(DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream, out moduleList, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out baseOfView))
-            {
-                //skiping the NumberOfModules field (which is 4 bytes)
-                var offset = streamPointer + 4;
-                var modules = StreamHandler.ReadArray<DbgHelp.MINIDUMP_MODULE>(offset, (int)moduleList.NumberOfModules, _safeMemoryMappedViewHandle);
-             
-                result = new List<MiniDumpModule>();
-                foreach (var module in modules)
-                {
-                    //var name = GetString(module.ModuleNameRva, _baseOfView);
-                    //result.Add(new MiniDumpModule(module, name));
-                }
-            }
-
-            return result;
-        }
-
-
-
-
         private MiniDumpHandle GetHandleData(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
-            string objectName = GetString(handle.ObjectNameRva, streamPointer);
-            string typeName = GetString(handle.TypeNameRva, streamPointer);
+            string objectName = GetMiniDumpString(handle.ObjectNameRva, streamPointer);
+            string typeName = GetMiniDumpString(handle.TypeNameRva, streamPointer);
 
             var result = new MiniDumpHandle(handle, objectName, typeName);
 
@@ -191,7 +146,58 @@ namespace Assignments.Core.Handlers.MiniDump
             return result;
         }
 
-        private string GetString(uint rva, IntPtr streamPointer)
+        #endregion
+
+
+        public MiniDumpSystemInfo GetSystemInfo()
+        {
+            MiniDumpSystemInfo result = null;
+            DbgHelp.MINIDUMP_SYSTEM_INFO systemInfo;
+            IntPtr streamPointer;
+            uint streamSize;
+
+            bool readResult = StreamHandler.ReadStream<DbgHelp.MINIDUMP_SYSTEM_INFO>(DbgHelp.MINIDUMP_STREAM_TYPE.SystemInfoStream, out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle);
+
+            if (readResult)
+            {
+                result = new MiniDumpSystemInfo(systemInfo);
+            }
+
+            return result;
+        }
+
+
+        public List<MiniDumpModule> GetModuleList()
+        {
+            DbgHelp.MINIDUMP_MODULE_LIST moduleList;
+            IntPtr streamPointer;
+            uint streamSize;
+            List<MiniDumpModule> result = null;
+
+            if (StreamHandler.ReadStream<DbgHelp.MINIDUMP_MODULE_LIST>(DbgHelp.MINIDUMP_STREAM_TYPE.ModuleListStream, out moduleList, out streamPointer, out streamSize, _safeMemoryMappedViewHandle))
+            {
+                //skiping the NumberOfModules field (which is 4 bytes)
+                var offset = streamPointer + 4;
+                var modules = StreamHandler.ReadArray<DbgHelp.MINIDUMP_MODULE>(offset, (int)moduleList.NumberOfModules, _safeMemoryMappedViewHandle);
+
+                result = new List<MiniDumpModule>();
+
+                foreach (var module in modules)
+                {
+                    var name = StreamHandler.ReadString(module.ModuleNameRva, _safeMemoryMappedViewHandle);
+                    result.Add(new MiniDumpModule(module, name));
+                }
+            }
+            else
+            {
+                //TODO: throw somthing here
+            }
+
+            return result;
+        }
+
+
+        private string GetMiniDumpString(uint rva, IntPtr streamPointer)
         {
             string result = String.Empty;
             try
@@ -200,10 +206,8 @@ namespace Assignments.Core.Handlers.MiniDump
 
                 result = StreamHandler.ReadString(rva, typeNameMinidumpString.Length, _safeMemoryMappedViewHandle);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) { }
 
-            }
             return result;
         }
 

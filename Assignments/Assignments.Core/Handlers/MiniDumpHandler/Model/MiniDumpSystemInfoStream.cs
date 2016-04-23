@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Assignments.Core.Handlers.MiniDump
 {
-    public class MiniDumpSystemInfoStream
+    public class MiniDumpSystemInfo
     {
         private DbgHelp.MINIDUMP_SYSTEM_INFO _systemInfo;
         public X86CpuInfo X86CpuInfo { get; private set; }
         public NonX86CpuInfo OtherCpuInfo { get; private set; }
         public bool IsX86 { get; set; }
 
-        internal MiniDumpSystemInfoStream(DbgHelp.MINIDUMP_SYSTEM_INFO systemInfo)
+        internal MiniDumpSystemInfo(DbgHelp.MINIDUMP_SYSTEM_INFO systemInfo)
         {
             _systemInfo = systemInfo;
 

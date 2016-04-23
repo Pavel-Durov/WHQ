@@ -10,10 +10,10 @@ using Microsoft.Diagnostics.Runtime;
 
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
-    public class BlockingObjectsFetcherProcessDumpStrategy : BlockingObjectsFetcherStrategy
+    public class DumpFileProcessAnalysisStrategy : ProcessAnalysisStrategy
     {
 
-        public BlockingObjectsFetcherProcessDumpStrategy(string dumpFilePath)
+        public DumpFileProcessAnalysisStrategy(string dumpFilePath)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
         }
@@ -41,8 +41,9 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                 }
             }
 
-            var modules = _miniDump.GetModuleList();
             return result;
         }
+
+        
     }
 }

@@ -37,7 +37,7 @@ namespace Assignments.Core.WinApi
 
 
         #region Structs
-
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct MINIDUMP_MODULE
         {
             public UInt64 BaseOfImage;

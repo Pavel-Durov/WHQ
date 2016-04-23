@@ -58,7 +58,7 @@ namespace Consumer.Global
             var runtime = target.ClrVersions[0].CreateRuntime();
 
             //Live process handler
-            ThreadStackHandler handler = new ThreadStackHandler(target.DebuggerInterface, runtime, pid);
+            ProcessAnalyzer handler = new ProcessAnalyzer(target.DebuggerInterface, runtime, pid);
 
             var result = handler.Handle();
             PrintHandler.Print(result, true);
