@@ -52,9 +52,9 @@
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Handlers\MemoryMapFileHandler.cs" />
-    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\Cpu\NonX86CpuInfo.cs" />
-    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\Cpu\X86CpuInfo.cs" />
-    <Compile Include="Handlers\MiniDumpHandler\SystemInfo\MiniDumpSystemInfoStream.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\Model\MiniDumpSystemInfoStream.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\NonX86CpuInfo.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\X86CpuInfo.cs" />
     <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
@@ -88,9 +88,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Handlers\MiniDumpHandler\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
