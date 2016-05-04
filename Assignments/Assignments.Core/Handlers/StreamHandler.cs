@@ -5,7 +5,7 @@ using Assignments.Core.WinApi;
 
 namespace Assignments.Core.Handlers
 {
-    public class SafeMemoryMappedViewStreamHandler
+    public class StreamHandler
     {
 
         public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)

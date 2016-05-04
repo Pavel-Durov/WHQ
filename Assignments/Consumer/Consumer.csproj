@@ -81,7 +81,6 @@
     <Content Include="Assignments\assignment4.txt" />
     <Content Include="Assignments\assignment6.txt" />
     <Content Include="Assignments\assignment5.txt" />
-    <Content Include="Assignments\assignment7.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

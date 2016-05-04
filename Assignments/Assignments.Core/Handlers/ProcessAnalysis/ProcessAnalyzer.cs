@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.msos;
+using Assignments.Core.Handlers;
 using Assignments.Core.Model.Unified;
 using System;
+using Assignments.Core.Model.WCT;
 using Assignments.Core.Model.Unified.Thread;
+using Assignments.Core.Model.MiniDump;
 using Assignments.Core.Handlers.StackAnalysis.Strategies;
 
 namespace Assignments.Core.Handlers
@@ -184,7 +187,7 @@ namespace Assignments.Core.Handlers
                     ).ToList();
         }
 
-        private unsafe  List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
+        private List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
         {
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(engineThreadId));
 
@@ -203,6 +206,9 @@ namespace Assignments.Core.Handlers
         }
 
         #endregion
+
     }
+
+
 }
 
