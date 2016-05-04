@@ -22,7 +22,7 @@ namespace Assignments.Core.Handlers.MiniDump
                 }
                 else
                 {
-                    pObjectInfo = StreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)baseOfView + pObjectInfo.NextInfoRva);
+                    pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)baseOfView + pObjectInfo.NextInfoRva);
                 }
             }
           

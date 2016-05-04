@@ -57,11 +57,12 @@
     <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\X86CpuInfo.cs" />
     <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
+    <Compile Include="Handlers\NtQueryHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\Base\ProcessAnalysisStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessAnalysisStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileProcessAnalysisStrategy.cs" />
-    <Compile Include="Handlers\StreamHandler.cs" />
+    <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctApiHandler.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />
+    <Compile Include="Model\Unified\UnifiedHandle.cs" />
     <Compile Include="Model\Unified\UnifiedStackFrame.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedThread.cs" />
     <Compile Include="Model\WCT\ThreadWCTInfo.cs" />
@@ -88,7 +90,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="WinApi\NtDll.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

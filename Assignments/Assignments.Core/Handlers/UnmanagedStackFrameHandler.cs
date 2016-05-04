@@ -8,8 +8,9 @@ namespace Assignments.Core.Handlers
 {
     public class UnmanagedStackFrameHandler
     {
-        public const string SINGLE_WAIT_FUNCTION_NAME = "WaitForSingleObject";
-        public const string MULTI_WAIT_FUNCTION_NAME = "WaitForMultipleObjects";
+        public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObject";
+        public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
+
 
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
@@ -18,29 +19,29 @@ namespace Assignments.Core.Handlers
         {
             List<byte[]> result = new List<byte[]>();
 
-            if (CheckForWinApiCalls(frame, SINGLE_WAIT_FUNCTION_NAME))
+            if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithSingle(frame, runtime, result);
             }
-            else if (CheckForWinApiCalls(frame, MULTI_WAIT_FUNCTION_NAME))
+            else if (CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithMultiple(frame, runtime, result);
             }
-
             frame.NativeParams = result;
         }
+
 
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
         {
             result = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
-            frame.Handles = new List<uint>();
-            frame.Handles.Add(Convert(result[0]));
+            frame.Handles = new List<UnifiedHandle>();
+            frame.Handles.Add(new UnifiedHandle(Convert(result[0])));
         }
 
         private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
         {
             result = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
-            frame.Handles = new List<uint>();
+            frame.Handles = new List<UnifiedHandle>();
 
             var HandlesCunt = BitConverter.ToUInt32(result[0], 0);
             var HandleAddress = BitConverter.ToUInt32(result[1], 0);
@@ -48,7 +49,11 @@ namespace Assignments.Core.Handlers
             var handles = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
             foreach (var handle in handles)
             {
-                frame.Handles.Add(Convert(handle));
+                uint handleUint = Convert(handle);
+                var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint);
+
+                UnifiedHandle unifiedHandle = new UnifiedHandle(handleUint, typeName);
+                frame.Handles.Add(unifiedHandle);
             }
         }
 
