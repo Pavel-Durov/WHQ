@@ -1,5 +1,0 @@
-﻿OK, great. You can start looking into dumps now. I’ll have a more thorough write-up for you later, but for now — the basic idea is that we want to look at a dump and see what’s happening there in terms of waits. The WCT API won’t help because it only works on a live process. The CLRMD BlockingObject API works, but it doesn’t cover everything (e.g. Win32 mechanisms). 
- 
-The way we’re going to go is extracting parameters from the stack. You already have code that extracts wait information from 32-bit stacks by recognizing WaitForSingleObject and WaitForMultipleObjects. We will start with that. What you will need though is a way to get the wait object information from the handle you get from the stack. Here’s a starting point for parsing dump files: http://moyix.blogspot.co.il/2008/05/parsing-windows-minidumps.html — take a look at this script and the MSDN documentation for the various MINIDUMP_* structures. The information we’ll be interested in is in the MINIDUMP_HANDLE_DATA_STREAM directory, described here as well: http://www.debuginfo.com/examples/handledump.html 
- 
-Try to start from there and see how it goes. 
