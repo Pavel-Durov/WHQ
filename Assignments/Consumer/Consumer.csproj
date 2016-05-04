@@ -75,13 +75,6 @@
       <Name>Assignments.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assignments\assignment2.txt" />
-    <Content Include="Assignments\assignment3.txt" />
-    <Content Include="Assignments\assignment4.txt" />
-    <Content Include="Assignments\assignment6.txt" />
-    <Content Include="Assignments\assignment5.txt" />
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
