@@ -1,0 +1,18 @@
+﻿Assignment 6
+Next up, you will obtain handle information for live processes (not just dump files), and will add support for EnterCriticalSection in your stack-based information extractor. The motivation is this: the WCT API doesn't cover everything. Specifically, it doesn't have support for WaitForMultipleObjects. So we will have to augment the information obtained from WCT with information obtained from the stack walker you wrote. On the other hand, the stack walker you wrote doesn't support Win32 critical sections yet (which WCT does) -- so there's a certain feature disparity that has to be fixed.
+ 
+To summarize, here’s a table that shows the kinds of data we can get right now, and how we get it. Marked in red are the N/A cells that we will fix in this assignment. In the next assignment we will also work on 64-bit support, and consider other Win32 synchronization mechanisms such as SRWL.
+ 
+ 	WaitForSingleObject	WaitForMultipleObjects	Critical section	Other Win32 mechanisms
+not based on WaitFor*	.NET locks
+32-bit live process	WCT	N/A (1)	WCT	N/A	CLRMD
+64-bit live process	WCT	N/A	WCT	N/A	CLRMD
+32-bit dump file	Stack walker	Stack walker	N/A (2)	N/A	CLRMD
+64-bit dump file	N/A	N/A	N/A	N/A	CLRMD
+ 
+OK, so the first change you'll make is that when working on a live process (1), in addition to using the WCT and CLRMD APIs, you will also use the stack walker that you previously used only with dump files. The problem is that the stack walker doesn't give you handle information, which WCT does. So you're going to use an undocumented Windows API called NtQueryObject to retrieve handle information (such as the object type, name, and so on) for handles. The public documentation for NtQueryObject gives you only the object type, through the PUBLIC_OBJECT_TYPE_INFORMATION enum. However, there are some additional well-known information classes that you can use to obtain the object name as well -- see the NTAPI Undocumented Functions site, you'll want the ObjectNameInformation information enum. When you have the handle information, you can populate UnifiedBlockingObject instances.
+ 
+The second change is adding support for Win32 critical sections when WCT is not available -- i.e., for dump files (2). First, read the documentation. As you see, EnterCriticalSection is used to acquire a critical section, and the address of the CRITICAL_SECTION structure is passed directly as the first parameter. Your stack walker can take advantage of this -- when you detect a thread that has EnterCriticalSection on its call stack, you know it's waiting for a critical section. In the CRITICAL_SECTION structure, you'll find an OwnerThread field, which has the owning thread's ID. You can use this information to populate a UnifiedBlockingObject instance for the waiting thread.
+
+
+
