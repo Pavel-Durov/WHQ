@@ -13,12 +13,13 @@ namespace Assignments.Core.Handlers
     internal class NtQueryHandler
     {
 
-        public static string GetHandleType(IntPtr handle)
+        public static unsafe string GetHandleType(IntPtr handle)
         {
             int length;
 
-            //Forsome reason on first time call  I get NtDll.NtStatus.InfoLengthMismatch
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handle, NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
+            NtDll.NtStatus stat = NtDll.NtQueryObject(handle, 
+                NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
+
             if (stat == NtDll.NtStatus.InvalidHandle)
                 return null;
 
@@ -26,7 +27,13 @@ namespace Assignments.Core.Handlers
             {
                 string result = string.Empty;
 
-                NtDll.NtStatus status = NtDll.NtQueryObject(handle, NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
+                NtDll.NtStatus status = NtDll.NtQueryObject(handle, 
+                    NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
+
+                //TODO: Read struct TypeName
+                var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
+
+                //var ObjectName = Marshal.PtrToStringUni((IntPtr)res.TypeName  + 0x60);
 
                 switch (status)
                 {

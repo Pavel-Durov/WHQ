@@ -42,17 +42,13 @@ namespace Assignments.Core.WinApi.NtDll
             ulong DefaultNonPagedPoolCharge;
         };
 
-        internal struct PUBLIC_OBJECT_TYPE_INFORMATION
+        public unsafe struct PUBLIC_OBJECT_TYPE_INFORMATION
         {
-            /// <summary>
-            /// UNICODE_STRING
-            /// </summary>
-            string TypeName;
-            /// <summary>
-            /// reserved for internal use : [22];
-            /// </summary>
-            ulong Reserved;
+            public byte* TypeName;
+            public ulong Reserved;
         };
+
+
 
         internal struct OBJECT_NAME_INFORMATION
         {
