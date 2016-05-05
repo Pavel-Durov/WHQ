@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define LIVE_PID_DEBUG
+
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +13,7 @@ using HANDLE = System.IntPtr;
 using System.Threading.Tasks;
 using System.Threading;
 using DumpTest.Tests;
+using Microsoft.Win32;
 
 namespace DumpTest
 {
@@ -23,19 +27,23 @@ namespace DumpTest
 
             DealWithPID();
 
-            var kernel32Task = Task.Run(() => {
+            var kernel32Task = Task.Run(() =>
+            {
                 Kernel32Calls.Run();
             });
 
-           var mutexWaitRun = Task.Run(async () => {
+            var mutexWaitRun = Task.Run(async () =>
+            {
                 await MutexWait.Run();
             });
 
-            var threadEventWaitTask = Task.Run(() => {
+            var threadEventWaitTask = Task.Run(() =>
+            {
                 ThreadEventWait.Run();
             });
 
-            var threadMonitorWaitTask = Task.Run(() => {
+            var threadMonitorWaitTask = Task.Run(() =>
+            {
                 ThreadMonitorWait.Run();
             });
 
@@ -50,7 +58,13 @@ namespace DumpTest
             Console.WriteLine("PID : " + proc.Id);
             File.WriteAllText(PID_FILE_PATH, proc.Id.ToString());
 
+#if DEBUG && LIVE_PID_DEBUG
+            Registry.CurrentUser.SetValue("my-ruthles-pid-key", proc.Id);       
+#endif
+
             Console.WriteLine("Pid wrote to shared txt file");
         }
+
+       
     }
 }

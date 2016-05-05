@@ -1,6 +1,9 @@
-﻿
+﻿#define LIVE_PID_DEBUG
+
 using System;
 using Consumer.CmdParams;
+using Microsoft.Win32;
+
 
 namespace Consumer
 {
@@ -8,6 +11,12 @@ namespace Consumer
     {
         static void Main(string[] args)
         {
+
+#if DEBUG && LIVE_PID_DEBUG
+            var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
+            Global.LiveProcess.Run(pid);
+#endif
+
             var options = new Options();
 
             if (CommandLine.Parser.Default.ParseArguments(args, options))
