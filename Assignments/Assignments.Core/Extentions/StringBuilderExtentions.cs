@@ -7,7 +7,7 @@ namespace Assignments.Core.Extentions
     {
         public static StringBuilder AppendWithNewLine(this StringBuilder sb, String str = "")
         {
-            sb.Append($"{ str}{Environment.NewLine}");
+            sb.Append($"{str}{Environment.NewLine}");
             return sb;
         }
     }

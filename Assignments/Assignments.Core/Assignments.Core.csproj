@@ -63,7 +63,7 @@
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessAnalysisStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileProcessAnalysisStrategy.cs" />
     <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrameHandler.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctApiHandler.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />

@@ -32,22 +32,22 @@ namespace DumpTest
                 Kernel32Calls.Run();
             });
 
-            var mutexWaitRun = Task.Run(async () =>
-            {
-                await MutexWait.Run();
-            });
+            //var mutexWaitRun = Task.Run(async () =>
+            //{
+            //    await MutexWait.Run();
+            //});
 
-            var threadEventWaitTask = Task.Run(() =>
-            {
-                ThreadEventWait.Run();
-            });
+            //var threadEventWaitTask = Task.Run(() =>
+            //{
+            //    ThreadEventWait.Run();
+            //});
 
-            var threadMonitorWaitTask = Task.Run(() =>
-            {
-                ThreadMonitorWait.Run();
-            });
+            //var threadMonitorWaitTask = Task.Run(() =>
+            //{
+            //    ThreadMonitorWait.Run();
+            //});
 
-            var result = Task.WaitAny(kernel32Task, mutexWaitRun, threadEventWaitTask, threadMonitorWaitTask);
+            //var result = Task.WaitAny(kernel32Task, mutexWaitRun, threadEventWaitTask, threadMonitorWaitTask);
 
             Console.ReadLine();
         }

@@ -22,7 +22,7 @@ namespace Assignments.Core.Handlers
         {
             int length;
 
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handle, 
+            NtDll.NtStatus stat = NtDll.NtQueryObject(handle,
                 NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
 
             if (stat == NtDll.NtStatus.InvalidHandle)
@@ -31,11 +31,11 @@ namespace Assignments.Core.Handlers
             return ExecuteSafe<string>(length, (pointer) =>
             {
                 string result = string.Empty;
-                
-                NtDll.NtStatus status = NtDll.NtQueryObject(handle, 
+
+                NtDll.NtStatus status = NtDll.NtQueryObject(handle,
                     NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
-                if(status == NtDll.NtStatus.Success)
+                if (status == NtDll.NtStatus.Success)
                 {
                     var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
                     result = res.TypeName.ToString();

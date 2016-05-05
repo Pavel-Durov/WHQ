@@ -138,13 +138,13 @@ namespace Assignments.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.NewLine);
-            sb.Append(prefix);
-
+            
             int index = 0;
             foreach (var item in handles)
             {
+                sb.Append(prefix);
                 var msg = String.Format("{0}: HandleId = 0x{1:x}, HandleType = {2}, HandleObjectName = {3}", index, item.Id, item.Type, item.ObjectName);
-                sb.Append(msg);
+                sb.AppendWithNewLine(msg);
                 index++;
             }
 

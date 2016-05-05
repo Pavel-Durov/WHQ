@@ -12,18 +12,51 @@ namespace DumpTest.Tests
     {
         public static void Run()
         {
+            CriticalSectionCalls();
+            //WaitCalls();
+        }
+
+        static CRITICAL_SECTION section;
+        private static void CriticalSectionCalls()
+        {
+            //Console.WriteLine(" - Kernel32Calls CRITICAL_SECTION ");
+
+            InitializeCriticalSection(out section);
+
+            EnterCriticalSection(ref section);
+
+            LeaveCriticalSection(ref section);
+        }
+
+        private static void WaitCalls()
+        {
             IntPtr[] arr = new IntPtr[3];
             for (int i = 0; i < 3; i++)
             {
                 var loopAutoEvent = new AutoResetEvent(false);
                 arr[i] = loopAutoEvent.Handle;
             }
-            Console.WriteLine("WaitForMultipleObjects");
+
+            Console.WriteLine(" - Kernel32Calls WaitForMultipleObjects");
             var mulRes0 = WaitForMultipleObjects(3, arr, true, 0);
             var mulRes1 = WaitForMultipleObjects(3, arr, false, 0);
             var mulRes2 = WaitForMultipleObjects(3, arr, true, int.MaxValue);
         }
 
+        [DllImport("kernel32.dll")]
+        public static extern void InitializeCriticalSection(out CRITICAL_SECTION
+    lpCriticalSection);
+
+        [DllImport("kernel32.dll")]
+        public static extern void EnterCriticalSection(ref CRITICAL_SECTION
+   lpCriticalSection);
+
+        // LEAVE CRITICAL SECTION
+        [DllImport("kernel32.dll")]
+        public static extern void LeaveCriticalSection(ref CRITICAL_SECTION
+           lpCriticalSection);
+
+        public struct CRITICAL_SECTION { /*int dummyMember; */}
 
 
         [DllImport("kernel32.dll", SetLastError = true)]

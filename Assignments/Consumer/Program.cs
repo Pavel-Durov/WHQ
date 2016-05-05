@@ -15,7 +15,7 @@ namespace Consumer
 #if DEBUG && LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
             Global.LiveProcess.Run(pid);
-#endif
+#else
 
             var options = new Options();
 
@@ -30,8 +30,9 @@ namespace Consumer
                     Global.LiveProcess.Run(options.LivePid);
                 }
             }
-
+#endif
             Console.ReadKey();
         }
+
     }
 }
