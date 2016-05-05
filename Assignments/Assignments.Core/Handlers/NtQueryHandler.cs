@@ -31,8 +31,7 @@ namespace Assignments.Core.Handlers
             return ExecuteSafe<string>(length, (pointer) =>
             {
                 string result = string.Empty;
-                IntPtr pStructure = IntPtr.Zero;
-
+                
                 NtDll.NtStatus status = NtDll.NtQueryObject(handle, 
                     NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
