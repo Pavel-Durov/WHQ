@@ -12,7 +12,12 @@ namespace Assignments.Core.Handlers
 {
     internal class NtQueryHandler
     {
-
+        /// <summary>
+        /// Gets Handle Type (String type name) using NtQueryObject NtDll function
+        /// Doc: https://msdn.microsoft.com/en-us/library/bb432383(v=vs.85).aspx
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
         public static unsafe string GetHandleType(IntPtr handle)
         {
             int length;
@@ -26,22 +31,16 @@ namespace Assignments.Core.Handlers
             return ExecuteSafe<string>(length, (pointer) =>
             {
                 string result = string.Empty;
+                IntPtr pStructure = IntPtr.Zero;
 
                 NtDll.NtStatus status = NtDll.NtQueryObject(handle, 
                     NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
-                //TODO: Read struct TypeName
-                var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
-
-                //var ObjectName = Marshal.PtrToStringUni((IntPtr)res.TypeName  + 0x60);
-
-                switch (status)
+                if(status == NtDll.NtStatus.Success)
                 {
-                    case NtDll.NtStatus.Success:
-                        result = Marshal.PtrToStringUni((IntPtr)((int)pointer + 0x60));
-                        break;
-                    case NtDll.NtStatus.InvalidHandle:
-                        break;
+                    var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
+                    result = res.TypeName.ToString();
+                    res.TypeName.Dispose();
                 }
                 return result;
             });

@@ -51,7 +51,7 @@ namespace Assignments.Core.Handlers
             {
                 uint handleUint = Convert(handle);
                 var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint);
-
+               
                 UnifiedHandle unifiedHandle = new UnifiedHandle(handleUint, typeName);
                 frame.Handles.Add(unifiedHandle);
             }

@@ -9,7 +9,7 @@ namespace Assignments.Core.WinApi.NtDll
         internal static extern NtStatus NtQueryObject(
         [In] IntPtr Handle,
         [In] OBJECT_INFORMATION_CLASS ObjectInformationClass,
-        [In] IntPtr ObjectInformation,
+        [Out] IntPtr ObjectInformation,
         [In] int ObjectInformationLength,
         [Out] out int ReturnLength);
 
@@ -25,30 +25,28 @@ namespace Assignments.Core.WinApi.NtDll
         public struct OBJECT_TYPE_INFORMATION
         {
             public string TypeName;
-            ulong TotalNumberOfHandles;
-            ulong TotalNumberOfObjects;
-            string Unused1;
-            ulong HighWaterNumberOfHandles;
-            ulong HighWaterNumberOfObjects;
-            string Unused2;
-            ulong InvalidAttributes;
-            long GenericMapping;
-            long ValidAttributes;
-            bool SecurityRequired;
-            bool MaintainHandleCount;
-            ushort MaintainTypeList;
-            long PoolType;
-            ulong DefaultPagedPoolCharge;
-            ulong DefaultNonPagedPoolCharge;
+            public ulong TotalNumberOfHandles;
+            public ulong TotalNumberOfObjects;
+            public string Unused1;
+            public ulong HighWaterNumberOfHandles;
+            public ulong HighWaterNumberOfObjects;
+            public string Unused2;
+            public ulong InvalidAttributes;
+            public long GenericMapping;
+            public long ValidAttributes;
+            public bool SecurityRequired;
+            public bool MaintainHandleCount;
+            public ushort MaintainTypeList;
+            public long PoolType;
+            public ulong DefaultPagedPoolCharge;
+            public ulong DefaultNonPagedPoolCharge;
         };
 
         public unsafe struct PUBLIC_OBJECT_TYPE_INFORMATION
         {
-            public byte* TypeName;
+            public UNICODE_STRING TypeName;
             public ulong Reserved;
         };
-
-
 
         internal struct OBJECT_NAME_INFORMATION
         {
@@ -64,17 +62,17 @@ namespace Assignments.Core.WinApi.NtDll
 
         internal struct OBJECT_BASIC_INFORMATION
         {
-            ulong Attributes;
-            ulong DesiredAccess;
-            ulong HandleCount;
-            ulong ReferenceCount;
-            ulong PagedPoolUsage;
-            ulong NonPagedPoolUsage;
-            ulong Reserved;
-            ulong NameInformationLength;
-            ulong TypeInformationLength;
-            ulong SecurityDescriptorLength;
-            long CreationTime;
+           public ulong Attributes;
+           public ulong DesiredAccess;
+           public ulong HandleCount;
+           public ulong ReferenceCount;
+           public ulong PagedPoolUsage;
+           public ulong NonPagedPoolUsage;
+           public ulong Reserved;
+           public ulong NameInformationLength;
+           public ulong TypeInformationLength;
+           public ulong SecurityDescriptorLength;
+           public long CreationTime;
         };
 
         internal struct _OBJECT_ALL_INFORMATION
