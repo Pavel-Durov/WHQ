@@ -50,14 +50,8 @@ namespace Assignments.Core.WinApi.NtDll
 
         internal struct OBJECT_NAME_INFORMATION
         {
-            /// <summary>
-            /// UNICODE_STRING
-            /// </summary>
-            string Name;
-            /// <summary>
-            /// WCHAR
-            /// </summary>
-            string NameBuffer;
+            public UNICODE_STRING Name;
+            public IntPtr NameBuffer;
         };
 
         internal struct OBJECT_BASIC_INFORMATION

@@ -39,7 +39,32 @@ namespace Assignments.Core.Handlers
                 {
                     var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
                     result = res.TypeName.ToString();
-                    res.TypeName.Dispose();
+                }
+                return result;
+            });
+        }
+
+        public static unsafe string GetHandleObjectName(IntPtr handle)
+        {
+            int length;
+
+            NtDll.NtStatus stat = NtDll.NtQueryObject(handle,
+                NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, IntPtr.Zero, 0, out length);
+
+            if (stat == NtDll.NtStatus.InvalidHandle)
+                return null;
+
+            return ExecuteSafe<string>(length, (pointer) =>
+            {
+                string result = string.Empty;
+
+                NtDll.NtStatus status = NtDll.NtQueryObject(handle,
+                    NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
+
+                if (status == NtDll.NtStatus.Success)
+                {
+                    var res = (NtDll.OBJECT_NAME_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.OBJECT_NAME_INFORMATION));
+                    result = res.Name.ToString();
                 }
                 return result;
             });
