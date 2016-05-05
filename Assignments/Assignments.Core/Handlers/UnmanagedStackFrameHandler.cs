@@ -10,6 +10,7 @@ namespace Assignments.Core.Handlers
     {
         public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObject";
         public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
+        public const string ENTER_CRITICAL_SECTION_FUNCTION_NAME = "EnterCriticalSection";
 
 
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
@@ -27,9 +28,17 @@ namespace Assignments.Core.Handlers
             {
                 DealWithMultiple(frame, runtime, result);
             }
+            else if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+            {
+
+            }
             frame.NativeParams = result;
         }
 
+        private static bool CheckForCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        {
+            throw new NotImplementedException();
+        }
 
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
         {

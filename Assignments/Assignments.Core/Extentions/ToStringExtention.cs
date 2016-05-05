@@ -102,9 +102,18 @@ namespace Assignments.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Native)
             {
-                result.Append($"{prefix}{frame.NativeParams.AsString(prefix)}");
+               
+                if(frame.Handles != null && frame.Handles.Count > 0)
+                {
+                    result.Append($"{prefix}{frame.Handles.AsString(prefix)}");
+                }
+                else
+                { 
+                    result.Append($"{prefix}{frame.NativeParams.AsString(prefix)}");
+                }
 
             }
+
             return result.ToString();
         }
 
@@ -120,6 +129,23 @@ namespace Assignments.Core.Extentions
             {
                 var msg = String.Format("[{0}]= 0x{1:x} ", i, parms[i]);
                 sb.Append(msg);
+            }
+
+            return sb.ToString();
+        }
+
+        public static String AsString(this List<UnifiedHandle> handles, char prefix)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(Environment.NewLine);
+            sb.Append(prefix);
+
+            int index = 0;
+            foreach (var item in handles)
+            {
+                var msg = String.Format("{0}: HandleId = 0x{1:x}, HandleType = {2}, HandleObjectName = {3}", index, item.Id, item.Type, item.ObjectName);
+                sb.Append(msg);
+                index++;
             }
 
             return sb.ToString();
