@@ -17,7 +17,7 @@ namespace Assignments.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, int pid)
         {
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
+            _unmanagedStackFrameHandler = new UnmanagedStackFrameWalker();
             _debugClient = debugClient;
             _runtime = runtime;
             _blockingObjectsFetchingStrategy = new LiveProcessAnalysisStrategy(pid);
@@ -28,7 +28,7 @@ namespace Assignments.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
         {
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameHandler();
+            _unmanagedStackFrameHandler = new UnmanagedStackFrameWalker();
             _debugClient = debugClient;
             _runtime = runtime;
 
@@ -37,7 +37,7 @@ namespace Assignments.Core.Handlers
 
         #region Members
 
-        UnmanagedStackFrameHandler _unmanagedStackFrameHandler;
+        UnmanagedStackFrameWalker _unmanagedStackFrameHandler;
         ProcessAnalysisStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
@@ -196,7 +196,7 @@ namespace Assignments.Core.Handlers
             for (uint i = 0; i < framesFilled; ++i)
             {
                 var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)_debugClient);
-                UnmanagedStackFrameHandler.SetParams(frame, _runtime);
+                UnmanagedStackFrameWalker.SetParams(frame, _runtime);
                 stackTrace.Add(frame);
             }
             return stackTrace;

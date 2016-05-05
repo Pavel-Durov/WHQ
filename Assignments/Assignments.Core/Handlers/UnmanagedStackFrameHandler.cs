@@ -6,7 +6,7 @@ using Assignments.Core.Model.Unified;
 
 namespace Assignments.Core.Handlers
 {
-    public class UnmanagedStackFrameHandler
+    public class UnmanagedStackFrameWalker
     {
         public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObject";
         public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
