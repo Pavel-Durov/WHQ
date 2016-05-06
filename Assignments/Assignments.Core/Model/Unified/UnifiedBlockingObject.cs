@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Model.WCT;
 using Assignments.Core.Model.MiniDump;
+using Assignments.Core.WinApi;
 
 namespace Assignments.Core.Model.Unified
 {
@@ -54,6 +55,13 @@ namespace Assignments.Core.Model.Unified
             Type = UnifiedBlockingType.MiniDumpHandle;
         }
 
+        public UnifiedBlockingObject(WinBase.CRITICAL_SECTION section, uint handle)
+        {
+            Owners = new List<UnifiedThread>();
+            Owners.Add(new UnifiedThread((uint)section.OwningThread));
+            WaitReason = UnifiedBlockingReason.CriticalSection;
+        }
+
         private void SetWaiters(BlockingObject item)
         {
             if (item.Waiters?.Count > 0)
@@ -101,6 +109,7 @@ namespace Assignments.Core.Model.Unified
         public string KernelObjectTypeName { get; private set; }
 
         public const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
+
     }
 
 
@@ -128,6 +137,9 @@ namespace Assignments.Core.Model.Unified
         ProcessWaitType = 16,
         ThreadType = 17,
         ComActivationType = 18,
-        UnknownType = 19
+        UnknownType = 19,
+
+
+        CriticalSection = 20
     }
 }

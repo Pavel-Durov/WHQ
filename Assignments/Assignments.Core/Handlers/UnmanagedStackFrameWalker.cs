@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using Assignments.Core.Exceptions;
 using Assignments.Core.Model.Unified;
+using Assignments.Core.WinApi;
+using System.Runtime.InteropServices;
 
 namespace Assignments.Core.Handlers
 {
@@ -12,11 +14,11 @@ namespace Assignments.Core.Handlers
         public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
         public const string ENTER_CRITICAL_SECTION_FUNCTION_NAME = "EnterCriticalSection";
 
-
+        const int ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT = 1;
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
-        public static void SetParams(UnifiedStackFrame frame, ClrRuntime runtime)
+        public static void Walk(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -28,16 +30,35 @@ namespace Assignments.Core.Handlers
             {
                 DealWithMultiple(frame, runtime, result);
             }
-            else if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+            else
             {
-
+                CheckForCriticalSections(frame, runtime, result);
             }
+
             frame.NativeParams = result;
         }
 
-        private static bool CheckForCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        public static void CheckForCriticalSections(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result = null)
         {
-            throw new NotImplementedException();
+            if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+            {
+                ReadCriticalSectionData(frame, runtime, result);
+            }
+        }
+
+        private static void ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        {
+            result = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+
+            var handle = Convert(result[0]);
+
+            ulong value = 0;
+
+            if (runtime.ReadPointer(handle, out value))
+            {
+                var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
+                frame.BlockObject = new UnifiedBlockingObject(criticalSection, handle);
+            }
         }
 
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)

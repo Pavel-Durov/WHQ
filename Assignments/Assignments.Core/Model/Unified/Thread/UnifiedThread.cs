@@ -20,6 +20,11 @@ namespace Assignments.Core.Model.Unified.Thread
             this.Detail = info.Detail;
         }
 
+        public UnifiedThread(uint owningThreadId)
+        {
+            this.OSThreadId = owningThreadId;
+        }
+
         public List<UnifiedStackFrame> StackTrace { get; protected set; }
         public List<UnifiedBlockingObject> BlockingObjects { get; protected set; }
 

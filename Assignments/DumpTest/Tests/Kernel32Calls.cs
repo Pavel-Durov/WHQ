@@ -13,19 +13,47 @@ namespace DumpTest.Tests
         public static void Run()
         {
             CriticalSectionCalls();
-            //WaitCalls();
+            WaitCalls();
         }
 
-        static CRITICAL_SECTION section;
-        private static void CriticalSectionCalls()
+        public static IntPtr section;
+        private static async void CriticalSectionCalls()
         {
-            //Console.WriteLine(" - Kernel32Calls CRITICAL_SECTION ");
+            //Console.WriteLine(" - Kernel32Calls IntPtr ");
 
             InitializeCriticalSection(out section);
+            Console.WriteLine($"InitializeCriticalSection id: {Task.CurrentId} ");
 
             EnterCriticalSection(ref section);
 
-            LeaveCriticalSection(ref section);
+            bool canenter = TryEnterCriticalSection(ref section);
+            var onerror = Marshal.GetLastWin32Error();
+
+            Console.WriteLine($"id: {Task.CurrentId}, can: {canenter }, error: {onerror }");
+
+
+            await Task.Run(() =>
+            {
+
+                bool enter = TryEnterCriticalSection(ref section);
+                LeaveCriticalSection(ref section);
+                var error = Marshal.GetLastWin32Error();
+                //Console.WriteLine($"id: {Task.CurrentId}, can: {enter}, error: {error}");
+
+            });
+
+            await Task.Run(() =>
+            {
+                bool enter = TryEnterCriticalSection(ref section);
+                EnterCriticalSection(ref section);
+                EnterCriticalSection(ref section);
+                EnterCriticalSection(ref section);
+                EnterCriticalSection(ref section);
+
+                var error = Marshal.GetLastWin32Error();
+                //Console.WriteLine($"id: {Task.CurrentId}, can: {enter}, error: {error}");
+            });
+          
         }
 
         private static void WaitCalls()
@@ -43,20 +71,24 @@ namespace DumpTest.Tests
             var mulRes2 = WaitForMultipleObjects(3, arr, true, int.MaxValue);
         }
 
-        [DllImport("kernel32.dll")]
-        public static extern void InitializeCriticalSection(out CRITICAL_SECTION
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void InitializeCriticalSection(out IntPtr
     lpCriticalSection);
 
-        [DllImport("kernel32.dll")]
-        public static extern void EnterCriticalSection(ref CRITICAL_SECTION
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void EnterCriticalSection(ref IntPtr
    lpCriticalSection);
 
-        // LEAVE CRITICAL SECTION
-        [DllImport("kernel32.dll")]
-        public static extern void LeaveCriticalSection(ref CRITICAL_SECTION
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void LeaveCriticalSection(ref IntPtr
            lpCriticalSection);
 
-        public struct CRITICAL_SECTION { /*int dummyMember; */}
+        [DllImport("kernel32.dll")]
+        static extern bool TryEnterCriticalSection(ref IntPtr
+   lpCriticalSection);
+
+      
 
 
         [DllImport("kernel32.dll", SetLastError = true)]

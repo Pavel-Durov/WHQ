@@ -4,7 +4,6 @@ using DWORD = System.UInt32;
 
 namespace Assignments.Core.WinApi
 {
-
     [StructLayout(LayoutKind.Sequential)]
     public struct UNICODE_STRING : IDisposable
     {

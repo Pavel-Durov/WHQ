@@ -32,7 +32,7 @@ namespace Assignments.Core.Handlers
             _debugClient = debugClient;
             _runtime = runtime;
 
-            _blockingObjectsFetchingStrategy = new DumpFileProcessAnalysisStrategy(pathToDumpFile);
+            _blockingObjectsFetchingStrategy = new DumpFileProcessAnalysisStrategy(pathToDumpFile, _runtime);
         }
 
         #region Members
@@ -103,7 +103,7 @@ namespace Assignments.Core.Handlers
                 }
 
 
-                var blockingObjs = _blockingObjectsFetchingStrategy.GetManagedBlockingObjects(clr_thread);
+                var blockingObjs = _blockingObjectsFetchingStrategy.GetManagedBlockingObjects(clr_thread, unmanagedStack, _runtime);
 
                 result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
@@ -196,7 +196,7 @@ namespace Assignments.Core.Handlers
             for (uint i = 0; i < framesFilled; ++i)
             {
                 var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)_debugClient);
-                UnmanagedStackFrameWalker.SetParams(frame, _runtime);
+                UnmanagedStackFrameWalker.Walk(frame, _runtime);
                 stackTrace.Add(frame);
             }
             return stackTrace;

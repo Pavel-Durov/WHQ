@@ -13,9 +13,12 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
     public class DumpFileProcessAnalysisStrategy : ProcessAnalysisStrategy
     {
 
-        public DumpFileProcessAnalysisStrategy(string dumpFilePath)
+        ClrRuntime _runtime;
+
+        public DumpFileProcessAnalysisStrategy(string dumpFilePath, ClrRuntime runtime)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
+            _runtime = runtime;
         }
 
         MiniDump.MiniDumpHandler _miniDump;

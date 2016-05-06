@@ -11,7 +11,7 @@ namespace Assignments.Core.Model.Unified
     public class UnifiedStackFrame
     {
         public UnifiedStackFrameType Type { get; set; }
-
+        public UnifiedBlockingObject BlockObject { get; set; }
         public string Module { get; set; }
         public string Method { get; set; }
 

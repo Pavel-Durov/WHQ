@@ -86,6 +86,7 @@
     <Compile Include="WinApi\DbgHelp.cs" />
     <Compile Include="WinApi\Kernel32.cs" />
     <Compile Include="WinApi\Structs.cs" />
+    <Compile Include="WinApi\WinBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
