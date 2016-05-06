@@ -9,7 +9,7 @@ namespace Assignments.Core.Model.Unified
 {
     public enum UnifiedBlockingType
     {
-        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle
+        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle, CriticalSectionObject
     }
 
     public enum OriginSource
@@ -60,6 +60,7 @@ namespace Assignments.Core.Model.Unified
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));
             WaitReason = UnifiedBlockingReason.CriticalSection;
+            Type = UnifiedBlockingType.CriticalSectionObject;
         }
 
         private void SetWaiters(BlockingObject item)

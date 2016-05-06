@@ -32,33 +32,45 @@ namespace Assignments.Core.Handlers
             }
             else
             {
-                CheckForCriticalSections(frame, runtime, result);
+                //CheckForCriticalSections(frame, runtime, result);
             }
 
             frame.NativeParams = result;
         }
 
-        public static void CheckForCriticalSections(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result = null)
+        public static bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime , out UnifiedBlockingObject blockingObject)
         {
+            bool result = false;
+
             if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
             {
-                ReadCriticalSectionData(frame, runtime, result);
+                blockingObject = ReadCriticalSectionData(frame, runtime);
+                result = blockingObject != null;
             }
+            else
+            {
+                blockingObject = null;
+            }
+
+            return result;
         }
 
-        private static void ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        private static UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
-            result = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+            UnifiedBlockingObject result = null;
 
-            var handle = Convert(result[0]);
+            var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+
+            var handle = Convert(paramz[0]);
 
             ulong value = 0;
 
             if (runtime.ReadPointer(handle, out value))
             {
                 var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
-                frame.BlockObject = new UnifiedBlockingObject(criticalSection, handle);
+                result = new UnifiedBlockingObject(criticalSection, handle);
             }
+            return result;
         }
 
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)

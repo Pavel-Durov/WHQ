@@ -2,7 +2,7 @@
 using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using System.Collections.Generic;
-
+using System.Linq;
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class ProcessAnalysisStrategy
@@ -20,24 +20,30 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                 }
             }
 
-            GetCriticalSections(unmanagedStack, runtime, result);
+            var criticalSectionObjects = GetCriticalSections(unmanagedStack, runtime);
+            if (criticalSectionObjects.Any())
+            {
+                if (result == null)
+                    result = new List<UnifiedBlockingObject>();
+
+                result.AddRange(criticalSectionObjects);
+                var list = criticalSectionObjects.ToList() ;
+            }
+
             return result;
         }
 
-        public virtual void GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<UnifiedBlockingObject> destination)
+        public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            if (destination == null)
-                destination = new List<UnifiedBlockingObject>();
-
             foreach (var item in unmanagedStack)
             {
-                UnmanagedStackFrameWalker.CheckForCriticalSections(item, runtime);
-                if (item.BlockObject != null)
+                UnifiedBlockingObject blockObject;
+
+                if (UnmanagedStackFrameWalker.CheckForCriticalSectionCalls(item, runtime, out blockObject))
                 {
-                    destination.Add(item.BlockObject);
+                    yield return blockObject;
                 }
             }
-            
         }
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack);
