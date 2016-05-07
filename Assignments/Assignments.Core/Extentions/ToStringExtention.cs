@@ -53,7 +53,7 @@ namespace Assignments.Core.Extentions
             {
                 sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
             }
-            
+
             sb.AppendWithNewLine($"{prefix}KernelObjectTypeName: {blockingObject.KernelObjectTypeName}");
             sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
 
@@ -102,13 +102,13 @@ namespace Assignments.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Native)
             {
-               
-                if(frame.Handles != null && frame.Handles.Count > 0)
+
+                if (frame.Handles != null && frame.Handles.Count > 0)
                 {
                     result.Append($"{prefix}{frame.Handles.AsString(prefix)}");
                 }
                 else
-                { 
+                {
                     result.Append($"{prefix}{frame.NativeParams.AsString(prefix)}");
                 }
 
@@ -138,13 +138,26 @@ namespace Assignments.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.NewLine);
-            
+
             int index = 0;
             foreach (var item in handles)
             {
                 sb.Append(prefix);
-                var msg = String.Format("{0}: HandleId = 0x{1:x}, HandleType = {2}, HandleObjectName = {3}", index, item.Id, item.Type, item.ObjectName);
-                sb.AppendWithNewLine(msg);
+
+                sb.Append(String.Format("{0}: HandleId = 0x{1:x}", index, item.Id));
+
+                if (!String.IsNullOrEmpty(item.ObjectName))
+                {
+                    sb.Append($", HandleObjectName = {item.ObjectName}");
+
+                }
+
+                if (!String.IsNullOrEmpty(item.Type))
+                {
+                    sb.Append($", HandleType = {item.Type}");
+                }
+
+                sb.Append(Environment.NewLine);
                 index++;
             }
 
@@ -156,7 +169,7 @@ namespace Assignments.Core.Extentions
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.NewLine);
             sb.Append(prefix);
-            
+
             for (int i = 0; i < parms.Count; i++)
             {
                 int byteValue = BitConverter.ToInt32(parms[i], 0);
