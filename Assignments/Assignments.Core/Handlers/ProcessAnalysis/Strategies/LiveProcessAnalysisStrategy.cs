@@ -22,7 +22,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
         WctApiHandler _wctApi;
 
 
-        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
+        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
             List<UnifiedBlockingObject> result = null;
 
@@ -39,7 +39,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                     }
                 }
             }
-
+            
             return result;
         }
     }

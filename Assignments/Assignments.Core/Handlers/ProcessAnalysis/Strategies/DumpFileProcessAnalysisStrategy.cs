@@ -23,7 +23,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 
         MiniDump.MiniDumpHandler _miniDump;
 
-        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack)
+        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
             var miniDumpHandles = _miniDump.GetHandles();
 
@@ -43,6 +43,9 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                     result.Add(new UnifiedBlockingObject(item));
                 }
             }
+
+
+            CheckForCriticalSections(result, unmanagedStack, runtime);
 
             return result;
         }

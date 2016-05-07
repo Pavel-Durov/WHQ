@@ -17,7 +17,6 @@ namespace Assignments.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, int pid)
         {
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameWalker();
             _debugClient = debugClient;
             _runtime = runtime;
             _blockingObjectsFetchingStrategy = new LiveProcessAnalysisStrategy(pid);
@@ -28,7 +27,6 @@ namespace Assignments.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
         {
-            _unmanagedStackFrameHandler = new UnmanagedStackFrameWalker();
             _debugClient = debugClient;
             _runtime = runtime;
 
@@ -37,7 +35,6 @@ namespace Assignments.Core.Handlers
 
         #region Members
 
-        UnmanagedStackFrameWalker _unmanagedStackFrameHandler;
         ProcessAnalysisStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
@@ -76,7 +73,7 @@ namespace Assignments.Core.Handlers
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
 
-            var blockingObjects = _blockingObjectsFetchingStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack);
+            var blockingObjects = _blockingObjectsFetchingStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
 
             result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjects);
 
@@ -192,13 +189,8 @@ namespace Assignments.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
-            for (uint i = 0; i < framesFilled; ++i)
-            {
-                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)_debugClient);
-                UnmanagedStackFrameWalker.Walk(frame, _runtime);
-                stackTrace.Add(frame);
-            }
+            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient);
+
             return stackTrace;
         }
 

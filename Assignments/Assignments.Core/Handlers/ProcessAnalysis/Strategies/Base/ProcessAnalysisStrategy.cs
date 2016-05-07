@@ -3,6 +3,8 @@ using Assignments.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+
 namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class ProcessAnalysisStrategy
@@ -19,18 +21,24 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
                     result.Add(new UnifiedBlockingObject(item));
                 }
             }
+            CheckForCriticalSections(result, unmanagedStack, runtime);
+            return result;
+        }
 
-            var criticalSectionObjects = GetCriticalSections(unmanagedStack, runtime);
+        /// <summary>
+        /// Walks the given stackFrameList and checks if it's contains CRITICAL_SECTION calls
+        /// </summary>
+        protected void CheckForCriticalSections(List<UnifiedBlockingObject> list, List<UnifiedStackFrame> stack, ClrRuntime runtime)
+        {
+            var criticalSectionObjects = GetCriticalSections(stack, runtime);
+
             if (criticalSectionObjects.Any())
             {
-                if (result == null)
-                    result = new List<UnifiedBlockingObject>();
+                if (list == null)
+                    list = new List<UnifiedBlockingObject>();
 
-                result.AddRange(criticalSectionObjects);
-                var list = criticalSectionObjects.ToList() ;
+                list.AddRange(criticalSectionObjects);
             }
-
-            return result;
         }
 
         public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
@@ -46,6 +54,6 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
-        public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack);
+        public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
     }
 }

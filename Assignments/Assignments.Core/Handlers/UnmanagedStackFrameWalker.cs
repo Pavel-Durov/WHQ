@@ -5,6 +5,7 @@ using Assignments.Core.Exceptions;
 using Assignments.Core.Model.Unified;
 using Assignments.Core.WinApi;
 using System.Runtime.InteropServices;
+using Microsoft.Diagnostics.Runtime.Interop;
 
 namespace Assignments.Core.Handlers
 {
@@ -18,7 +19,19 @@ namespace Assignments.Core.Handlers
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
-        public static void Walk(UnifiedStackFrame frame, ClrRuntime runtime)
+        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient)
+        {
+            List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
+            for (uint i = 0; i < framesFilled; ++i)
+            {
+                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
+                Inpsect(frame, runtime);
+                stackTrace.Add(frame);
+            }
+            return stackTrace;
+        }
+
+        static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -158,5 +171,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
+        
     }
 }
