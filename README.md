@@ -1,4 +1,4 @@
-I've created this repository, so I could keep track of my steps as I dive in to ClrMD librtary and other multithreading diagnostic libraries.
+I've created this repository, so I could keep track of my steps as I dive in to Windows process diagnostic libraries.
  
 This Project uses various technologies for extracting handles data from a given context.
 It uses ClrMd, WCT, MiniDump and other Windows APIs at its core.
