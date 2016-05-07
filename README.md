@@ -13,3 +13,14 @@ If you want to use dump file as a source:
 	-d <absolute-path-to-dump-file>
 	
 As a result, you'll see the output on the console with handles data and such, you can also find the result in the log files, located at : "Assignments/Logs" project directory
+
+
+Live Process:
+
+	Managed threads: ClrMd + WinBase.h API (NtQueryObject)
+	Native Threads: WCT + WinBase.h API (NtQueryObject)
+
+Dump File:
+
+	Managed threads: ClrMd + WinBase.h API (NtQueryObject)
+	Native Threads: MiniDump + WinBase.h API (NtQueryObject) 
