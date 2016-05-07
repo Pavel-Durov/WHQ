@@ -9,18 +9,21 @@ namespace Assignments.Core.WinApi
 {
     public class WinBase
     {
-        /// <summary>
-        /// TODO: Declare right!
-        /// </summary>
+
         public unsafe struct CRITICAL_SECTION
         {
             public IntPtr DebugInfo;
 
+            //
+            //  The following three fields control entering and exiting the critical
+            //  section for the resource
+            //
+
             public long LockCount;
             public long RecursionCount;
-            public ulong OwningThread;       
+            public IntPtr OwningThread;        // from the thread's ClientId->UniqueThread
             public IntPtr LockSemaphore;
-            public UIntPtr SpinCount;     
+            public UIntPtr SpinCount;        // force size on 64-bit systems when packed
         };
 
         public unsafe struct RTL_CRITICAL_SECTION_DEBUG

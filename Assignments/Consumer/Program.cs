@@ -1,4 +1,4 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 using System;
 using Consumer.CmdParams;
