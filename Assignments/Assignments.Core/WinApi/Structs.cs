@@ -30,6 +30,7 @@ namespace Assignments.Core.WinApi
         }
     }
 
+
 #if !(_WIN64)
 
     public struct THREAD_ADDITIONAL_INFO

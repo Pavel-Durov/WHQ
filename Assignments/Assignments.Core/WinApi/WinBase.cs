@@ -12,7 +12,7 @@ namespace Assignments.Core.WinApi
 
         public unsafe struct CRITICAL_SECTION
         {
-            public RTL_CRITICAL_SECTION_DEBUG* DebugInfo;
+            public IntPtr DebugInfo;
 
             //
             //  The following three fields control entering and exiting the critical
