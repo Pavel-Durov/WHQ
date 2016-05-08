@@ -1,12 +1,6 @@
-﻿
-using Assignments.Core.WinApi.NtDll;
+﻿using Assignments.Core.WinApi.NtDll;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assignments.Core.Handlers
 {
@@ -44,6 +38,12 @@ namespace Assignments.Core.Handlers
             });
         }
 
+        /// <summary>
+        /// Gets Handle Object name using NtQueryObject NtDll function
+        /// Doc: https://msdn.microsoft.com/en-us/library/bb432383(v=vs.85).aspx
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
         public static unsafe string GetHandleObjectName(IntPtr handle)
         {
             int length;

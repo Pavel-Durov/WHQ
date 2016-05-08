@@ -19,19 +19,19 @@ namespace Assignments.Core.Handlers
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
-        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient)
+        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient, bool isLiveProcess)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
                 var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
-                Inpsect(frame, runtime);
+                Inpsect(frame, runtime, isLiveProcess);
                 stackTrace.Add(frame);
             }
             return stackTrace;
         }
 
-        static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime)
+        static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, bool isLiveProcess)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -41,7 +41,7 @@ namespace Assignments.Core.Handlers
             }
             else if (CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
-                DealWithMultiple(frame, runtime, result);
+                DealWithMultiple(frame, runtime, result, isLiveProcess);
             }
             else
             {
@@ -51,7 +51,7 @@ namespace Assignments.Core.Handlers
             frame.NativeParams = result;
         }
 
-        public static bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime , out UnifiedBlockingObject blockingObject)
+        public static bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
         {
             bool result = false;
 
@@ -97,7 +97,7 @@ namespace Assignments.Core.Handlers
             frame.Handles.Add(new UnifiedHandle(Convert(result[0])));
         }
 
-        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result, bool isLiveProcess)
         {
             result = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
             frame.Handles = new List<UnifiedHandle>();
@@ -109,10 +109,19 @@ namespace Assignments.Core.Handlers
             foreach (var handle in handles)
             {
                 uint handleUint = Convert(handle);
-                var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint);
-                var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint);
+                UnifiedHandle unifiedHandle = null;
 
-                UnifiedHandle unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
+                if (isLiveProcess)
+                {
+                    var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint);
+                    var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint);
+
+                    unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
+                }
+                else
+                {
+                    unifiedHandle = new UnifiedHandle(handleUint);
+                }
                 frame.Handles.Add(unifiedHandle);
             }
         }
@@ -175,6 +184,6 @@ namespace Assignments.Core.Handlers
             return result;
         }
 
-        
+
     }
 }

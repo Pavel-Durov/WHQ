@@ -35,6 +35,7 @@ namespace Assignments.Core.Handlers
 
         #region Members
 
+        public bool IsLiveProcess { get { return _blockingObjectsFetchingStrategy is LiveProcessAnalysisStrategy; } }
         ProcessAnalysisStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
@@ -52,7 +53,7 @@ namespace Assignments.Core.Handlers
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 ThreadInfo specific_info = GetThreadInfo(threadIdx);
-           
+
                 if (specific_info.IsManagedThread)
                 {
                     result.Add(HandleManagedThread(specific_info));
@@ -62,7 +63,7 @@ namespace Assignments.Core.Handlers
                     result.Add(HandleUnManagedThread(specific_info));
                 }
             }
-          
+
             return result;
         }
 
@@ -181,7 +182,7 @@ namespace Assignments.Core.Handlers
                     ).ToList();
         }
 
-        private unsafe  List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
+        private unsafe List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
         {
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(engineThreadId));
 
@@ -189,7 +190,7 @@ namespace Assignments.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient);
+            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient, IsLiveProcess);
 
             return stackTrace;
         }
