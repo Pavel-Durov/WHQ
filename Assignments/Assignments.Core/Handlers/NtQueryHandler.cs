@@ -37,7 +37,7 @@ namespace Assignments.Core.Handlers
 
                 if (status == NtDll.NtStatus.Success)
                 {
-                    var res = (NtDll.PUBLIC_OBJECT_TYPE_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.PUBLIC_OBJECT_TYPE_INFORMATION));
+                    var res = Marshal.PtrToStructure<NtDll.PUBLIC_OBJECT_TYPE_INFORMATION>(pointer);
                     result = res.TypeName.ToString();
                 }
                 return result;
@@ -63,7 +63,7 @@ namespace Assignments.Core.Handlers
 
                 if (status == NtDll.NtStatus.Success)
                 {
-                    var res = (NtDll.OBJECT_NAME_INFORMATION)Marshal.PtrToStructure(pointer, typeof(NtDll.OBJECT_NAME_INFORMATION));
+                    var res = Marshal.PtrToStructure<NtDll.OBJECT_NAME_INFORMATION>(pointer);
                     result = res.Name.ToString();
                 }
                 return result;

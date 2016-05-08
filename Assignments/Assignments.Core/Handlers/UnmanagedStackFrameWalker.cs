@@ -83,6 +83,10 @@ namespace Assignments.Core.Handlers
                 var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
                 result = new UnifiedBlockingObject(criticalSection, handle);
             }
+            else
+            {
+                throw new AccessingNonReadableMemmory($"Address : {handle}");
+            }
             return result;
         }
 

@@ -27,7 +27,6 @@ namespace Assignments.Core.Handlers
                 byte* baseOfView = null;
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
-
                 result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamType, ref directory, ref streamPointer, ref streamSize);
                 viewBase = (IntPtr)baseOfView;
                 if (result)
