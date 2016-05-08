@@ -15,8 +15,9 @@ namespace Assignments.Core.Handlers
         /// <summary>
         /// Used for live process analysis
         /// </summary>
-        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, int pid)
+        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, uint pid)
         {
+            PID = pid;
             _debugClient = debugClient;
             _runtime = runtime;
             _blockingObjectsFetchingStrategy = new LiveProcessAnalysisStrategy(pid);
@@ -40,7 +41,7 @@ namespace Assignments.Core.Handlers
 
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
-
+        public uint PID { get; private set; }
         #endregion
 
         public List<UnifiedThread> Handle()
@@ -190,7 +191,7 @@ namespace Assignments.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient, IsLiveProcess);
+            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient, PID);
 
             return stackTrace;
         }

@@ -12,11 +12,18 @@ namespace Assignments.Core.Handlers
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static unsafe string GetHandleType(IntPtr handle)
+        public static unsafe string GetHandleType(IntPtr handle, uint pid)
         {
+            IntPtr handleDuplicate = IntPtr.Zero;
+
+            if(!DuplicateHandle(handle, pid, out handleDuplicate))
+            {
+                return null;
+            }
+
             int length;
 
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handle,
+            NtDll.NtStatus stat = NtDll.NtQueryObject(handleDuplicate,
                 NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
 
             if (stat == NtDll.NtStatus.InvalidHandle)
@@ -26,7 +33,7 @@ namespace Assignments.Core.Handlers
             {
                 string result = string.Empty;
 
-                NtDll.NtStatus status = NtDll.NtQueryObject(handle,
+                NtDll.NtStatus status = NtDll.NtQueryObject(handleDuplicate,
                     NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
                 if (status == NtDll.NtStatus.Success)
@@ -38,17 +45,42 @@ namespace Assignments.Core.Handlers
             });
         }
 
+        private static bool DuplicateHandle(IntPtr handle, uint pid, out IntPtr handleDuplicate)
+        {
+            bool result = true;
+
+            var sourceProcessHandle = WinApi.Kernel32.OpenProcess(WinApi.Kernel32.ProcessAccessFlags.All, true, pid);
+            if (NtDll.DuplicateHandle(sourceProcessHandle, (IntPtr)handle, WinApi.Kernel32.GetCurrentProcess(), out handleDuplicate, 0, false, NtDll.DuplicateOptions.DUPLICATE_SAME_ACCESS))
+            {
+                
+            }
+            else
+            {
+                result = false;
+                handleDuplicate = IntPtr.Zero;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Gets Handle Object name using NtQueryObject NtDll function
         /// Doc: https://msdn.microsoft.com/en-us/library/bb432383(v=vs.85).aspx
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static unsafe string GetHandleObjectName(IntPtr handle)
+        public static unsafe string GetHandleObjectName(IntPtr handle, uint pid)
         {
+            IntPtr handleDuplicate = IntPtr.Zero;
+
+            if (!DuplicateHandle(handle, pid, out handleDuplicate))
+            {
+                return null;
+            }
+
             int length;
 
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handle,
+            NtDll.NtStatus stat = NtDll.NtQueryObject(handleDuplicate,
                 NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, IntPtr.Zero, 0, out length);
 
             if (stat == NtDll.NtStatus.InvalidHandle)
@@ -58,7 +90,7 @@ namespace Assignments.Core.Handlers
             {
                 string result = string.Empty;
 
-                NtDll.NtStatus status = NtDll.NtQueryObject(handle,
+                NtDll.NtStatus status = NtDll.NtQueryObject(handleDuplicate,
                     NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
 
                 if (status == NtDll.NtStatus.Success)

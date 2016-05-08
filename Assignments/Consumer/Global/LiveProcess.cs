@@ -13,24 +13,24 @@ namespace Consumer.Global
     class LiveProcess
     {
 
-        const int PID_NOT_FOUND = -1;
+        const uint PID_NOT_FOUND = 0;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
-        public static void Run(int pid)
+        public static void Run(uint pid)
         {
             if (pid != PID_NOT_FOUND)
             {
-                Console.WriteLine("PID found in Assignment_3.DumpTest file :) ");
+                Console.WriteLine("VALID PID");
             }
             else
             {
                 Console.WriteLine("--- Assignment_4 C# project ----");
                 Console.WriteLine("Please enter a PID: ");
 
-                pid = int.Parse(Console.ReadLine());
+                pid = uint.Parse(Console.ReadLine());
             }
 
-            using (DataTarget target = DataTarget.AttachToProcess(pid, ATTACH_TO_PPROCESS_TIMEOUT))
+            using (DataTarget target = DataTarget.AttachToProcess((int)pid, ATTACH_TO_PPROCESS_TIMEOUT))
             {
                 DoAnaytics(target, pid);
             }
@@ -38,21 +38,7 @@ namespace Consumer.Global
             Console.ReadKey();
         }
 
-
-        private static int GetPidFromDumpProcessTextFile()
-        {
-            int pid = PID_NOT_FOUND;
-
-            var fileContent = File.ReadAllText(@"./../../../dump_pid.txt");
-            if (!String.IsNullOrEmpty(fileContent))
-            {
-                var success = int.TryParse(fileContent, out pid);
-            }
-
-            return pid;
-        }
-
-        private static void DoAnaytics(DataTarget target, int pid)
+        private static void DoAnaytics(DataTarget target, uint pid)
         {
 
             var runtime = target.ClrVersions[0].CreateRuntime();

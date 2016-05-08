@@ -9,6 +9,9 @@ namespace Assignments.Core.WinApi
     {
         #region Methods
 
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetCurrentProcess();
+
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetFileInformationByHandleEx(IntPtr hFile, FILE_INFO_BY_HANDLE_CLASS infoClass, out FILE_ID_BOTH_DIR_INFO dirInfo, uint dwBufferSize);
 

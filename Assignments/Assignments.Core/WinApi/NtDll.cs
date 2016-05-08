@@ -5,13 +5,26 @@ namespace Assignments.Core.WinApi.NtDll
 {
     internal class NtDll
     {
-        [DllImport("ntdll.dll")]
+        [DllImport("ntdll.dll", SetLastError = true)]
         internal static extern NtStatus NtQueryObject(
         [In] IntPtr Handle,
         [In] OBJECT_INFORMATION_CLASS ObjectInformationClass,
         [Out] IntPtr ObjectInformation,
         [In] int ObjectInformationLength,
         [Out] out int ReturnLength);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DuplicateHandle(IntPtr hSourceProcessHandle,
+           IntPtr hSourceHandle, IntPtr hTargetProcessHandle, out IntPtr lpTargetHandle,
+           uint dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, DuplicateOptions options);
+
+        [Flags]
+        public enum DuplicateOptions : uint
+        {
+            DUPLICATE_CLOSE_SOURCE = (0x00000001),// Closes the source handle. This occurs regardless of any error status returned.
+            DUPLICATE_SAME_ACCESS = (0x00000002), //Ignores the dwDesiredAccess parameter. The duplicate handle has the same access as the source handle.
+        }
 
         internal enum OBJECT_INFORMATION_CLASS
         {

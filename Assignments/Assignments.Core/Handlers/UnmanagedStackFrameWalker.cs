@@ -18,20 +18,21 @@ namespace Assignments.Core.Handlers
         const int ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT = 1;
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
+        const uint INVALID_PID = 0;
 
-        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient, bool isLiveProcess)
+        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient, uint pid = INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
                 var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
-                Inpsect(frame, runtime, isLiveProcess);
+                Inpsect(frame, runtime, pid);
                 stackTrace.Add(frame);
             }
             return stackTrace;
         }
 
-        static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, bool isLiveProcess)
+        static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -41,7 +42,7 @@ namespace Assignments.Core.Handlers
             }
             else if (CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
-                DealWithMultiple(frame, runtime, result, isLiveProcess);
+                DealWithMultiple(frame, runtime, result, pid);
             }
             else
             {
@@ -97,7 +98,7 @@ namespace Assignments.Core.Handlers
             frame.Handles.Add(new UnifiedHandle(Convert(result[0])));
         }
 
-        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result, bool isLiveProcess)
+        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result, uint pid)
         {
             result = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
             frame.Handles = new List<UnifiedHandle>();
@@ -111,10 +112,10 @@ namespace Assignments.Core.Handlers
                 uint handleUint = Convert(handle);
                 UnifiedHandle unifiedHandle = null;
 
-                if (isLiveProcess)
+                if (pid !=  INVALID_PID)
                 {
-                    var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint);
-                    var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint);
+                    var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
+                    var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
 
                     unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
                 }

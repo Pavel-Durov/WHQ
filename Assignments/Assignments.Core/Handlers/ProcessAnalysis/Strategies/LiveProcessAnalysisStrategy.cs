@@ -14,7 +14,7 @@ namespace Assignments.Core.Handlers.StackAnalysis.Strategies
 {
     public class LiveProcessAnalysisStrategy : ProcessAnalysisStrategy
     {
-        public LiveProcessAnalysisStrategy(int pid) 
+        public LiveProcessAnalysisStrategy(uint pid) 
         {
             _wctApi = new WctApiHandler();
         }
