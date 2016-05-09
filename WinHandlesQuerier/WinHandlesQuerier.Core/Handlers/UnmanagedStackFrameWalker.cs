@@ -81,8 +81,8 @@ namespace WinHandlesQuerier.Core.Handlers
 
             if (runtime.ReadPointer(handle, out value))
             {
-                //var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
-                //result = new UnifiedBlockingObject(criticalSection, handle);
+                var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
+                result = new UnifiedBlockingObject(criticalSection, handle);
             }
             else
             {
@@ -112,7 +112,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 uint handleUint = Convert(handle);
                 UnifiedHandle unifiedHandle = null;
 
-                if (pid !=  INVALID_PID)
+                if (pid != INVALID_PID)
                 {
                     var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
                     var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
