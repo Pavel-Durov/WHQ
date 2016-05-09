@@ -1,4 +1,4 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 using System;
 using Consumer.CmdParams;
@@ -27,7 +27,7 @@ namespace Consumer
                 }
                 else if(options.LivePid != Options.INVALID_PID)
                 {
-                    Global.LiveProcess.Run(options.LivePid);
+                    Global.LiveProcess.Run((uint)options.LivePid);
                 }
             }
 #endif

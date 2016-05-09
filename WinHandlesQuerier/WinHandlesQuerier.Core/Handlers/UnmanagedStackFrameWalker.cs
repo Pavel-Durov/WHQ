@@ -72,21 +72,27 @@ namespace WinHandlesQuerier.Core.Handlers
         private static UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;
-
             var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
 
-            var handle = Convert(paramz[0]);
+            var address = Convert(paramz[0]);
 
-            ulong value = 0;
+            byte[] buffer = new byte[Marshal.SizeOf<WinBase.CRITICAL_SECTION>()];
 
-            if (runtime.ReadPointer(handle, out value))
+            int read;
+
+            if (!runtime.ReadMemory(address, buffer, buffer.Length, out read) || read != buffer.Length)
+                throw new AccessingNonReadableMemmory($"Address : {address}");
+
+            var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+
+            try
             {
-                var criticalSection = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>((IntPtr)handle);
-                result = new UnifiedBlockingObject(criticalSection, handle);
+                var section = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>(gch.AddrOfPinnedObject());
+                result = new UnifiedBlockingObject(section, address);
             }
-            else
+            finally
             {
-                throw new AccessingNonReadableMemmory($"Address : {handle}");
+                gch.Free();
             }
             return result;
         }
