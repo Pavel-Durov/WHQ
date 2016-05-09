@@ -1,0 +1,719 @@
+Thread infoOSThreadId : 16424
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 0
+- StackTrace	Special   
+	Managed    0000000069bd7c23     mscorlib!DomainNeutralILStubClass.IL_STUB_PInvoke(Microsoft.Win32.SafeHandles.SafeFileHandle, Byte*, Int32, Int32 ByRef, IntPtr)+0x67
+	Special   
+	Managed    000000006a2ae143     mscorlib!System.IO.__ConsoleStream.ReadFileNative(Microsoft.Win32.SafeHandles.SafeFileHandle, Byte[], Int32, Int32, Boolean, Boolean, Int32 ByRef)+0x87
+	Managed    000000006a2ae052     mscorlib!System.IO.__ConsoleStream.Read(Byte[], Int32, Int32)+0x9a
+	Managed    0000000069b97500     mscorlib!System.IO.StreamReader.ReadBuffer()+0x38
+	Managed    0000000069b4750f     mscorlib!System.IO.StreamReader.ReadLine()+0x13f
+	Managed    000000006a3f6a51     mscorlib!System.IO.TextReader+SyncTextReader.ReadLine()+0x19
+	Managed    000000006a2509f0     mscorlib!System.Console.ReadLine()+0x14
+	Managed    00000000007906f3     DumpTest!DumpTest.Program.Main(System.String[])+0x223
+	Special   
+	Native     0000000077866c1c     ntdll!NtReadFile+0xc	
+	
+	Native     0000000069bd7c23     mscorlib_ni!+0x3b7c23	
+	
+	Native     000000006a2ae143     mscorlib_ni!+0xa8e143	
+	
+	Native     000000006a2ae052     mscorlib_ni!+0xa8e052	
+	
+	Native     0000000069b97500     mscorlib_ni!+0x377500	
+	
+	Native     0000000069b4750f     mscorlib_ni!+0x32750f	
+	
+	Native     000000006a3f6a51     mscorlib_ni!+0xbd6a51	
+	
+	Native     000000006a2509f0     mscorlib_ni!+0xa309f0	
+	
+	Native     00000000007906f3     <Unknown>!<Unknown>+0x0	
+	
+	Native     000000006ab81376     clr!+0x1376	
+	
+	Native     000000006ab8366f     clr!+0x366f	
+	
+	Native     000000006ab8d376     clr!DllUnregisterServerInternal+0xea2	
+	
+	Native     000000006ac9a2b4     clr!GetMetaDataPublicInterfaceFromInternal+0x6e82	
+	
+	Native     000000006ac9a4bb     clr!GetMetaDataPublicInterfaceFromInternal+0x7089	
+	
+	Native     000000006ac9aae3     clr!GetMetaDataPublicInterfaceFromInternal+0x76b1	
+	
+	Native     000000006ac9ab89     clr!GetMetaDataPublicInterfaceFromInternal+0x7757	
+	
+	Native     000000006ac9a38a     clr!GetMetaDataPublicInterfaceFromInternal+0x6f58	
+	
+	Native     000000006acb5a47     clr!CorExeMain+0x1c	
+	
+	Native     000000006b24cccb     mscoreei!CorExeMain+0x71	
+	
+	Native     000000006b2cdd05     MSCOREE!CorExeMain+0xa5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 11848
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 1
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 10116
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 2
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 8744
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 3
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 21412
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 4
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786718c     ntdll!NtWaitForMultipleObjects+0xc	
+	0: HandleId = 0x170, HandleType = Event, HandleObjectName = 
+	1: HandleId = 0x178, HandleType = Event, HandleObjectName = 
+	2: HandleId = 0x16c, HandleType = Event, HandleObjectName = 
+
+	Native     000000006aca80bc     clr!InitializeFusion+0xd60	
+	
+	Native     000000006aca8012     clr!InitializeFusion+0xcb6	
+	
+	Native     000000006aca7f41     clr!InitializeFusion+0xbe5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 23124
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 5
+- StackTrace	Special   
+	Native     000000007786718c     ntdll!NtWaitForMultipleObjects+0xc	
+	0: HandleId = 0x1a4, HandleType = Event, HandleObjectName = \KernelObjects\LowMemoryCondition
+	1: HandleId = 0x1dc, HandleType = Event, HandleObjectName = 
+	2: HandleId = 0x234, HandleType = Event, HandleObjectName = \BaseNamedObjects\CPFATE_23224_v4.0.30319
+
+	Native     000000006ac6def0     clr!StrongNameFreeBuffer+0x23398	
+	
+	Native     000000006ac7487f     clr!StrongNameFreeBuffer+0x29d27	
+	
+	Native     000000006ab8d6b7     clr!DllUnregisterServerInternal+0x11e3	
+	
+	Native     000000006ab8d721     clr!DllUnregisterServerInternal+0x124d	
+	
+	Native     000000006ab8d7ee     clr!DllUnregisterServerInternal+0x131a	
+	
+	Native     000000006ac9ad36     clr!GetMetaDataPublicInterfaceFromInternal+0x7904	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 15624
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 6
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 11612
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 7
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 23464
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 8
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786718c     ntdll!NtWaitForMultipleObjects+0xc	
+	0: HandleId = 0x2c4, HandleType = Timer, HandleObjectName = 
+
+	Native     0000000075c9bb48     combase!CoWaitForMultipleHandles+0x4bb8	
+	
+	Native     0000000075d266bc     combase!InternalReleaseMarshalObjRef+0x2bc	
+	
+	Native     0000000075c9b9ba     combase!CoWaitForMultipleHandles+0x4a2a	
+	
+	Native     0000000075d2760f     combase!IsErrorPropagationEnabled+0x23f	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 17336
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 9
+- StackTrace	Special   
+	Managed    0000000000793acb     DumpTest!DomainBoundILStubClass.IL_STUB_PInvoke(UInt32, IntPtr[], Boolean, UInt32)+0xd3
+	Special   
+	Managed    0000000000793799     DumpTest!DumpTest.Tests.Kernel32Calls.WaitCalls()+0x121
+	Managed    0000000000790897     DumpTest!DumpTest.Tests.Kernel32Calls.Run()+0x1f
+	Managed    000000000079085c     DumpTest!DumpTest.Program+<>c.<Main>b__1_0()+0x1c
+	Managed    0000000069b8bbc0     mscorlib!System.Threading.Tasks.Task.InnerInvoke()+0x2c
+	Managed    0000000069b8b816     mscorlib!System.Threading.Tasks.Task.Execute()+0x32
+	Managed    0000000069b8bb92     mscorlib!System.Threading.Tasks.Task.ExecutionContextCallback(System.Object)+0x1a
+	Managed    0000000069b2b437     mscorlib!System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0xa7
+	Managed    0000000069b2b386     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0x16
+	Managed    0000000069b8ba14     mscorlib!System.Threading.Tasks.Task.ExecuteWithThreadLocal(System.Threading.Tasks.Task ByRef)+0xd8
+	Managed    0000000069b8b930     mscorlib!System.Threading.Tasks.Task.ExecuteEntry(Boolean)+0xbc
+	Managed    0000000069b8b870     mscorlib!System.Threading.Tasks.Task.System.Threading.IThreadPoolWorkItem.ExecuteWorkItem()+0xc
+	Managed    0000000069bcfccf     mscorlib!System.Threading.ThreadPoolWorkQueue.Dispatch()+0x12f
+	Managed    0000000069bcfb9a     mscorlib!System.Threading._ThreadPoolWaitCallback.PerformWaitCallback()+0xa
+	Special   
+	Native     000000007786718c     ntdll!NtWaitForMultipleObjects+0xc	
+	0: HandleId = 0x404, HandleType = Event, HandleObjectName = 
+	1: HandleId = 0x408, HandleType = Event, HandleObjectName = 
+	2: HandleId = 0x40c, HandleType = Event, HandleObjectName = 
+
+	Native     0000000076bba3c8     KERNELBASE!WaitForMultipleObjects+0x18	
+	0: HandleId = 0x404, HandleType = Event, HandleObjectName = 
+	1: HandleId = 0x408, HandleType = Event, HandleObjectName = 
+	2: HandleId = 0x40c, HandleType = Event, HandleObjectName = 
+
+	Native     0000000000793acb     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000000793799     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000000790897     <Unknown>!<Unknown>+0x0	
+	
+	Native     000000000079085c     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000069b8bbc0     mscorlib_ni!+0x36bbc0	
+	
+	Native     0000000069b8b816     mscorlib_ni!+0x36b816	
+	
+	Native     0000000069b8bb92     mscorlib_ni!+0x36bb92	
+	
+	Native     0000000069b2b386     mscorlib_ni!+0x30b386	
+	
+	Native     0000000069b8ba14     mscorlib_ni!+0x36ba14	
+	
+	Native     0000000069b8b930     mscorlib_ni!+0x36b930	
+	
+	Native     0000000069b8b870     mscorlib_ni!+0x36b870	
+	
+	Native     0000000069bcfb9a     mscorlib_ni!+0x3afb9a	
+	
+	Native     000000006ab8366f     clr!+0x366f	
+	
+	Native     000000006ab8d376     clr!DllUnregisterServerInternal+0xea2	
+	
+	Native     000000006ac5c6bc     clr!StrongNameFreeBuffer+0x11b64	
+	
+	Native     000000006ab8d6b7     clr!DllUnregisterServerInternal+0x11e3	
+	
+	Native     000000006ab8d721     clr!DllUnregisterServerInternal+0x124d	
+	
+	Native     000000006ab8d7ee     clr!DllUnregisterServerInternal+0x131a	
+	
+	Native     000000006ab8d868     clr!DllUnregisterServerInternal+0x1394	
+	
+	Native     000000006ac5c650     clr!StrongNameFreeBuffer+0x11af8	
+	
+	Native     000000006ac5b4cf     clr!StrongNameFreeBuffer+0x10977	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 15612
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 10
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 13048
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 11
+- StackTrace	Special   
+	Managed    0000000000792a4a     DumpTest!DomainBoundILStubClass.IL_STUB_PInvoke(IntPtr ByRef)+0x82
+	Special   
+	Managed    0000000000793602     DumpTest!DumpTest.Tests.Kernel32Calls+<>c.<CriticalSectionCalls>b__2_1()+0x4a
+	Managed    0000000069b8bbc0     mscorlib!System.Threading.Tasks.Task.InnerInvoke()+0x2c
+	Managed    0000000069b8b816     mscorlib!System.Threading.Tasks.Task.Execute()+0x32
+	Managed    0000000069b8bb92     mscorlib!System.Threading.Tasks.Task.ExecutionContextCallback(System.Object)+0x1a
+	Managed    0000000069b2b437     mscorlib!System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0xa7
+	Managed    0000000069b2b386     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0x16
+	Managed    0000000069b8ba14     mscorlib!System.Threading.Tasks.Task.ExecuteWithThreadLocal(System.Threading.Tasks.Task ByRef)+0xd8
+	Managed    0000000069b8b930     mscorlib!System.Threading.Tasks.Task.ExecuteEntry(Boolean)+0xbc
+	Managed    0000000069b8b870     mscorlib!System.Threading.Tasks.Task.System.Threading.IThreadPoolWorkItem.ExecuteWorkItem()+0xc
+	Managed    0000000069bcfccf     mscorlib!System.Threading.ThreadPoolWorkQueue.Dispatch()+0x12f
+	Managed    0000000069bcfb9a     mscorlib!System.Threading._ThreadPoolWaitCallback.PerformWaitCallback()+0xa
+	Special   
+	Native     000000007786873c     ntdll!NtWaitForAlertByThreadId+0xc	
+	
+	Native     0000000077816ebd     ntdll!RtlWaitOnAddress+0x1dd	
+	
+	Native     0000000077816daf     ntdll!RtlWaitOnAddress+0xcf	
+	
+	Native     000000007783a096     ntdll!RtlEnterCriticalSection+0x126	
+	
+	Native     0000000077839fb5     ntdll!RtlEnterCriticalSection+0x45	
+	
+	Native     0000000000792a4a     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000000793602     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000069b8bbc0     mscorlib_ni!+0x36bbc0	
+	
+	Native     0000000069b8b816     mscorlib_ni!+0x36b816	
+	
+	Native     0000000069b8bb92     mscorlib_ni!+0x36bb92	
+	
+	Native     0000000069b2b386     mscorlib_ni!+0x30b386	
+	
+	Native     0000000069b8ba14     mscorlib_ni!+0x36ba14	
+	
+	Native     0000000069b8b930     mscorlib_ni!+0x36b930	
+	
+	Native     0000000069b8b870     mscorlib_ni!+0x36b870	
+	
+	Native     0000000069bcfb9a     mscorlib_ni!+0x3afb9a	
+	
+	Native     000000006ab8366f     clr!+0x366f	
+	
+	Native     000000006ab8d376     clr!DllUnregisterServerInternal+0xea2	
+	
+	Native     000000006ac5c6bc     clr!StrongNameFreeBuffer+0x11b64	
+	
+	Native     000000006ab8d6b7     clr!DllUnregisterServerInternal+0x11e3	
+	
+	Native     000000006ab8d721     clr!DllUnregisterServerInternal+0x124d	
+	
+	Native     000000006ab8d7ee     clr!DllUnregisterServerInternal+0x131a	
+	
+	Native     000000006ab8d868     clr!DllUnregisterServerInternal+0x1394	
+	
+	Native     000000006ac5c650     clr!StrongNameFreeBuffer+0x11af8	
+	
+	Native     000000006ac5b4cf     clr!StrongNameFreeBuffer+0x10977	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 4288
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 12
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 21704
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 13
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 21556
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 14
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 904
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 15
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 25020
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 16
+- StackTrace	Native     0000000077866bfc     ntdll!ZwWaitForSingleObject+0xc	
+	0: HandleId = 0x2cc, HandleType = , HandleObjectName = 
+
+	Native     000000006ac5b3c7     clr!StrongNameFreeBuffer+0x1086f	
+	
+	Native     000000006ac5b310     clr!StrongNameFreeBuffer+0x107b8	
+	
+	Native     000000006ac5b983     clr!StrongNameFreeBuffer+0x10e2b	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 22440
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 17
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : ClrMD
+		ManagedObjectAddress : 38273592
+		KernelObjectTypeName: 
+		WaitReason: WaitOne
+- StackTrace	Special   
+	Managed    0000000069bb49d1     mscorlib!System.Threading.WaitHandle.InternalWaitOne(System.Runtime.InteropServices.SafeHandle, Int64, Boolean, Boolean)+0x21
+	Managed    0000000069bb4998     mscorlib!System.Threading.WaitHandle.WaitOne(Int32, Boolean)+0x28
+	Managed    0000000069bb496e     mscorlib!System.Threading.WaitHandle.WaitOne()+0x12
+	Managed    00000000007918df     DumpTest!DumpTest.Tests.ThreadEventWait.SomeWork()+0x87
+	Managed    0000000069b47304     mscorlib!System.Threading.ThreadHelper.ThreadStart_Context(System.Object)+0x70
+	Managed    0000000069b2b437     mscorlib!System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0xa7
+	Managed    0000000069b2b386     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0x16
+	Managed    0000000069b2b341     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object)+0x41
+	Managed    0000000069b4728c     mscorlib!System.Threading.ThreadHelper.ThreadStart()+0x44
+	Special   
+	Special   
+	Native     000000007786718c     ntdll!NtWaitForMultipleObjects+0xc	
+	0: HandleId = 0x390, HandleType = Event, HandleObjectName = 
+
+	Native     000000006ad154a7     clr!CreateApplicationContext+0x1b491	
+	
+	Native     000000006ad1517e     clr!CreateApplicationContext+0x1b168	
+	
+	Native     000000006ad1526f     clr!CreateApplicationContext+0x1b259	
+	
+	Native     000000006ac41cb2     clr!PreBindAssemblyEx+0x71d3	
+	
+	Native     0000000069bb49d1     mscorlib_ni!+0x3949d1	
+	
+	Native     0000000069bb4998     mscorlib_ni!+0x394998	
+	
+	Native     0000000069bb496e     mscorlib_ni!+0x39496e	
+	
+	Native     00000000007918df     <Unknown>!<Unknown>+0x0	
+	
+	Native     0000000069b47304     mscorlib_ni!+0x327304	
+	
+	Native     0000000069b2b437     mscorlib_ni!+0x30b437	
+	
+	Native     0000000069b2b386     mscorlib_ni!+0x30b386	
+	
+	Native     0000000069b2b341     mscorlib_ni!+0x30b341	
+	
+	Native     0000000069b4728c     mscorlib_ni!+0x32728c	
+	
+	Native     000000006ab81376     clr!+0x1376	
+	
+	Native     000000006ab8366f     clr!+0x366f	
+	
+	Native     000000006ab8d376     clr!DllUnregisterServerInternal+0xea2	
+	
+	Native     000000006ac96785     clr!GetMetaDataPublicInterfaceFromInternal+0x3353	
+	
+	Native     000000006ab8d6b7     clr!DllUnregisterServerInternal+0x11e3	
+	
+	Native     000000006ab8d721     clr!DllUnregisterServerInternal+0x124d	
+	
+	Native     000000006ab8d7ee     clr!DllUnregisterServerInternal+0x131a	
+	
+	Native     000000006ab8d868     clr!DllUnregisterServerInternal+0x1394	
+	
+	Native     000000006ac965ac     clr!GetMetaDataPublicInterfaceFromInternal+0x317a	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 20744
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 18
+- StackTrace	Native     0000000077866f1c     ntdll!ZwDelayExecution+0xc	
+	
+	Native     000000006ac599b5     clr!StrongNameFreeBuffer+0xee5d	
+	
+	Native     000000006ac598c6     clr!StrongNameFreeBuffer+0xed6e	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 12632
+IsManagedThreadManaged: True
+Detail: 
+EngineThreadId: 19
+- StackTrace	Special   
+	Managed    000000006a2e1ba3     mscorlib!System.Threading.Mutex.OpenExistingWorker(System.String, System.Security.AccessControl.MutexRights, System.Threading.Mutex ByRef)+0x37
+	Managed    000000006a2e1b44     mscorlib!System.Threading.Mutex.TryOpenExisting(System.String, System.Threading.Mutex ByRef)+0x10
+	Managed    000000000079384d     DumpTest!DumpTest.Tests.MutexWait.ThreadWork()+0x5d
+	Managed    0000000069b47304     mscorlib!System.Threading.ThreadHelper.ThreadStart_Context(System.Object)+0x70
+	Managed    0000000069b2b437     mscorlib!System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0xa7
+	Managed    0000000069b2b386     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)+0x16
+	Managed    0000000069b2b341     mscorlib!System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object)+0x41
+	Managed    0000000069b4728c     mscorlib!System.Threading.ThreadHelper.ThreadStart()+0x44
+	Special   
+	Special   
+	Native     000000006abb3bd3     clr!CoUninitializeEE+0x13fcb	
+	
+	Native     000000006ab98bca     clr!DllUnregisterServerInternal+0xc6f6	
+	
+	Native     000000006ab98b0d     clr!DllUnregisterServerInternal+0xc639	
+	
+	Native     000000006ab81831     clr!+0x1831	
+	
+	Native     000000006a2e1ba3     mscorlib_ni!+0xac1ba3	
+	
+	Native     000000006a2e1b44     mscorlib_ni!+0xac1b44	
+	
+	Native     0000000069b47304     mscorlib_ni!+0x327304	
+	
+	Native     0000000069b2b437     mscorlib_ni!+0x30b437	
+	
+	Native     0000000069b2b386     mscorlib_ni!+0x30b386	
+	
+	Native     0000000069b2b341     mscorlib_ni!+0x30b341	
+	
+	Native     0000000069b4728c     mscorlib_ni!+0x32728c	
+	
+	Native     000000006ab81376     clr!+0x1376	
+	
+	Native     000000006ab8366f     clr!+0x366f	
+	
+	Native     000000006ab8d376     clr!DllUnregisterServerInternal+0xea2	
+	
+	Native     000000006ac96785     clr!GetMetaDataPublicInterfaceFromInternal+0x3353	
+	
+	Native     000000006ab8d6b7     clr!DllUnregisterServerInternal+0x11e3	
+	
+	Native     000000006ab8d721     clr!DllUnregisterServerInternal+0x124d	
+	
+	Native     000000006ab8d7ee     clr!DllUnregisterServerInternal+0x131a	
+	
+	Native     000000006ab8d868     clr!DllUnregisterServerInternal+0x1394	
+	
+	Native     000000006ac965ac     clr!GetMetaDataPublicInterfaceFromInternal+0x317a	
+	
+	Native     000000006ac860d1     clr!GetPrivateContextsPerfCounters+0x94b5	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 5232
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 20
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     000000007786876c     ntdll!ZwWaitForWorkViaWorkerFactory+0xc	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
+Thread infoOSThreadId : 14240
+IsManagedThreadManaged: False
+Detail: 
+EngineThreadId: 21
+BlockingObjects : 
+
+	blockingObject: 0
+		Source : WCT
+		ManagedObjectAddress : 0
+		KernelObjectTypeName: 
+		WaitReason: ThreadType
+- StackTrace	Native     0000000077868d20     ntdll!DbgBreakPoint+0x0	
+	
+	Native     00000000771738f4     KERNEL32!BaseThreadInitThunk+0x24	
+	
+	Native     0000000077855de3     ntdll!RtlUnicodeStringToInteger+0x253	
+	
+	Native     0000000077855dae     ntdll!RtlUnicodeStringToInteger+0x21e	
+	
