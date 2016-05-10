@@ -2,16 +2,8 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-
-using HANDLE = System.IntPtr;
 using System.Threading.Tasks;
-using System.Threading;
 using DumpTest.Tests;
 using Microsoft.Win32;
 
@@ -56,15 +48,14 @@ namespace DumpTest
         {
             var proc = Process.GetCurrentProcess();
             Console.WriteLine("PID : " + proc.Id);
-            File.WriteAllText(PID_FILE_PATH, proc.Id.ToString());
 
-#if DEBUG && LIVE_PID_DEBUG
-            Registry.CurrentUser.SetValue("my-ruthles-pid-key", proc.Id);       
+#if LIVE_PID_DEBUG
+            Registry.CurrentUser.SetValue("my-ruthles-pid-key", proc.Id);
 #endif
 
             Console.WriteLine("Pid wrote to shared txt file");
         }
 
-       
+
     }
 }

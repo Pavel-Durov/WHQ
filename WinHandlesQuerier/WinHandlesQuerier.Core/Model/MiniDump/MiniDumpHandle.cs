@@ -91,6 +91,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
             switch (type)
             {
                 case MiniDumpHandleType.NONE:
+                    result = UnifiedBlockingReason.None;
                     break;
                 case MiniDumpHandleType.THREAD:
                     result = UnifiedBlockingReason.ThreadType;
@@ -116,6 +117,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
                 case MiniDumpHandleType.TYPE_MAX:
                     break;
                 default:
+                    result = UnifiedBlockingReason.Unknown;
                     break;
             }
             return result;

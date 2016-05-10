@@ -23,6 +23,50 @@ namespace WinHandlesQuerier.Core.Handlers
                     Print(item);
                 }
             }
+
+            PrintSummary(collection, log);
+        }
+
+        private static void PrintSummary(List<UnifiedThread> collection, bool log = false)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            Dictionary<string, int> temp = new Dictionary<string, int>();
+
+            sb.AppendLine(":: SUMMARY ::");
+            foreach (var item in collection)
+            {
+                if (item.BlockingObjects == null)
+                    continue;
+
+                foreach (var block in item.BlockingObjects)
+                {
+                    var key = block.WaitReason.ToString();
+                    if (temp.ContainsKey(block.WaitReason.ToString()))
+                    {
+                        temp[key]++;
+                    }
+                    else
+                    {
+                        temp[key] = 1;
+                    }
+                }
+            }
+
+            //Console.WriteLine($"BlockingObjects Total: {total}");
+            foreach (var item in temp)
+            {
+                sb.AppendLine($"{item.Key} : {item.Value}");
+            }
+
+            if (log)
+            {
+                DumpToLogAndConsole(sb);
+            }
+            else
+            {
+                Console.WriteLine(sb.ToString());
+            }
         }
 
         private static void PrintToLog(UnifiedThread item)

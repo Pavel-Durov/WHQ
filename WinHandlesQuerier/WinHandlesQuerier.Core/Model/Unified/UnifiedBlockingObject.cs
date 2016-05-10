@@ -14,7 +14,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
 
     public enum OriginSource
     {
-        WCT, MiniDump, ClrMD
+        WCT, MiniDump, ClrMD, StackWalker
     }
 
     public class UnifiedBlockingObject
@@ -53,14 +53,16 @@ namespace WinHandlesQuerier.Core.Model.Unified
             KernelObjectTypeName = handle.TypeName;
             WaitReason = handle.UnifiedType;
             Type = UnifiedBlockingType.MiniDumpHandle;
+            Handle = handle.Handle;
         }
 
-        public UnifiedBlockingObject(WinBase.CRITICAL_SECTION section, uint handle)
+        public UnifiedBlockingObject(WinBase.CRITICAL_SECTION section, uint handle) : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));
-            WaitReason = UnifiedBlockingReason.CriticalSection;
+            WaitReason = UnifiedBlockingReason.CriticalSectionType;
             Type = UnifiedBlockingType.CriticalSectionObject;
+            Handle = handle;
         }
 
         private void SetWaiters(BlockingObject item)
@@ -108,6 +110,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
         public string KernelObjectName { get; private set; }
 
         public string KernelObjectTypeName { get; private set; }
+        public ulong Handle { get; private set; }
 
         public const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
 
@@ -138,9 +141,6 @@ namespace WinHandlesQuerier.Core.Model.Unified
         ProcessWaitType = 16,
         ThreadType = 17,
         ComActivationType = 18,
-        UnknownType = 19,
-
-
-        CriticalSection = 20
+        UnknownType = Unknown,
     }
 }
