@@ -6,6 +6,7 @@ using WinHandlesQuerier.Core.Model.Unified;
 using WinHandlesQuerier.Core.WinApi;
 using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime.Interop;
+using Assignments.Core.Infra;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -18,9 +19,8 @@ namespace WinHandlesQuerier.Core.Handlers
         const int ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT = 1;
         const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
-        const uint INVALID_PID = 0;
-
-        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient, uint pid = INVALID_PID)
+        
+        internal static List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugSymbols2 debugClient, uint pid = Constants.INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
@@ -118,7 +118,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 uint handleUint = Convert(handle);
                 UnifiedHandle unifiedHandle = null;
 
-                if (pid != INVALID_PID)
+                if (pid != Constants.INVALID_PID)
                 {
                     var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
                     var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);

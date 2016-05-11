@@ -14,7 +14,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public class LiveProcessAnalysisStrategy : ProcessAnalysisStrategy
     {
-        public LiveProcessAnalysisStrategy(uint pid) 
+        public LiveProcessAnalysisStrategy(uint pid)
         {
             _wctApi = new WctApiHandler();
         }
@@ -39,7 +39,19 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
                     }
                 }
             }
-            
+
+            var framesWithHandles = from c in unmanagedStack
+                                    where c.Handles?.Count > 0
+                                    select c;
+
+            foreach (var frame in framesWithHandles)
+            {
+                foreach (var handle in frame.Handles)
+                {
+                    result.Add(new UnifiedBlockingObject(handle.Id, handle.ObjectName, handle.Type));
+                }
+            }
+
             return result;
         }
     }

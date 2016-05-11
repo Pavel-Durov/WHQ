@@ -4,12 +4,13 @@ using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.WCT;
 using WinHandlesQuerier.Core.Model.MiniDump;
 using WinHandlesQuerier.Core.WinApi;
+using System;
 
 namespace WinHandlesQuerier.Core.Model.Unified
 {
     public enum UnifiedBlockingType
     {
-        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle, CriticalSectionObject
+        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle, CriticalSectionObject, UnmanagedHandleObject
     }
 
     public enum OriginSource
@@ -65,6 +66,18 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle;
         }
 
+        public UnifiedBlockingObject(uint handle, string objectName, string type) : this(OriginSource.StackWalker)
+        {
+            Owners = new List<UnifiedThread>();
+            Handle = handle;
+            KernelObjectName = objectName;
+            KernelObjectTypeName = type;
+            Type= UnifiedBlockingType.UnmanagedHandleObject;
+            
+        }
+
+
+
         private void SetWaiters(BlockingObject item)
         {
             if (item.Waiters?.Count > 0)
@@ -99,7 +112,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
 
         public bool HasOwnershipInformation { get { return Owners != null && Owners.Count > 0; } }
 
-        public UnifiedBlockingReason WaitReason { get; private set; }
+        public UnifiedBlockingReason WaitReason { get; private set; } = UnifiedBlockingReason.Unknown;
 
         public List<UnifiedThread> Waiters { get; private set; }
 
