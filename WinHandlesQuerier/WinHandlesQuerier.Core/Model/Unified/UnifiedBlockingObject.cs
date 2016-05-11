@@ -76,7 +76,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
             WaitReason = ConvertToUnified(objectType);
         }
 
-       
+
         private void SetWaiters(BlockingObject item)
         {
             if (item.Waiters?.Count > 0)
@@ -164,6 +164,9 @@ namespace WinHandlesQuerier.Core.Model.Unified
                 case "None":
                     result = UnifiedBlockingReason.None;
                     break;
+                case "Timer":
+                    result = UnifiedBlockingReason.Timer;
+                    break;
                 case "Event":
                     result = UnifiedBlockingReason.Event;
                     break;
@@ -212,8 +215,9 @@ namespace WinHandlesQuerier.Core.Model.Unified
         Job = 20,
         Semaphore = 21,
 
-        Event = 22        //An object which encapsulates some information, to be used for notifying processes of something.
+        Event = 22,        //An object which encapsulates some information, to be used for notifying processes of something.
+        Timer = 23
     }
 
-   
+
 }
