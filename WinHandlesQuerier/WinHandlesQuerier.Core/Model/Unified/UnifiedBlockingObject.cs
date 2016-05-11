@@ -66,17 +66,42 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle;
         }
 
-        public UnifiedBlockingObject(uint handle, string objectName, string type) : this(OriginSource.StackWalker)
+        public UnifiedBlockingObject(uint handle, string objectName, string objectType) : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Handle = handle;
             KernelObjectName = objectName;
-            KernelObjectTypeName = type;
+            KernelObjectTypeName = objectType;
             Type= UnifiedBlockingType.UnmanagedHandleObject;
-            
+            WaitReason = ConvertToUnified(objectType);
         }
 
-
+        private UnifiedBlockingReason ConvertToUnified(string objectType)
+        {
+            UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
+            switch(objectType)
+            {
+                case "Thread":break;
+                case "Job": break;
+                case "File": break;
+                case "Semaphore": break;
+                case "Mutex": break;
+                case "Key": break;
+                case "Event": break;
+                case "Section": break;
+                case "Mutant": break;
+                case "Desktop": break;
+                case "IoCompletion":break;
+                case "Directory": break;
+                case "WindowStation":break;
+                case "WaitCompletionPacket": break;
+                case "ALPC Port":break;
+                case "Timer": break;
+                case "TpWorkerFactory": break;
+                case "None": break;
+            }
+            return result;
+        }
 
         private void SetWaiters(BlockingObject item)
         {
