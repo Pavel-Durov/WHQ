@@ -72,37 +72,11 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle;
             KernelObjectName = objectName;
             KernelObjectTypeName = objectType;
-            Type= UnifiedBlockingType.UnmanagedHandleObject;
+            Type = UnifiedBlockingType.UnmanagedHandleObject;
             WaitReason = ConvertToUnified(objectType);
         }
 
-        private UnifiedBlockingReason ConvertToUnified(string objectType)
-        {
-            UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
-            switch(objectType)
-            {
-                case "Thread":break;
-                case "Job": break;
-                case "File": break;
-                case "Semaphore": break;
-                case "Mutex": break;
-                case "Key": break;
-                case "Event": break;
-                case "Section": break;
-                case "Mutant": break;
-                case "Desktop": break;
-                case "IoCompletion":break;
-                case "Directory": break;
-                case "WindowStation":break;
-                case "WaitCompletionPacket": break;
-                case "ALPC Port":break;
-                case "Timer": break;
-                case "TpWorkerFactory": break;
-                case "None": break;
-            }
-            return result;
-        }
-
+       
         private void SetWaiters(BlockingObject item)
         {
             if (item.Waiters?.Count > 0)
@@ -152,6 +126,60 @@ namespace WinHandlesQuerier.Core.Model.Unified
 
         public const int BLOCK_REASON_WCT_SECTION_START_INDEX = 9;
 
+        private static UnifiedBlockingReason ConvertToUnified(string objectType)
+        {
+            UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
+            switch (objectType)
+            {
+                case "Thread":
+                    result = UnifiedBlockingReason.ThreadType;
+                    break;
+                case "Job":
+                    result = UnifiedBlockingReason.Job;
+                    break;
+                case "File":
+                    result = UnifiedBlockingReason.File;
+                    break;
+                case "Semaphore":
+                    result = UnifiedBlockingReason.Semaphore;
+                    break;
+                case "Mutex":
+                    result = UnifiedBlockingReason.MutexType;
+                    break;
+                case "Section":
+                    result = UnifiedBlockingReason.CriticalSectionType;
+                    break;
+                case "Mutant":
+                    result = UnifiedBlockingReason.MutexType;
+                    break;
+                case "ALPC Port":
+                    result = UnifiedBlockingReason.AlpcType;
+                    break;
+                case "Process":
+                    result = UnifiedBlockingReason.ProcessWaitType;
+                    break;
+                case "Unknown":
+                    result = UnifiedBlockingReason.Unknown;
+                    break;
+                case "None":
+                    result = UnifiedBlockingReason.None;
+                    break;
+                case "Event":
+                    result = UnifiedBlockingReason.Event;
+                    break;
+                    //case "Callback": break;
+                    //case "Desktop": break;
+                    //case "Key": break;
+                    //case "IoCompletion": break;
+                    //case "Directory": break;
+                    //case "WindowStation": break;
+                    //case "WaitCompletionPacket": break;
+                    //case "TpWorkerFactory": break;
+                    //case "Timer": break;
+            }
+            return result;
+        }
+
     }
 
 
@@ -180,5 +208,12 @@ namespace WinHandlesQuerier.Core.Model.Unified
         ThreadType = 17,
         ComActivationType = 18,
         UnknownType = Unknown,
+        File = 19,
+        Job = 20,
+        Semaphore = 21,
+
+        Event = 22        //An object which encapsulates some information, to be used for notifying processes of something.
     }
+
+   
 }
