@@ -29,27 +29,18 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
             List<UnifiedBlockingObject> result = null;
 
-            //Snooped unmanaged stack data
-            var stackFrameHandles = from frame in unmanagedStack
-                                    where frame.Handles?.Count > 0
-                                    select frame;
+            result.AddRange(base.GetUnmanagedBlockingObjects(unmanagedStack));
 
-            if (stackFrameHandles != null && stackFrameHandles.Any())
+            foreach (var item in miniDumpHandles)
             {
-                result = new List<UnifiedBlockingObject>();
-
-                foreach (var item in miniDumpHandles)
-                {
-                    result.Add(new UnifiedBlockingObject(item));
-                }
+                result.Add(new UnifiedBlockingObject(item));
             }
-
 
             CheckForCriticalSections(result, unmanagedStack, runtime);
 
             return result;
         }
 
-        
+
     }
 }

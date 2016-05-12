@@ -61,7 +61,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
         {
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));
-            WaitReason = UnifiedBlockingReason.CriticalSectionType;
+            WaitReason = UnifiedBlockingReason.CriticalSection;
             Type = UnifiedBlockingType.CriticalSectionObject;
             Handle = handle;
         }
@@ -132,7 +132,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
             switch (objectType)
             {
                 case "Thread":
-                    result = UnifiedBlockingReason.ThreadType;
+                    result = UnifiedBlockingReason.Thread;
                     break;
                 case "Job":
                     result = UnifiedBlockingReason.Job;
@@ -144,19 +144,19 @@ namespace WinHandlesQuerier.Core.Model.Unified
                     result = UnifiedBlockingReason.Semaphore;
                     break;
                 case "Mutex":
-                    result = UnifiedBlockingReason.MutexType;
+                    result = UnifiedBlockingReason.Mutex;
                     break;
                 case "Section":
-                    result = UnifiedBlockingReason.CriticalSectionType;
+                    result = UnifiedBlockingReason.CriticalSection;
                     break;
                 case "Mutant":
-                    result = UnifiedBlockingReason.MutexType;
+                    result = UnifiedBlockingReason.Mutex;
                     break;
                 case "ALPC Port":
-                    result = UnifiedBlockingReason.AlpcType;
+                    result = UnifiedBlockingReason.Alpc;
                     break;
                 case "Process":
-                    result = UnifiedBlockingReason.ProcessWaitType;
+                    result = UnifiedBlockingReason.ProcessWait;
                     break;
                 case "Unknown":
                     result = UnifiedBlockingReason.Unknown;
@@ -201,22 +201,23 @@ namespace WinHandlesQuerier.Core.Model.Unified
         WriterAcquired = 9,
 
         //Based on WCT_OBJECT_TYPE Enumerations
-        CriticalSectionType = 20,
-        SendMessageType = 11,
-        MutexType = 12,
-        AlpcType = 13,
-        ComType = 14,
-        ThreadWaitType = 15,
-        ProcessWaitType = 16,
-        ThreadType = 17,
-        ComActivationType = 18,
+        CriticalSection = 20,
+        SendMessage = 11,
+        Mutex = 12,
+        Alpc = 13,
+        Com = 14,
+        ThreadWait = 15,
+        ProcessWait = 16,
+        Thread = 17,
+        ComActivation = 18,
         UnknownType = Unknown,
         File = 19,
         Job = 20,
         Semaphore = 21,
 
         Event = 22,        //An object which encapsulates some information, to be used for notifying processes of something.
-        Timer = 23
+        Timer = 23,
+        MemorySection = 24
     }
 
 

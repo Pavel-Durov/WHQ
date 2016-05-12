@@ -51,6 +51,24 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
+        protected List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(List<UnifiedStackFrame> unmanagedStack)
+        {
+            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
+
+            var framesWithHandles = from c in unmanagedStack
+                                    where c.Handles?.Count > 0
+                                    select c;
+
+            foreach (var frame in framesWithHandles)
+            {
+                foreach (var handle in frame.Handles)
+                {
+                    result.Add(new UnifiedBlockingObject(handle.Id, handle.ObjectName, handle.Type));
+                }
+            }
+
+            return result;
+        }
 
         public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {

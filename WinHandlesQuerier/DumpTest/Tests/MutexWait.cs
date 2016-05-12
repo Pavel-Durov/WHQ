@@ -11,7 +11,7 @@ namespace DumpTest.Tests
 {
     class MutexWait
     {
-        const string mutex_id = "this-is-the-most-unique-id-ever-8947F";
+        const string mutex_id = "this-is-the-most-unique-id-for-mutex-ever-8947F";
 
         public static async Task Run()
         {

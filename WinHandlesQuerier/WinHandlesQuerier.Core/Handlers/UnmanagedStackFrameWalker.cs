@@ -97,24 +97,15 @@ namespace WinHandlesQuerier.Core.Handlers
         private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             var paramz = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
-            frame.Handles = new List<UnifiedHandle>();
-
+          
             var handleUint = Convert(paramz[0]);
             
-            UnifiedHandle unifiedHandle = new UnifiedHandle(handleUint);
-
-            if (pid != Constants.INVALID_PID)
+            UnifiedHandle unifiedHandle = GenerateUnifiedHandle(handleUint, pid);
+            if(unifiedHandle != null)
             {
-                var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
-                var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
-
-                unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
+                frame.Handles = new List<UnifiedHandle>();
+                frame.Handles.Add(unifiedHandle);
             }
-            else
-            {
-                unifiedHandle = new UnifiedHandle(handleUint);
-            }
-            frame.Handles.Add(unifiedHandle);
         }
 
         private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
@@ -130,21 +121,31 @@ namespace WinHandlesQuerier.Core.Handlers
             foreach (var handle in handles)
             {
                 uint handleUint = Convert(handle);
-                UnifiedHandle unifiedHandle = null;
 
-                if (pid != Constants.INVALID_PID)
+                UnifiedHandle unifiedHandle = GenerateUnifiedHandle(handleUint, pid);
+                if (unifiedHandle != null)
                 {
-                    var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
-                    var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
-
-                    unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
+                    frame.Handles.Add(unifiedHandle);
                 }
-                else
-                {
-                    unifiedHandle = new UnifiedHandle(handleUint);
-                }
-                frame.Handles.Add(unifiedHandle);
             }
+        }
+
+        private static UnifiedHandle GenerateUnifiedHandle(uint handleUint, uint pid)
+        {
+            UnifiedHandle result;
+
+            if (pid != Constants.INVALID_PID)
+            {
+                var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
+                var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
+
+                result = new UnifiedHandle(handleUint, typeName, handleName);
+            }
+            else
+            {
+                result = new UnifiedHandle(handleUint);
+            }
+            return result;
         }
 
         private static uint Convert(byte[] bits)

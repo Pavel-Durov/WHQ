@@ -13,6 +13,7 @@ namespace DumpTest.Tests
         public static void Run()
         {
             Console.WriteLine("Running DeadLock");
+
             Thread another = new Thread(() =>
             {
                 lock (_sync2)

@@ -46,7 +46,7 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this UnifiedBlockingObject blockingObject, string prefix)
         {
             StringBuilder sb = new StringBuilder();
-            if(blockingObject.Handle != 0)
+            if (blockingObject.Handle != 0)
             {
                 sb.AppendWithNewLine(String.Format("{0}Hadle : 0x{1:x}", prefix, blockingObject.Handle));
             }
@@ -56,7 +56,7 @@ namespace WinHandlesQuerier.Core.Extentions
             {
                 sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
             }
-            
+
             sb.AppendWithNewLine($"{prefix}KernelObjectTypeName: {blockingObject.KernelObjectTypeName}");
             sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
 
@@ -105,14 +105,14 @@ namespace WinHandlesQuerier.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Native)
             {
-               
-                if(frame.Handles != null && frame.Handles.Count > 0)
+
+                if (frame.Handles != null && frame.Handles.Count > 0)
                 {
-                    result.Append($"{prefix}{frame.Handles.AsString(prefix)}");
+                    result.Append($"{prefix}{frame.Handles?.AsString(prefix)}");
                 }
                 else
-                { 
-                    result.Append($"{prefix}{frame.NativeParams.AsString(prefix)}");
+                {
+                    result.Append($"{prefix}{frame.NativeParams?.AsString(prefix)}");
                 }
 
             }
@@ -141,24 +141,29 @@ namespace WinHandlesQuerier.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.NewLine);
-            
+
             int index = 0;
+            sb.Append(prefix);
+
             foreach (var item in handles)
             {
-                sb.Append(prefix);
-                sb.Append(String.Format("HandleId = 0x{0:x}", item.Id));
+                if(index != 0)
+                    sb.Append(",");
 
-                if(!String.IsNullOrEmpty(item.ObjectName))
-                {
-                    sb.Append($", HandleObjectName : {item.ObjectName}");
-                }
+                sb.Append($"param [{index}]={String.Format("0x{0:x}", item.Id)}");
+                //sb.Append(String.Format("HandleId = 0x{0:x}", item.Id));
 
-                if (!String.IsNullOrEmpty(item.Type))
-                {
-                    sb.Append($", HandleObjectType : {item.Type}");
-                }
+                //if (!String.IsNullOrEmpty(item.ObjectName))
+                //{
+                //    sb.Append($", HandleObjectName : {item.ObjectName}");
+                //}
 
-                sb.Append(Environment.NewLine);
+                //if (!String.IsNullOrEmpty(item.Type))
+                //{
+                //    sb.Append($", HandleObjectType : {item.Type}");
+                //}
+
+                //sb.Append(Environment.NewLine);
                 index++;
             }
 
@@ -170,7 +175,7 @@ namespace WinHandlesQuerier.Core.Extentions
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.NewLine);
             sb.Append(prefix);
-            
+
             for (int i = 0; i < parms.Count; i++)
             {
                 int byteValue = BitConverter.ToInt32(parms[i], 0);

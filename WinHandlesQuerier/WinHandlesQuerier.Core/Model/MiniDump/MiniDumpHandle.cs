@@ -94,25 +94,25 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
                     result = UnifiedBlockingReason.None;
                     break;
                 case MiniDumpHandleType.THREAD:
-                    result = UnifiedBlockingReason.ThreadType;
+                    result = UnifiedBlockingReason.Thread;
                     break;
                 case MiniDumpHandleType.MUTEX1:
-                    result = UnifiedBlockingReason.MutexType;
+                    result = UnifiedBlockingReason.Mutex;
                     break;
                 case MiniDumpHandleType.MUTEX2:
-                    result = UnifiedBlockingReason.MutexType;
+                    result = UnifiedBlockingReason.Mutex;
                     break;
                 case MiniDumpHandleType.PROCESS1:
-                    result = UnifiedBlockingReason.ProcessWaitType;
+                    result = UnifiedBlockingReason.ProcessWait;
                     break;
                 case MiniDumpHandleType.PROCESS2:
-                    result = UnifiedBlockingReason.ProcessWaitType;
+                    result = UnifiedBlockingReason.ProcessWait;
                     break;
                 case MiniDumpHandleType.EVENT:
-                    result = UnifiedBlockingReason.ThreadWaitType;
+                    result = UnifiedBlockingReason.ThreadWait;
                     break;
                 case MiniDumpHandleType.SECTION:
-                    result = UnifiedBlockingReason.CriticalSectionType;
+                    result = UnifiedBlockingReason.MemorySection;
                     break;
                 case MiniDumpHandleType.TYPE_MAX:
                     break;
