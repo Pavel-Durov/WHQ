@@ -19,27 +19,29 @@ namespace DumpTest
 
             DealWithPID();
 
-            var kernel32Task = Task.Run(() =>
-            {
-                Kernel32Calls.Run();
-            });
+            DeadLock.Run();
 
-            var mutexWaitRun = Task.Run(async () =>
-            {
-                await MutexWait.Run();
-            });
+            //var kernel32Task = Task.Run(() =>
+            //{
+            //    Kernel32Calls.Run();
+            //});
 
-            var threadEventWaitTask = Task.Run(() =>
-            {
-                ThreadEventWait.Run();
-            });
+            //var mutexWaitRun = Task.Run(async () =>
+            //{
+            //    await MutexWait.Run();
+            //});
 
-            var threadMonitorWaitTask = Task.Run(() =>
-            {
-                ThreadMonitorWait.Run();
-            });
+            //var threadEventWaitTask = Task.Run(() =>
+            //{
+            //    ThreadEventWait.Run();
+            //});
 
-            var result = Task.WaitAny(kernel32Task, mutexWaitRun, threadEventWaitTask, threadMonitorWaitTask);
+            //var threadMonitorWaitTask = Task.Run(() =>
+            //{
+            //    ThreadMonitorWait.Run();
+            //});
+
+            //var result = Task.WaitAny(kernel32Task, mutexWaitRun, threadEventWaitTask, threadMonitorWaitTask);
 
             Console.ReadLine();
         }

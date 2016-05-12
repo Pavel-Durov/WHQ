@@ -72,14 +72,14 @@ namespace WinHandlesQuerier.Core.Handlers
         private static void PrintToLog(UnifiedThread item)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Thread info");
+            sb.AppendWithNewLine("Thread info");
             sb.Append(item.AsString());
 
             DumpToLogAndConsole(sb);
 
             if (item.BlockingObjects?.Count > 0)
             {
-                sb.AppendWithNewLine($"BlockingObjects : ");
+                sb.AppendWithNewLine($"Total BlockingObjects {item.BlockingObjects.Count}: ");
                 sb.Append($"{item.BlockingObjects.AsString('\t')}");
 
                 DumpToLogAndConsole(sb);

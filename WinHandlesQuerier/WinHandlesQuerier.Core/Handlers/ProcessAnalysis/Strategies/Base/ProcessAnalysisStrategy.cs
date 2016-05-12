@@ -11,17 +11,27 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
     {
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            List<UnifiedBlockingObject> result = null;
+            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
             if (thread.BlockingObjects?.Count > 0)
             {
-                result = new List<UnifiedBlockingObject>();
-
                 foreach (var item in thread.BlockingObjects)
                 {
                     result.Add(new UnifiedBlockingObject(item));
                 }
             }
+
             CheckForCriticalSections(result, unmanagedStack, runtime);
+
+            foreach (var frame in unmanagedStack)
+            {
+                if(frame?.Handles?.Count > 0)
+                {
+                    foreach (var handle in frame.Handles)
+                    {
+                        result.Add(new UnifiedBlockingObject(handle.Id, handle.ObjectName, handle.Type));
+                    }
+                }
+            }
             return result;
         }
 
@@ -41,6 +51,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
+
         public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
             foreach (var item in unmanagedStack)
@@ -55,5 +66,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         }
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
+
+
     }
 }

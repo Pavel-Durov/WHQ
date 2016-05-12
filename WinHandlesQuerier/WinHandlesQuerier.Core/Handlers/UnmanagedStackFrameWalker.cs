@@ -34,22 +34,19 @@ namespace WinHandlesQuerier.Core.Handlers
 
         static void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            List<byte[]> result = new List<byte[]>();
-
+           
             if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME))
             {
-                DealWithSingle(frame, runtime, result);
+                DealWithSingle(frame, runtime, pid);
             }
             else if (CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
-                DealWithMultiple(frame, runtime, result, pid);
+                DealWithMultiple(frame, runtime, pid);
             }
             else
             {
                 //CheckForCriticalSections(frame, runtime, result);
             }
-
-            frame.NativeParams = result;
         }
 
         public static bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
@@ -97,20 +94,37 @@ namespace WinHandlesQuerier.Core.Handlers
             return result;
         }
 
-        private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result)
+        private static void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            result = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
+            var paramz = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
             frame.Handles = new List<UnifiedHandle>();
-            frame.Handles.Add(new UnifiedHandle(Convert(result[0])));
+
+            var handleUint = Convert(paramz[0]);
+            
+            UnifiedHandle unifiedHandle = new UnifiedHandle(handleUint);
+
+            if (pid != Constants.INVALID_PID)
+            {
+                var typeName = NtQueryHandler.GetHandleType((IntPtr)handleUint, pid);
+                var handleName = NtQueryHandler.GetHandleObjectName((IntPtr)handleUint, pid);
+
+                unifiedHandle = new UnifiedHandle(handleUint, typeName, handleName);
+            }
+            else
+            {
+                unifiedHandle = new UnifiedHandle(handleUint);
+            }
+            frame.Handles.Add(unifiedHandle);
         }
 
-        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, List<byte[]> result, uint pid)
+        private static void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            result = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
+            var paramz = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
+            frame.NativeParams = paramz;
             frame.Handles = new List<UnifiedHandle>();
 
-            var HandlesCunt = BitConverter.ToUInt32(result[0], 0);
-            var HandleAddress = BitConverter.ToUInt32(result[1], 0);
+            var HandlesCunt = BitConverter.ToUInt32(paramz[0], 0);
+            var HandleAddress = BitConverter.ToUInt32(paramz[1], 0);
 
             var handles = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
             foreach (var handle in handles)

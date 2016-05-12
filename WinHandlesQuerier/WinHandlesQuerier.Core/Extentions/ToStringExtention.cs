@@ -17,7 +17,7 @@ namespace WinHandlesQuerier.Core.Extentions
             StringBuilder sb = new StringBuilder();
 
             sb.AppendWithNewLine($"OSThreadId : {thread.OSThreadId}");
-            sb.AppendWithNewLine($"IsManagedThreadManaged: {thread.IsManagedThread }");
+            sb.AppendWithNewLine($"IsManagedThread: {thread.IsManagedThread }");
             sb.AppendWithNewLine($"Detail: {thread.Detail}");
             sb.AppendWithNewLine($"EngineThreadId: {thread.EngineThreadId}");
 
@@ -146,8 +146,19 @@ namespace WinHandlesQuerier.Core.Extentions
             foreach (var item in handles)
             {
                 sb.Append(prefix);
-                var msg = String.Format("{0}: HandleId = 0x{1:x}, HandleType = {2}, HandleObjectName = {3}", index, item.Id, item.Type, item.ObjectName);
-                sb.AppendWithNewLine(msg);
+                sb.Append(String.Format("HandleId = 0x{0:x}", item.Id));
+
+                if(!String.IsNullOrEmpty(item.ObjectName))
+                {
+                    sb.Append($", HandleObjectName : {item.ObjectName}");
+                }
+
+                if (!String.IsNullOrEmpty(item.Type))
+                {
+                    sb.Append($", HandleObjectType : {item.Type}");
+                }
+
+                sb.Append(Environment.NewLine);
                 index++;
             }
 

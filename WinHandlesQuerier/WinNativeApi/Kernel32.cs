@@ -5,14 +5,16 @@ using HANDLE = System.IntPtr;
 
 namespace Kernel32
 {
+    public class Const
+    {
+        public const UInt32 INFINITE = 0xFFFFFFFF;
+        public const UInt32 WAIT_ABANDONED = 0x00000080;
+        public const UInt32 WAIT_OBJECT_0 = 0x00000000;
+        public const UInt32 WAIT_TIMEOUT = 0x00000102;
+    }
+
     public class Functions
     {
-        public const Int32 INFINITE = -1;
-        public const Int32 WAIT_ABANDONED = 0x80;
-        public const Int32 WAIT_OBJECT_0 = 0x00;
-        public const Int32 WAIT_TIMEOUT = 0x102;
-        public const Int32 WAIT_FAILED = -1;
-
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetCurrentProcess();
 

@@ -13,79 +13,19 @@ namespace DumpTest.Tests
     {
         public static void Run()
         {
-            MutexCalls();
             CriticalSectionCalls();
             WaitCalls();
         }
 
-        private static async void MutexCalls()
-        {
-            SECURITY_ATTRIBUTES secAttribs = new SECURITY_ATTRIBUTES();
-            secAttribs.nLength = Marshal.SizeOf(secAttribs);
-            secAttribs.bInheritHandle = 1;
-
-            var mutexAttributesPtr = Marshal.AllocCoTaskMem(Marshal.SizeOf(secAttribs));
-            var mutexName = "This-My-Mutex-Man";
-
-            Console.WriteLine($"Creating Mutex with name : '{mutexName}'");
-
-            var hMutex = Functions.CreateMutex(mutexAttributesPtr, true, mutexName);
-            var lastError = Marshal.GetLastWin32Error();
-            Console.WriteLine($"Win32 Error : {lastError}");
-
- 
-            while (true)
-            {
-                Console.WriteLine("OpenMutex");
-                
-                IntPtr openMutex = Functions.OpenMutex((uint)(SyncObjectAccess.MUTEX_MODIFY_STATE), false, mutexName);
-
-                Console.WriteLine("CreateMutex");
-
-                Functions.CreateMutex(mutexAttributesPtr, true, mutexName);
-
-                var lastError2 = Marshal.GetLastWin32Error();
-                Console.WriteLine($"Win32 Error : {lastError2}");
-                await Task.Delay(1000);
-            }
-        }
-
         public static IntPtr section;
+
         private static async void CriticalSectionCalls()
         {
-            //Console.WriteLine(" - Kernel32Calls IntPtr ");
 
             Functions.InitializeCriticalSection(out section);
             Console.WriteLine($"InitializeCriticalSection id: {Task.CurrentId} ");
-
             Functions.EnterCriticalSection(ref section);
-
-            bool canenter = Functions.TryEnterCriticalSection(ref section);
-            var onerror = Marshal.GetLastWin32Error();
-
-            Console.WriteLine($"id: {Task.CurrentId}, can: {canenter }, error: {onerror }");
-
-
-            await Task.Run(() =>
-            {
-
-                bool enter = Functions.TryEnterCriticalSection(ref section);
-                Functions.LeaveCriticalSection(ref section);
-                var error = Marshal.GetLastWin32Error();
-                //Console.WriteLine($"id: {Task.CurrentId}, can: {enter}, error: {error}");
-
-            });
-
-            await Task.Run(() =>
-            {
-                bool enter = Functions.TryEnterCriticalSection(ref section);
-                Functions.EnterCriticalSection(ref section);
-                Functions.EnterCriticalSection(ref section);
- 
-                var error = Marshal.GetLastWin32Error();
-                //Console.WriteLine($"id: {Task.CurrentId}, can: {enter}, error: {error}");
-            });
-          
+            await Task.Delay(int.MaxValue);
         }
 
         private static void WaitCalls()
