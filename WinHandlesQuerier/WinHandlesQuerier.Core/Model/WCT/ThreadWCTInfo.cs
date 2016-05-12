@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text;
-using WinHandlesQuerier.Core.Handlers;
-using WinHandlesQuerier.Core.Extentions;
-using WinHandlesQuerier.Core.WinApi;
+using Advapi32;
 
 namespace WinHandlesQuerier.Core.Model.WCT
 {
@@ -37,7 +34,7 @@ namespace WinHandlesQuerier.Core.Model.WCT
             }
         }
 
-        internal void SetInfo(Advapi32.WAITCHAIN_NODE_INFO[] info)
+        internal void SetInfo(WAITCHAIN_NODE_INFO[] info)
         {
             if (info != null)
             {

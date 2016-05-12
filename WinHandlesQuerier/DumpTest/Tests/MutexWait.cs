@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kernel32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,7 +66,7 @@ namespace DumpTest.Tests
                     
                     Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} waits for mutex with timout of {timeout}");
 
-                    Kernel32Calls.WaitForSingleObject(handle, timeout);
+                    Functions.WaitForSingleObject(handle, timeout);
 
                     Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} released from mutex");
                 }

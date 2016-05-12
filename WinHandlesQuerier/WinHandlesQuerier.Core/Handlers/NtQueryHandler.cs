@@ -1,7 +1,6 @@
-﻿using WinHandlesQuerier.Core.WinApi;
-using WinHandlesQuerier.Core.WinApi.NtDll;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using NtDll;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -24,22 +23,22 @@ namespace WinHandlesQuerier.Core.Handlers
 
             int length;
 
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handleDuplicate,
-                NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
+            NtStatus stat = Functions.NtQueryObject(handleDuplicate,
+                OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
 
-            if (stat == NtDll.NtStatus.InvalidHandle)
+            if (stat == NtStatus.InvalidHandle)
                 return null;
 
             return ExecuteSafe<string>(length, (pointer) =>
             {
                 string result = string.Empty;
 
-                NtDll.NtStatus status = NtDll.NtQueryObject(handleDuplicate,
-                    NtDll.OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
+                NtStatus status = Functions.NtQueryObject(handleDuplicate,
+                    OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
-                if (status == NtDll.NtStatus.Success)
+                if (status == NtStatus.Success)
                 {
-                    var res = Marshal.PtrToStructure<NtDll.PUBLIC_OBJECT_TYPE_INFORMATION>(pointer);
+                    var res = Marshal.PtrToStructure<PUBLIC_OBJECT_TYPE_INFORMATION>(pointer);
                     result = res.TypeName.ToString();
                 }
                 return result;
@@ -50,10 +49,14 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             bool result = true;
 
-            var sourceProcessHandle = WinApi.Kernel32.OpenProcess(WinApi.Kernel32.ProcessAccessFlags.All, true, pid);
-            if (Kernel32.DuplicateHandle(sourceProcessHandle, (IntPtr)handle, WinApi.Kernel32.GetCurrentProcess(), out handleDuplicate, 0, false, Kernel32.DuplicateOptions.DUPLICATE_SAME_ACCESS))
+            var sourceProcessHandle = Kernel32.Functions.OpenProcess(Kernel32.ProcessAccessFlags.All, true, pid);
+
+            var process = Kernel32.Functions.GetCurrentProcess();
+            var options = Kernel32.DuplicateOptions.DUPLICATE_SAME_ACCESS;
+
+            if (Kernel32.Functions.DuplicateHandle(sourceProcessHandle, (IntPtr)handle, process, out handleDuplicate, 0, false, options))
             {
-                
+
             }
             else
             {
@@ -81,22 +84,22 @@ namespace WinHandlesQuerier.Core.Handlers
 
             int length;
 
-            NtDll.NtStatus stat = NtDll.NtQueryObject(handleDuplicate,
-                NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, IntPtr.Zero, 0, out length);
+            NtStatus stat = Functions.NtQueryObject(handleDuplicate,
+                OBJECT_INFORMATION_CLASS.ObjectNameInformation, IntPtr.Zero, 0, out length);
 
-            if (stat == NtDll.NtStatus.InvalidHandle)
+            if (stat == NtStatus.InvalidHandle)
                 return null;
 
             return ExecuteSafe<string>(length, (pointer) =>
             {
                 string result = string.Empty;
 
-                NtDll.NtStatus status = NtDll.NtQueryObject(handleDuplicate,
-                    NtDll.OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
+                NtStatus status = Functions.NtQueryObject(handleDuplicate,
+                    OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
 
-                if (status == NtDll.NtStatus.Success)
+                if (status == NtStatus.Success)
                 {
-                    var res = Marshal.PtrToStructure<NtDll.OBJECT_NAME_INFORMATION>(pointer);
+                    var res = Marshal.PtrToStructure<OBJECT_NAME_INFORMATION>(pointer);
                     result = res.Name.ToString();
                 }
                 return result;

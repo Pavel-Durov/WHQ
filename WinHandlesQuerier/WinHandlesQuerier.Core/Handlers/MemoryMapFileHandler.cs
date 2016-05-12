@@ -1,10 +1,10 @@
-﻿using WinHandlesQuerier.Core.WinApi;
-using Microsoft.Win32.SafeHandles;
+﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
+using Kernel32;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -21,11 +21,11 @@ namespace WinHandlesQuerier.Core.Handlers
             MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fileStream, Path.GetFileName(fileName), 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
 
 
-            SafeMemoryMappedViewHandle mappedFileView = Kernel32.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, Kernel32.FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
+            SafeMemoryMappedViewHandle mappedFileView = Functions.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
 
-            Kernel32.MEMORY_BASIC_INFORMATION memoryInfo = default(Kernel32.MEMORY_BASIC_INFORMATION);
+            MEMORY_BASIC_INFORMATION memoryInfo = default(MEMORY_BASIC_INFORMATION);
 
-            if (Kernel32.VirtualQuery(mappedFileView, ref memoryInfo, (IntPtr)Marshal.SizeOf(memoryInfo)) == IntPtr.Zero)
+            if (Functions.VirtualQuery(mappedFileView, ref memoryInfo, (IntPtr)Marshal.SizeOf(memoryInfo)) == IntPtr.Zero)
             {
                 Debug.WriteLine($"error:  {Marshal.GetLastWin32Error()}");
             }

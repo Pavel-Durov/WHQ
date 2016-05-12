@@ -1,20 +1,17 @@
-﻿using WinHandlesQuerier.Core.WinApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu
 {
     public class X86CpuInfo
     {
-        private DbgHelp.CPU_INFORMATION _cpuInfo;
+        private CPU_INFORMATION _cpuInfo;
         private uint[] _vendorIdRaw;
         private string _vendorId;
 
-        internal unsafe X86CpuInfo(DbgHelp.CPU_INFORMATION cpuInfo)
+        internal unsafe X86CpuInfo(CPU_INFORMATION cpuInfo)
         {
             _cpuInfo = cpuInfo;
 

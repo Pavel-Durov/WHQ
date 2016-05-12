@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using DWORD = System.UInt32;
 
-namespace WinHandlesQuerier.Core.WinApi
+namespace Structs
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct UNICODE_STRING : IDisposable

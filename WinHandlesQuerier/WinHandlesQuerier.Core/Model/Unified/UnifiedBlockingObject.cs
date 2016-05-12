@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.WCT;
 using WinHandlesQuerier.Core.Model.MiniDump;
-using WinHandlesQuerier.Core.WinApi;
 using System;
+using WinBase;
 
 namespace WinHandlesQuerier.Core.Model.Unified
 {
@@ -57,7 +57,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle.Handle;
         }
 
-        public UnifiedBlockingObject(WinBase.CRITICAL_SECTION section, uint handle) : this(OriginSource.StackWalker)
+        public UnifiedBlockingObject(CRITICAL_SECTION section, uint handle) : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));

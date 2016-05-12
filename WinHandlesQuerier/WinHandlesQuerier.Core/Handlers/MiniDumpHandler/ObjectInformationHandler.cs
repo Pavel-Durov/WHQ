@@ -1,15 +1,14 @@
-﻿using WinHandlesQuerier.Core.WinApi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.MiniDump;
-
-
+using DbgHelp;
+using Structs;
 
 namespace WinHandlesQuerier.Core.Handlers.MiniDump
 {
     public class ObjectInformationHandler
     {
-        public static unsafe DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address, IntPtr baseOfView)
+        public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address, IntPtr baseOfView)
         {
             Action<MiniDumpHandle, uint> action = null;
             if(_actions.TryGetValue(pObjectInfo.InfoType, out action))
@@ -18,11 +17,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
                 if (pObjectInfo.NextInfoRva == 0)
                 {
-                    return default(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION);
+                    return default(MINIDUMP_HANDLE_OBJECT_INFORMATION);
                 }
                 else
                 {
-                    pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)baseOfView + pObjectInfo.NextInfoRva);
+                    pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)baseOfView + pObjectInfo.NextInfoRva);
                 }
             }
           
@@ -31,29 +30,29 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         static ObjectInformationHandler()
         {
-            _actions = new Dictionary<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>>();
+            _actions = new Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>>();
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone] = (handle, address) => { handle.Type = MiniDumpHandleType.NONE; };
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone] = (handle, address) => { handle.Type = MiniDumpHandleType.NONE; };
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1] = SetMiniThreadInformation1; 
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1] = SetMiniThreadInformation1; 
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1] = SetMiniMutantInformation1;
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1] = SetMiniMutantInformation1;
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2] = SetMiniMutantInformation2;
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation2] = SetMiniMutantInformation2;
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1] = SetMiniProcessInformation1;
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation1] = SetMiniProcessInformation1;
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2] = SetMiniProcessInformation2;
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniProcessInformation2] = SetMiniProcessInformation2;
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1] = (handle, address) => { handle.Type = MiniDumpHandleType.EVENT; };
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniEventInformation1] = (handle, address) => { handle.Type = MiniDumpHandleType.EVENT; };
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1] = (handle, address) => { handle.Type = MiniDumpHandleType.SECTION; };
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1] = (handle, address) => { handle.Type = MiniDumpHandleType.SECTION; };
 
-            _actions[DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax] = (handle, address) => { handle.Type = MiniDumpHandleType.TYPE_MAX; };
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax] = (handle, address) => { handle.Type = MiniDumpHandleType.TYPE_MAX; };
 
         }
 
-        static Dictionary<DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>> _actions;
+        static Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>> _actions;
         Action<MiniDumpHandle, uint> HandleInfoTypeAction;
 
         #region Actions
@@ -61,7 +60,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         private static unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, uint address)
         {
             handle.Type = MiniDumpHandleType.PROCESS2;
-            PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+            PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(MINIDUMP_HANDLE_OBJECT_INFORMATION));
 
             handle.OwnerProcessId = pInfo->ProcessId;
             handle.OwnerThreadId = 0;
@@ -76,7 +75,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         {
             handle.Type = MiniDumpHandleType.MUTEX2;
 
-            MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+            MUTEX_ADDITIONAL_INFO_2* mutexInfo2 = (MUTEX_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(MINIDUMP_HANDLE_OBJECT_INFORMATION));
 
             handle.OwnerProcessId = mutexInfo2->OwnerProcessId;
             handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
@@ -86,7 +85,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         {
             handle.Type = MiniDumpHandleType.MUTEX1;
 
-            MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+            MUTEX_ADDITIONAL_INFO_1* mutexInfo1 = (MUTEX_ADDITIONAL_INFO_1*)(((char*)address) + sizeof(MINIDUMP_HANDLE_OBJECT_INFORMATION));
 
             handle.MutexUnknown = new MutexUnknownFields()
             {
@@ -99,7 +98,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         {
             handle.Type = MiniDumpHandleType.THREAD;
 
-            THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION));
+            THREAD_ADDITIONAL_INFO* threadInfo = (THREAD_ADDITIONAL_INFO*)(((char*)address) + sizeof(MINIDUMP_HANDLE_OBJECT_INFORMATION));
 
             handle.OwnerProcessId = threadInfo->ProcessId;
             handle.OwnerThreadId = threadInfo->ThreadId;

@@ -82,18 +82,15 @@
     <Compile Include="msos\ThreadInfo.cs" />
     <Compile Include="msos\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WinApi\Advapi32.cs" />
-    <Compile Include="WinApi\Const.cs" />
-    <Compile Include="WinApi\DbgHelp.cs" />
-    <Compile Include="WinApi\Kernel32.cs" />
-    <Compile Include="WinApi\Structs.cs" />
-    <Compile Include="WinApi\WinBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WinApi\NtDll.cs" />
+    <ProjectReference Include="..\WinNativeApi\WinNativeApi.csproj">
+      <Project>{bc696670-7b56-44d5-b62c-46a9c2ff00ea}</Project>
+      <Name>WinNativeApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

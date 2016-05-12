@@ -1,18 +1,13 @@
-﻿using WinHandlesQuerier.Core.WinApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu
 {
     public class NonX86CpuInfo
     {
-        private DbgHelp.CPU_INFORMATION _cpuInfo;
+        private CPU_INFORMATION _cpuInfo;
         private ulong[] _processorFeatures;
 
-        internal unsafe NonX86CpuInfo(DbgHelp.CPU_INFORMATION cpuInfo)
+        internal unsafe NonX86CpuInfo(CPU_INFORMATION cpuInfo)
         {
             _cpuInfo = cpuInfo;
 

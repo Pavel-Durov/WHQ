@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Exceptions;
 using WinHandlesQuerier.Core.Model.Unified;
-using WinHandlesQuerier.Core.WinApi;
 using System.Runtime.InteropServices;
 using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.Infra;
+using WinBase;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -76,7 +76,7 @@ namespace WinHandlesQuerier.Core.Handlers
 
             var address = Convert(paramz[0]);
 
-            byte[] buffer = new byte[Marshal.SizeOf<WinBase.CRITICAL_SECTION>()];
+            byte[] buffer = new byte[Marshal.SizeOf<CRITICAL_SECTION>()];
 
             int read;
 
@@ -87,7 +87,7 @@ namespace WinHandlesQuerier.Core.Handlers
 
             try
             {
-                var section = Marshal.PtrToStructure<WinBase.CRITICAL_SECTION>(gch.AddrOfPinnedObject());
+                var section = Marshal.PtrToStructure<CRITICAL_SECTION>(gch.AddrOfPinnedObject());
                 result = new UnifiedBlockingObject(section, address);
             }
             finally

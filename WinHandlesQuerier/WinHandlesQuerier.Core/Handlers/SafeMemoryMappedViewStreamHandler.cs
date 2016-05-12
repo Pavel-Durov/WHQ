@@ -1,23 +1,23 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
-using WinHandlesQuerier.Core.WinApi;
+using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
     public class SafeMemoryMappedViewStreamHandler
     {
 
-        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
+        public static unsafe bool ReadStream<T>(MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle)
         {
             IntPtr viewBase;
             return ReadStream<T>(streamType, out streamData, out streamPointer, out streamSize, safeMemoryMappedViewHandle, out viewBase);
         }
 
-        public static unsafe bool ReadStream<T>(DbgHelp.MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle, out IntPtr viewBase)
+        public static unsafe bool ReadStream<T>(MINIDUMP_STREAM_TYPE streamType, out T streamData, out IntPtr streamPointer, out uint streamSize, SafeMemoryMappedViewHandle safeMemoryMappedViewHandle, out IntPtr viewBase)
         {
             bool result = false;
-            DbgHelp.MINIDUMP_DIRECTORY directory = new DbgHelp.MINIDUMP_DIRECTORY();
+            MINIDUMP_DIRECTORY directory = new MINIDUMP_DIRECTORY();
             streamData = default(T);
             streamPointer = IntPtr.Zero;
             streamSize = 0;
@@ -27,7 +27,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 byte* baseOfView = null;
                 safeMemoryMappedViewHandle.AcquirePointer(ref baseOfView);
 
-                result = DbgHelp.MiniDumpReadDumpStream((IntPtr)baseOfView, streamType, ref directory, ref streamPointer, ref streamSize);
+                result = Functions.MiniDumpReadDumpStream((IntPtr)baseOfView, streamType, ref directory, ref streamPointer, ref streamSize);
                 viewBase = (IntPtr)baseOfView;
                 if (result)
                 {

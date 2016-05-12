@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinHandlesQuerier.Core.WinApi;
 using WinHandlesQuerier.Core.Handlers;
 using WinHandlesQuerier.Core.Model.Unified;
+using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Model.MiniDump
 {
@@ -25,7 +25,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
     public class MiniDumpHandle
     {
 
-        public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR handleDescriptor)
+        public MiniDumpHandle(MINIDUMP_HANDLE_DESCRIPTOR handleDescriptor)
         {
             Handle = handleDescriptor.Handle;
             HandleCount = handleDescriptor.HandleCount;
@@ -36,7 +36,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
             GrantedAccess = handleDescriptor.GrantedAccess;
         }
 
-        public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor)
+        public MiniDumpHandle(MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor)
         {
             Handle = handleDescriptor.Handle;
             HandleCount = handleDescriptor.HandleCount;
@@ -48,7 +48,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
             ObjectInfoRva = handleDescriptor.ObjectInfoRva;
         }
 
-        public MiniDumpHandle(DbgHelp.MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor, string objectName, string typeName) : this(handleDescriptor)
+        public MiniDumpHandle(MINIDUMP_HANDLE_DESCRIPTOR_2 handleDescriptor, string objectName, string typeName) : this(handleDescriptor)
         {
             this.ObjectName = objectName;
             this.TypeName = typeName;
@@ -126,7 +126,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
 
 
 
-        internal void AddInfo(DbgHelp.MINIDUMP_HANDLE_OBJECT_INFORMATION info, string infoName)
+        internal void AddInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION info, string infoName)
         {
             HandleInfo = new MiniDumpHandleInfo(info);
         }

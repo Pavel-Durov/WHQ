@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{BC696670-7B56-44D5-B62C-46A9C2FF00EA}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DumpTest</RootNamespace>
-    <AssemblyName>DumpTest</AssemblyName>
+    <RootNamespace>WinNativeApi</RootNamespace>
+    <AssemblyName>WinNativeApi</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,9 +20,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,21 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Advapi32.cs" />
+    <Compile Include="Const.cs" />
+    <Compile Include="DbgHelp.cs" />
+    <Compile Include="Kernel32.cs" />
+    <Compile Include="NtDll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\Kernel32Calls.cs" />
-    <Compile Include="Tests\MutexWait.cs" />
-    <Compile Include="Tests\ThreadEventWait.cs" />
-    <Compile Include="Tests\ThreadMonitorWait.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WinNativeApi\WinNativeApi.csproj">
-      <Project>{bc696670-7b56-44d5-b62c-46a9c2ff00ea}</Project>
-      <Name>WinNativeApi</Name>
-    </ProjectReference>
+    <Compile Include="Structs.cs" />
+    <Compile Include="WinBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

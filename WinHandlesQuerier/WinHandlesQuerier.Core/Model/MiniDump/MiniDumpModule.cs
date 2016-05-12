@@ -1,17 +1,12 @@
-﻿using WinHandlesQuerier.Core.Handlers;
-using WinHandlesQuerier.Core.WinApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
+﻿using System;
+using WinNativeApi;
+using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Model.MiniDump
 {
     public class MiniDumpModule
     {
-        public MiniDumpModule(DbgHelp.MINIDUMP_MODULE module, string pathAndFileName)
+        public MiniDumpModule(MINIDUMP_MODULE module, string pathAndFileName)
         {
             BaseOfImage = module.BaseOfImage;
             SizeOfImage = module.SizeOfImage;

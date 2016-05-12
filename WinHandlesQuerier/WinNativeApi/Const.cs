@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinHandlesQuerier.Core.WinApi
+﻿namespace WinNativeApi
 {
-    class Const
+    public class Const
     {
         public const uint VS_FF_DEBUG = 0x00000001;
         public const uint VS_FF_INFOINFERRED = 0x00000010;
