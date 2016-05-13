@@ -6,11 +6,23 @@ using Structs;
 
 namespace WinHandlesQuerier.Core.Handlers.MiniDump
 {
+    /// <summary>
+    /// Extract relevant information from address to miniDump Handle properties
+    /// </summary>
     public class ObjectInformationHandler
     {
+        /// <summary>
+        /// Reads  sctructure form given handle if possible
+        /// </summary>
+        /// <param name="pObjectInfo">object info struct</param>
+        /// <param name="handle">context handle</param>
+        /// <param name="address">calculate rva address</param>
+        /// <param name="baseOfView">base of mapped minidump file</param>
+        /// <returns>Information structure or default value if no info detected</returns>
         public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address, IntPtr baseOfView)
         {
             Action<MiniDumpHandle, uint> action = null;
+
             if(_actions.TryGetValue(pObjectInfo.InfoType, out action))
             {
                 action(handle, address);
@@ -27,7 +39,9 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
           
             return pObjectInfo;
         }
-
+        /// <summary>
+        /// Initializes the required actions with types as keys (MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE) in local Ductionary for MiniDump handle information handling
+        /// </summary>
         static ObjectInformationHandler()
         {
             _actions = new Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>>();
@@ -49,9 +63,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniSectionInformation1] = (handle, address) => { handle.Type = MiniDumpHandleType.SECTION; };
 
             _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationTypeMax] = (handle, address) => { handle.Type = MiniDumpHandleType.TYPE_MAX; };
-
         }
 
+        /// <summary>
+        /// Ductionary of actions with enums as types - used for extracting relevant data from given address to the referenced MiniDumpHandle properties.
+        /// </summary>
         static Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>> _actions;
         Action<MiniDumpHandle, uint> HandleInfoTypeAction;
 

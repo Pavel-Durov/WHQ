@@ -10,6 +10,9 @@ using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Handlers.MiniDump
 {
+    /// <summary>
+    /// This class extracts data from dump file uisng native windows api DbgHelp.h function. 
+    /// </summary>
     public class MiniDumpHandler
     {
         const string DUMPS_DIR = "Dums";
@@ -26,6 +29,10 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         public MiniDumpHandler(string dumpFileName) { Init(dumpFileName); }
 
+        /// <summary>
+        /// Initialization of SafeMemoryMappedViewHandle by the filePath 
+        /// </summary>
+        /// <param name="dumpFileName">full path to dump file</param>
         public void Init(string dumpFileName)
         {
             using (FileStream fileStream = File.Open(dumpFileName, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -35,6 +42,10 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             }
         }
 
+        /// <summary>
+        /// Initialization of SafeMemoryMappedViewHandle by PID of live process
+        /// </summary>
+        /// <param name="pid">PID of life process</param>
         public void Init(uint pid)
         {
             var handle = Kernel32.Functions.OpenProcess(Kernel32.ProcessAccessFlags.All, false, pid);
@@ -57,7 +68,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         #region MiniDump Handles
 
-        public unsafe List<MiniDumpHandle> GetHandles()
+        /// <summary>
+        /// Reads handles informations from previously inited SafeMemoryMappedViewHandle
+        /// </summary>
+        /// <returns>List of handles</returns>
+        public List<MiniDumpHandle> GetHandles()
         {
             List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
@@ -100,6 +115,12 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             return result;
         }
 
+        /// <summary>
+        /// Constructs handles wrapped class with MINIDUMP_HANDLE_DESCRIPTOR_2 struct data
+        /// </summary>
+        /// <param name="handle">minidump struct descriptor</param>
+        /// <param name="streamPointer">stream pointer</param>
+        /// <returns></returns>
         private MiniDumpHandle GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
             string objectName = GetMiniDumpString(handle.ObjectNameRva, streamPointer);
@@ -149,7 +170,10 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         #endregion
 
-
+        /// <summary>
+        /// Fetches System Info from the mapped dump file (using MINIDUMP_SYSTEM_INFO struct)
+        /// </summary>
+        /// <returns>System Info</returns>
         public MiniDumpSystemInfo GetSystemInfo()
         {
             MiniDumpSystemInfo result = null;
@@ -167,7 +191,10 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             return result;
         }
 
-
+        /// <summary>
+        /// fetches module list from the mapped dump file
+        /// </summary>
+        /// <returns></returns>
         public List<MiniDumpModule> GetModuleList()
         {
             MINIDUMP_MODULE_LIST moduleList;
