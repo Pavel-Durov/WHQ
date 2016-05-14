@@ -5,15 +5,18 @@ using Advapi32;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
-    public class WctApiHandler
+    /// <summary>
+    /// Exract blocking objects information using WCT api:
+    /// doc: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681622(v=vs.85).aspx
+    /// </summary>
+    public class WctHandler
     {
-        internal bool GetBlockingObjects(uint threadId, out ThreadWCTInfo info)
-        {
-            info = CollectWaitInformation(threadId);
-            return info.WctBlockingObjects?.Count > 0;
-        }
-
-        internal ThreadWCTInfo CollectWaitInformation(uint threadId)
+        /// <summary>
+        /// Gets WCT information using WCT api by the given threadId (OS threadId)
+        /// </summary>
+        /// <param name="threadId"> ThreadWCTInfo  object</param>
+        /// <returns>Thread id of thread target</returns>
+        public ThreadWCTInfo GetBlockingObjects(uint threadId)
         {
             ThreadWCTInfo result = null;
 

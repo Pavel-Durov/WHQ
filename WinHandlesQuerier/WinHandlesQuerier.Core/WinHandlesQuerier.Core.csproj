@@ -59,13 +59,13 @@
     <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\NtQueryHandler.cs" />
     <Compile Include="Handlers\PrintHandler.cs" />
-    <Compile Include="Handlers\ProcessAnalysis\Strategies\Base\ProcessAnalysisStrategy.cs" />
-    <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessAnalysisStrategy.cs" />
-    <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileProcessAnalysisStrategy.cs" />
+    <Compile Include="Handlers\ProcessAnalysis\Strategies\Base\ProcessQuerierStrategy.cs" />
+    <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessQuerierStrategy.cs" />
+    <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileQuerierStrategy.cs" />
     <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameWalker.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
-    <Compile Include="Handlers\WctApiHandler.cs" />
+    <Compile Include="Handlers\WctHandler.cs" />
     <Compile Include="Infra\Const.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />

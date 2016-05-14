@@ -7,7 +7,7 @@ using System;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
-    public abstract class ProcessAnalysisStrategy
+    public abstract class ProcessQuerierStrategy
     {
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {

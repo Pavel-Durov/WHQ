@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified;
-using WinHandlesQuerier.Core.Model.Unified.Thread;
 using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
-    public class DumpFileProcessAnalysisStrategy : ProcessAnalysisStrategy
+    public class DumpFileQuerierStrategy : ProcessQuerierStrategy
     {
 
         ClrRuntime _runtime;
 
-        public DumpFileProcessAnalysisStrategy(string dumpFilePath, ClrRuntime runtime)
+        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
             _runtime = runtime;

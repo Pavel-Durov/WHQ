@@ -1,6 +1,4 @@
-﻿using System.Text;
-using WinHandlesQuerier.Core.Handlers;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System;
 using WinHandlesQuerier.Core.Model.Unified;
 using Advapi32;

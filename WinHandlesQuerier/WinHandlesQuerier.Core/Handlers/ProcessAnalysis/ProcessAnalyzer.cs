@@ -20,7 +20,7 @@ namespace WinHandlesQuerier.Core.Handlers
             PID = pid;
             _debugClient = debugClient;
             _runtime = runtime;
-            _blockingObjectsFetchingStrategy = new LiveProcessAnalysisStrategy(pid);
+            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(pid);
         }
 
         /// <summary>
@@ -31,13 +31,13 @@ namespace WinHandlesQuerier.Core.Handlers
             _debugClient = debugClient;
             _runtime = runtime;
 
-            _blockingObjectsFetchingStrategy = new DumpFileProcessAnalysisStrategy(pathToDumpFile, _runtime);
+            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime);
         }
 
         #region Members
 
-        public bool IsLiveProcess { get { return _blockingObjectsFetchingStrategy is LiveProcessAnalysisStrategy; } }
-        ProcessAnalysisStrategy _blockingObjectsFetchingStrategy;
+        public bool IsLiveProcess { get { return _blockingObjectsFetchingStrategy is LiveProcessQuerierStrategy; } }
+        ProcessQuerierStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
         private ClrRuntime _runtime;
