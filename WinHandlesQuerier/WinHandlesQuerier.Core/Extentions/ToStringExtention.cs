@@ -15,7 +15,8 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this UnifiedThread thread)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendWithNewLine("-----------------------------------------");
+            sb.AppendWithNewLine("Thread Info");
             sb.AppendWithNewLine($"OSThreadId : {thread.OSThreadId}");
             sb.AppendWithNewLine($"IsManagedThread: {thread.IsManagedThread }");
             sb.AppendWithNewLine($"Detail: {thread.Detail}");
@@ -29,7 +30,7 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this List<UnifiedBlockingObject> blockingObjects, char prefix)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendWithNewLine("Blocking Objects");
 
             var itemPrefix = $"{prefix}{prefix}";
 
