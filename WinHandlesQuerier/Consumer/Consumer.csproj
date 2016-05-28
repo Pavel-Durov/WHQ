@@ -74,6 +74,10 @@
       <Project>{f31c3f13-5c5e-4512-b3c7-a16f8fa6518b}</Project>
       <Name>WinHandlesQuerier.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WinNativeApi\WinNativeApi.csproj">
+      <Project>{BC696670-7B56-44D5-B62C-46A9C2FF00EA}</Project>
+      <Name>WinNativeApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

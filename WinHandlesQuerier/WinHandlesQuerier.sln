@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier.Core", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinNativeApi", "WinNativeApi\WinNativeApi.csproj", "{BC696670-7B56-44D5-B62C-46A9C2FF00EA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE7C6ED5-BD94-4AE4-BBF2-C20A16D3F923}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{CE7C6ED5-BD94-4AE4-BBF2-C20A16D3F923}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
