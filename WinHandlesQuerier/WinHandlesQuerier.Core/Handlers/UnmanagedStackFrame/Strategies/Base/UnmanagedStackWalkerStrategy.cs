@@ -75,6 +75,11 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return result;
         }
 
+        protected uint Convert(byte[] bits)
+        {
+            return BitConverter.ToUInt32(bits, 0);
+        }
+
         #region Abstract Methods
 
         public abstract bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject);
@@ -88,11 +93,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         public abstract List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime);
 
         protected abstract UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime);
-
-        protected uint Convert(byte[] bits)
-        {
-            return BitConverter.ToUInt32(bits, 0);
-        }
 
         #endregion
 
