@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using WinHandlesQuerier.Core.Extentions;
-using WinHandlesQuerier.Core.Model.Unified;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 
@@ -9,25 +8,34 @@ namespace WinHandlesQuerier.Core.Handlers
 {
     public class PrintHandler
     {
-
-        public static void Print(List<UnifiedThread> collection, bool log = false)
+        public static void Print(List<UnifiedThread> unifiedThreadCollection, bool log = false)
         {
-            foreach (var item in collection)
+            foreach (var unifiedThread in unifiedThreadCollection)
             {
-                if (log)
-                {
-                    PrintToLog(item);
-                }
-                else
-                {
-                    Print(item);
-                }
+                PrintToLog(GetData(unifiedThread));
+                PrintToConsole(GetData(unifiedThread));
             }
 
-            PrintSummary(collection, log);
+            PrintToLog(GetSummary(unifiedThreadCollection));
+            PrintToConsole(GetSummary(unifiedThreadCollection));
         }
 
-        private static void PrintSummary(List<UnifiedThread> collection, bool log = false)
+        private static StringBuilder GetData(UnifiedThread threadInfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(threadInfo.AsString());
+
+            if (threadInfo.BlockingObjects?.Count > 0)
+            {
+                sb.Append(threadInfo.BlockingObjects.AsString('\t'));
+            }
+
+            sb.Append(threadInfo.StackTrace.AsString('\t'));
+
+            return sb;
+        }
+
+        private static StringBuilder GetSummary(List<UnifiedThread> collection)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -53,65 +61,22 @@ namespace WinHandlesQuerier.Core.Handlers
                 }
             }
 
-            //Console.WriteLine($"BlockingObjects Total: {total}");
             foreach (var item in temp)
             {
                 sb.AppendLine($"{item.Key} : {item.Value}");
             }
 
-            if (log)
-            {
-                DumpToLogAndConsole(sb);
-            }
-            else
-            {
-                Console.WriteLine(sb.ToString());
-            }
+            return sb;
         }
 
-        private static void PrintToLog(UnifiedThread item)
+        private static void PrintToLog(StringBuilder sb)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendWithNewLine("Thread info");
-            sb.Append(item.AsString());
-
-            DumpToLogAndConsole(sb);
-
-            if (item.BlockingObjects?.Count > 0)
-            {
-                sb.AppendWithNewLine($"Total BlockingObjects {item.BlockingObjects.Count}: ");
-                sb.Append($"{item.BlockingObjects.AsString('\t')}");
-
-                DumpToLogAndConsole(sb);
-            }
-
-            sb.Append("- StackTrace");
-            sb.Append(item.StackTrace.AsString('\t'));
-            DumpToLogAndConsole(sb);
+            LogHandler.Log(sb.ToString());
         }
 
-        private static void DumpToLogAndConsole(StringBuilder sb)
+        public static void PrintToConsole(StringBuilder sb)
         {
             Console.WriteLine(sb);
-            LogHandler.Log(sb.ToString());
-            sb.Clear();
-        }
-
-        public static void Print(UnifiedThread item)
-        {
-            Console.WriteLine("Thread info");
-            Console.WriteLine(item.AsString());
-
-            if (item.BlockingObjects?.Count > 0)
-            {
-                Console.WriteLine("- BlockingObjects");
-                Console.WriteLine($"{item.BlockingObjects.AsString('\t')}");
-            }
-
-            //item.StackTrace
-            Console.WriteLine("- StackTrace");
-
-            Console.WriteLine(item.StackTrace.AsString('\t'));
         }
     }
 }

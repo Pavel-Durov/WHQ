@@ -68,7 +68,7 @@
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctHandler.cs" />
-    <Compile Include="Infra\Const.cs" />
+    <Compile Include="Infra\Constants.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
     <Compile Include="Model\MiniDump\MiniDumpModule.cs" />

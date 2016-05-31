@@ -1,20 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpTest", "DumpTest\DumpTest.csproj", "{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{CBD5EF88-8D63-4440-8D9F-9F21D2535609}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Snippets", "Snippets", "{D05306CC-9640-4B4D-95B7-C36CB27D0658}"
-	ProjectSection(SolutionItems) = preProject
-		PM.txt = PM.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier.Core", "WinHandlesQuerier.Core\WinHandlesQuerier.Core.csproj", "{F31C3F13-5C5E-4512-B3C7-A16F8FA6518B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinNativeApi", "WinNativeApi\WinNativeApi.csproj", "{BC696670-7B56-44D5-B62C-46A9C2FF00EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{CE7C6ED5-BD94-4AE4-BBF2-C20A16D3F923}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

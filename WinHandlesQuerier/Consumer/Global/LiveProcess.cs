@@ -6,32 +6,26 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using WinNativeApi;
+using Assignments.Core.Infra;
 
 namespace Consumer.Global
 {
     class LiveProcess
     {
-
-        const uint PID_NOT_FOUND = 0;
-        const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
-
-        public static void Run(uint pid)
+        public static void Run(uint pid = Constants.INVALID_PID)
         {
-            if (pid != PID_NOT_FOUND)
-            {
-                Console.WriteLine("VALID PID");
-            }
-            else
+            if (pid == Constants.INVALID_PID)
             {
                 Console.WriteLine("--- Assignment_4 C# project ----");
                 Console.WriteLine("Please enter a PID: ");
 
                 pid = uint.Parse(Console.ReadLine());
             }
-
-            using (DataTarget target = DataTarget.AttachToProcess((int)pid, ATTACH_TO_PPROCESS_TIMEOUT))
+          
+            using (DataTarget target = DataTarget.AttachToProcess((int)pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
             {
+                Console.WriteLine("Attached To Process Successfully");
                 DoAnaytics(target, pid);
             }
 

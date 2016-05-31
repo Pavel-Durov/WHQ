@@ -27,24 +27,6 @@ namespace Consumer.Global
 
                 PrintHandler.Print(result, true);
             }
-        }
-
-        private static int GetPidFromDumpProcessTextFile()
-        {
-            int pid = PID_NOT_FOUND;
-
-            var fileContent = File.ReadAllText(@"./../../../dump_pid.txt");
-            if (!String.IsNullOrEmpty(fileContent))
-            {
-                var success = int.TryParse(fileContent, out pid);
-            }
-
-            return pid;
-        }
-
-     
-
-     
-       
+        }    
     }
 }

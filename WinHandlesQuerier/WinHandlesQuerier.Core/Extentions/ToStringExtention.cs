@@ -15,10 +15,14 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this UnifiedThread thread)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendWithNewLine("-----------------------------------------");
+            sb.AppendWithNewLine("Thread Info");
             sb.AppendWithNewLine($"OSThreadId : {thread.OSThreadId}");
             sb.AppendWithNewLine($"IsManagedThread: {thread.IsManagedThread }");
-            sb.AppendWithNewLine($"Detail: {thread.Detail}");
+            if (!String.IsNullOrEmpty(thread.Detail))
+            {
+                sb.AppendWithNewLine($"Detail: {thread.Detail}");
+            }
             sb.AppendWithNewLine($"EngineThreadId: {thread.EngineThreadId}");
 
             return sb.ToString();
@@ -29,7 +33,7 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this List<UnifiedBlockingObject> blockingObjects, char prefix)
         {
             StringBuilder sb = new StringBuilder();
-
+            sb.AppendWithNewLine($"{Environment.NewLine}BLOCKING OBJECTS");
 
             var itemPrefix = $"{prefix}{prefix}";
 
@@ -60,9 +64,9 @@ namespace WinHandlesQuerier.Core.Extentions
             sb.AppendWithNewLine($"{prefix}KernelObjectTypeName: {blockingObject.KernelObjectTypeName}");
             sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
 
-            //TODO: Complete the info
             return sb.ToString();
         }
+
         #endregion
 
 
@@ -72,6 +76,7 @@ namespace WinHandlesQuerier.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
 
+            sb.AppendWithNewLine($"{Environment.NewLine}STACK TRACE{Environment.NewLine}");
             foreach (var frame in list)
             {
                 sb.AppendWithNewLine(frame.AsString(prefix));
@@ -147,23 +152,11 @@ namespace WinHandlesQuerier.Core.Extentions
 
             foreach (var item in handles)
             {
-                if(index != 0)
+                if (index != 0)
                     sb.Append(",");
 
                 sb.Append($"param [{index}]={String.Format("0x{0:x}", item.Id)}");
-                //sb.Append(String.Format("HandleId = 0x{0:x}", item.Id));
 
-                //if (!String.IsNullOrEmpty(item.ObjectName))
-                //{
-                //    sb.Append($", HandleObjectName : {item.ObjectName}");
-                //}
-
-                //if (!String.IsNullOrEmpty(item.Type))
-                //{
-                //    sb.Append($", HandleObjectType : {item.Type}");
-                //}
-
-                //sb.Append(Environment.NewLine);
                 index++;
             }
 
