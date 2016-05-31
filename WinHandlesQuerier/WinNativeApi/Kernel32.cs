@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
+using WinNativeApi.WinNT;
 using HANDLE = System.IntPtr;
 
 namespace Kernel32
@@ -15,30 +16,36 @@ namespace Kernel32
 
     public class Functions
     {
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenThread(uint dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT lpContext);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetCurrentProcess();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetFileInformationByHandleEx(HANDLE hFile, FILE_INFO_BY_HANDLE_CLASS infoClass, out FILE_ID_BOTH_DIR_INFO dirInfo, uint dwBufferSize);
 
-        [DllImport("Kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern HANDLE CreateEvent(SECURITY_ATTRIBUTES lpSecurityAttributes, bool isManualReset, bool initialState, string name);
 
-        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool Beep(uint dwFreq, uint dwDuration);
 
-        [DllImport("Kernel32.dll")]
+        [DllImport("kernel32.dll")]
         public static extern uint WaitForMultipleObjects(uint nCount, IntPtr[] lpHandles, bool bWaitAll, uint dwMilliseconds);
 
-        [DllImport("Kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
         public static extern HANDLE CreateEvent(HANDLE lpEventAttributes, [In, MarshalAs(UnmanagedType.Bool)] bool bManualReset, [In, MarshalAs(UnmanagedType.Bool)] bool bIntialState, [In, MarshalAs(UnmanagedType.BStr)] string lpName);
 
-        [DllImport("Kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseHandle(HANDLE hObject);
 
-        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
 
 
@@ -54,19 +61,19 @@ namespace Kernel32
             uint dwFileOffsetLow,
             IntPtr dwNumberOfBytesToMap);
 
-        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, uint processId);
 
-        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetPrivilege(HANDLE token, ProcessAccessFlags Privilege, bool EnablePrivilege);
 
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr OpenFileMapping(
           uint dwDesiredAccess,
           bool bInheritHandle,
           string lpName);
 
-        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr CreateFileMapping(
                IntPtr hFile,
                ref SECURITY_ATTRIBUTES attributes,

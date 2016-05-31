@@ -43,12 +43,14 @@
   <ItemGroup>
     <Compile Include="Advapi32.cs" />
     <Compile Include="Const.cs" />
+    <Compile Include="DbgEng.cs" />
     <Compile Include="DbgHelp.cs" />
     <Compile Include="Kernel32.cs" />
     <Compile Include="NtDll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Structs.cs" />
     <Compile Include="WinBase.cs" />
+    <Compile Include="WinNT.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

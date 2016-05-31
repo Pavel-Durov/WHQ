@@ -14,23 +14,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
-        public override bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
-        {
-            bool result = false;
-
-            if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
-            {
-                blockingObject = ReadCriticalSectionData(frame, runtime);
-                result = blockingObject != null;
-            }
-            else
-            {
-                blockingObject = null;
-            }
-
-            return result;
-        }
-
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;

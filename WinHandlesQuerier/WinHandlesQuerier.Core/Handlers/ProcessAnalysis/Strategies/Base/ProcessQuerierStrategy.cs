@@ -12,18 +12,22 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class ProcessQuerierStrategy
     {
-        public ProcessQuerierStrategy()
+        public ProcessQuerierStrategy(IDebugClient debugClient)
         {
             if (Environment.Is64BitProcess)
             {
-                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
+                //TODO: 64bit Logic Implement 
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient);
             }
             else
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
             }
+
+            _debugClient = debugClient;
         }
 
+        IDebugClient _debugClient;
         UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
 
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
@@ -102,9 +106,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
-        internal List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, IDebugClient _debugClient, uint pID)
+        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, IntPtr threadPtr, uint pID)
         {
-            return _unmanagedStackWalkerStrategy.Walk(stackFrames, framesFilled, _runtime, _debugClient, pID);
+            return _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, _debugClient, threadPtr, pID);
         }
     }
 }

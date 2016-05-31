@@ -18,13 +18,13 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         protected const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
-
-        internal List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime runtime, IDebugClient debugClient, uint pid = Constants.INVALID_PID)
+        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
+            ClrRuntime runtime, IDebugClient debugClient, IntPtr osThreadId, uint pid = Constants.INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
-                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
+                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient, osThreadId);
                 Inpsect(frame, runtime, pid);
                 stackTrace.Add(frame);
             }
@@ -75,14 +75,30 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return result;
         }
 
+        public bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
+        {
+            bool result = false;
+
+            if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+            {
+                blockingObject = ReadCriticalSectionData(frame, runtime);
+                result = blockingObject != null;
+            }
+            else
+            {
+                blockingObject = null;
+            }
+
+            return result;
+        }
+
+
         protected uint Convert(byte[] bits)
         {
             return BitConverter.ToUInt32(bits, 0);
         }
 
         #region Abstract Methods
-
-        public abstract bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject);
 
         protected abstract void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 

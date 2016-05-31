@@ -3,12 +3,13 @@ using WinHandlesQuerier.Core.Model.Unified;
 using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.WCT;
+using Microsoft.Diagnostics.Runtime.Interop;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public class LiveProcessQuerierStrategy : ProcessQuerierStrategy
     {
-        public LiveProcessQuerierStrategy(uint pid)
+        public LiveProcessQuerierStrategy(IDebugClient debugClient) : base(debugClient)
         {
             _wctApi = new WctHandler();
         }

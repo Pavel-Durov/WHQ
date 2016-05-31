@@ -2,6 +2,7 @@
 using WinHandlesQuerier.Core.Model.Unified;
 using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
+using Microsoft.Diagnostics.Runtime.Interop;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -10,7 +11,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         ClrRuntime _runtime;
 
-        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime)
+        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient) : base(debugClient)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
             _runtime = runtime;

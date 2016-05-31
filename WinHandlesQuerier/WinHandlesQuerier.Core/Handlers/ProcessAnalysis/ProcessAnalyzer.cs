@@ -20,7 +20,7 @@ namespace WinHandlesQuerier.Core.Handlers
             PID = pid;
             _debugClient = debugClient;
             _runtime = runtime;
-            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(pid);
+            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(debugClient);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace WinHandlesQuerier.Core.Handlers
             _debugClient = debugClient;
             _runtime = runtime;
 
-            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime);
+            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, debugClient);
         }
 
         #region Members
@@ -73,7 +73,7 @@ namespace WinHandlesQuerier.Core.Handlers
         private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
         {
             UnifiedUnManagedThread result = null;
-            var unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+            var unmanagedStack = GetNativeStackTrace(specific_info);
 
             var blockingObjects = _blockingObjectsFetchingStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
 
@@ -94,7 +94,7 @@ namespace WinHandlesQuerier.Core.Handlers
 
                 try
                 {
-                    unmanagedStack = GetNativeStackTrace(specific_info.EngineThreadId);
+                    unmanagedStack = GetNativeStackTrace(specific_info);
                 }
                 catch (Exception e)
                 {
@@ -134,7 +134,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             ThreadInfo threadInfo = GetThreadInfo(threadIndex);
             List<UnifiedStackFrame> unifiedStackTrace = new List<UnifiedStackFrame>();
-            List<UnifiedStackFrame> nativeStackTrace = GetNativeStackTrace(threadInfo.EngineThreadId);
+            List<UnifiedStackFrame> nativeStackTrace = GetNativeStackTrace(threadInfo);
             if (threadInfo.IsManagedThread)
             {
                 List<UnifiedStackFrame> managedStackTrace = GetManagedStackTrace(threadInfo.ManagedThread);
@@ -179,21 +179,19 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             return (from frame in thread.StackTrace
                     let sourceLocation = SymbolCache.GetFileAndLineNumberSafe(frame)
-                    select new UnifiedStackFrame(frame, sourceLocation)
+                    select new UnifiedStackFrame(frame, sourceLocation, (IntPtr)thread.ManagedThreadId)
                     ).ToList();
         }
 
-        private unsafe List<UnifiedStackFrame> GetNativeStackTrace(uint engineThreadId)
+        private unsafe List<UnifiedStackFrame> GetNativeStackTrace(ThreadInfo info)
         {
-            Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(engineThreadId));
+            Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(info.EngineThreadId));
 
             DEBUG_STACK_FRAME[] stackFrames = new DEBUG_STACK_FRAME[200];
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-         
-
-            var stackTrace = _blockingObjectsFetchingStrategy.Walk(stackFrames, framesFilled, _runtime, _debugClient, PID);
+            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, (IntPtr)info.OSThreadId, PID);
             return stackTrace;
         }
 

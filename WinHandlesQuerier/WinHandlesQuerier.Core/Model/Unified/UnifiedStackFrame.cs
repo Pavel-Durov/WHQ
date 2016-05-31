@@ -45,10 +45,11 @@ namespace WinHandlesQuerier.Core.Model.Unified
         public UnifiedStackFrame LinkedStackFrame { get; set; } //Used for linking managed frame to native frame
         public List<byte[]> NativeParams { get; set; }
         public List<UnifiedHandle> Handles { get; set; }
+        public IntPtr OsThreadId { get; set; }
 
-
-        public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols)
+        public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols, IntPtr osThreadId)
         {
+            OsThreadId = osThreadId;
             FrameOffset = nativeFrame.FrameOffset;
 
             Type = UnifiedStackFrameType.Native;
@@ -92,8 +93,9 @@ namespace WinHandlesQuerier.Core.Model.Unified
             }
         }
 
-        public UnifiedStackFrame(ClrStackFrame frame, SourceLocation sourceLocation)
+        public UnifiedStackFrame(ClrStackFrame frame, SourceLocation sourceLocation, IntPtr osThreadId)
         {
+            OsThreadId = osThreadId;
             if (frame.Kind == ClrStackFrameType.ManagedMethod)
                 Type = UnifiedStackFrameType.Managed;
             if (frame.Kind == ClrStackFrameType.Runtime)
