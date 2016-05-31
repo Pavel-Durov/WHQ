@@ -191,8 +191,9 @@ namespace WinHandlesQuerier.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = UnmanagedStackFrameWalker.Walk(stackFrames, framesFilled, _runtime, (IDebugSymbols2)_debugClient, PID);
+         
 
+            var stackTrace = _blockingObjectsFetchingStrategy.Walk(stackFrames, framesFilled, _runtime, _debugClient, PID);
             return stackTrace;
         }
 

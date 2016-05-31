@@ -4,11 +4,28 @@ using Microsoft.Diagnostics.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Microsoft.Diagnostics.Runtime.Interop;
+using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
+using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class ProcessQuerierStrategy
     {
+        public ProcessQuerierStrategy()
+        {
+            if (Environment.Is64BitProcess)
+            {
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
+            }
+            else
+            {
+                _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
+            }
+        }
+
+        UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
+
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
@@ -76,7 +93,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             {
                 UnifiedBlockingObject blockObject;
 
-                if (UnmanagedStackFrameWalker.CheckForCriticalSectionCalls(item, runtime, out blockObject))
+                if (_unmanagedStackWalkerStrategy.CheckForCriticalSectionCalls(item, runtime, out blockObject))
                 {
                     yield return blockObject;
                 }
@@ -85,6 +102,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
-
+        internal List<UnifiedStackFrame> Walk(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, IDebugClient _debugClient, uint pID)
+        {
+            return _unmanagedStackWalkerStrategy.Walk(stackFrames, framesFilled, _runtime, _debugClient, pID);
+        }
     }
 }
