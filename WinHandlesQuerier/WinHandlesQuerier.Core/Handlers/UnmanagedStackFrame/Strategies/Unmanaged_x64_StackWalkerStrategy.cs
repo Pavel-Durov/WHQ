@@ -45,6 +45,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
+
             //TODO: Complte 64 bit logic
             CONTEXT threadContext = new CONTEXT();
 
@@ -76,6 +77,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             {
                 //TODO: something with threadContext
             }
+
             return result;
         }
 
@@ -83,31 +85,16 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         private bool GetThreadContext(uint osThreadId, ref CONTEXT refResult)
         {
-            bool result = false;
-
-            refResult = new CONTEXT();
             IntPtr handle = IntPtr.Zero;
             try
             {
                 handle = Kernel32.Functions.OpenThread(ThreadAccess.GET_CONTEXT, false, osThreadId);
-                bool res = Kernel32.Functions.GetThreadContext(handle, ref refResult);
-
-                if (res)
-                {
-                    var error = Marshal.GetLastWin32Error();
-                    result = error == Kernel32.Const.ERROR_SUCCESS;
-                    //else if (error == Kernel32.Const.ERROR_INVALID_HANDLE)
-                }
+                return Kernel32.Functions.GetThreadContext(handle, ref refResult);
             }
             finally
             {
-                if (handle != IntPtr.Zero)
-                {
-                    Kernel32.Functions.CloseHandle(handle);
-                }
+                Kernel32.Functions.CloseHandle(handle);
             }
-
-            return result;
         }
 
         #endregion
