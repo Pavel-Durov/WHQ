@@ -19,11 +19,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// <param name="address">calculate rva address</param>
         /// <param name="baseOfView">base of mapped minidump file</param>
         /// <returns>Information structure or default value if no info detected</returns>
-        public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, uint address, IntPtr baseOfView)
+        public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, IntPtr address, IntPtr baseOfView)
         {
-            Action<MiniDumpHandle, uint> action = null;
+            Action<MiniDumpHandle, IntPtr> action = null;
 
-            if(_actions.TryGetValue(pObjectInfo.InfoType, out action))
+            if (_actions.TryGetValue(pObjectInfo.InfoType, out action))
             {
                 action(handle, address);
 
@@ -33,10 +33,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
                 }
                 else
                 {
-                    pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>((uint)baseOfView + pObjectInfo.NextInfoRva);
+                    pObjectInfo = SafeMemoryMappedViewStreamHandler
+                        .ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>(IntPtr.Add(baseOfView, (int)pObjectInfo.NextInfoRva));
                 }
             }
-          
+
             return pObjectInfo;
         }
         /// <summary>
@@ -44,11 +45,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// </summary>
         static ObjectInformationHandler()
         {
-            _actions = new Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>>();
+            _actions = new Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, IntPtr>>();
 
             _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniHandleObjectInformationNone] = (handle, address) => { handle.Type = MiniDumpHandleType.NONE; };
 
-            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1] = SetMiniThreadInformation1; 
+            _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniThreadInformation1] = SetMiniThreadInformation1;
 
             _actions[MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE.MiniMutantInformation1] = SetMiniMutantInformation1;
 
@@ -68,12 +69,12 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// <summary>
         /// Ductionary of actions with enums as types - used for extracting relevant data from given address to the referenced MiniDumpHandle properties.
         /// </summary>
-        static Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, uint>> _actions;
+        static Dictionary<MINIDUMP_HANDLE_OBJECT_INFORMATION_TYPE, Action<MiniDumpHandle, IntPtr>> _actions;
         Action<MiniDumpHandle, uint> HandleInfoTypeAction;
 
         #region Actions
 
-        private static unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, uint address)
+        private static unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.PROCESS2;
             PROCESS_ADDITIONAL_INFO_2* pInfo = (PROCESS_ADDITIONAL_INFO_2*)(((char*)address) + sizeof(MINIDUMP_HANDLE_OBJECT_INFORMATION));
@@ -82,12 +83,12 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             handle.OwnerThreadId = 0;
         }
 
-        private static void SetMiniProcessInformation1(MiniDumpHandle handle, uint address)
+        private static void SetMiniProcessInformation1(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.PROCESS1;
         }
 
-        private static unsafe void SetMiniMutantInformation2(MiniDumpHandle handle, uint address)
+        private static unsafe void SetMiniMutantInformation2(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.MUTEX2;
 
@@ -97,7 +98,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             handle.OwnerThreadId = mutexInfo2->OwnerThreadId;
         }
 
-        private static unsafe void SetMiniMutantInformation1(MiniDumpHandle handle, uint address)
+        private static unsafe void SetMiniMutantInformation1(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.MUTEX1;
 
@@ -110,7 +111,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             };
         }
 
-        private static unsafe void SetMiniThreadInformation1(MiniDumpHandle handle, uint address)
+        private static unsafe void SetMiniThreadInformation1(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.THREAD;
 

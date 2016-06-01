@@ -1,12 +1,6 @@
 ﻿using WinHandlesQuerier.Core.Handlers;
 using Microsoft.Diagnostics.Runtime;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinNativeApi;
 using Assignments.Core.Infra;
 
 namespace Consumer.Global

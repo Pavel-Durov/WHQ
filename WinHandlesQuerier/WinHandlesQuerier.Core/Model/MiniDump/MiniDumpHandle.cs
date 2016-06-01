@@ -64,9 +64,9 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
         /// <summary>
         /// An RVA to a MINIDUMP_STRING structure that specifies the object name of the handle. This member can be 0.
         /// </summary>
-        public uint ObjectNameRva { get; private set; }
+        public Int32 ObjectNameRva { get; private set; }
         public uint PointerCount { get; private set; }
-        public uint TypeNameRva { get; private set; }
+        public Int32 TypeNameRva { get; private set; }
         public uint Attributes { get; private set; }
         public uint GrantedAccess { get; private set; }
 
@@ -74,7 +74,7 @@ namespace WinHandlesQuerier.Core.Model.MiniDump
         /// <summary>
         /// An RVA to a MINIDUMP_HANDLE_OBJECT_INFORMATION structure that specifies object-specific information. This member can be 0 if there is no extra information.
         /// </summary>
-        public uint ObjectInfoRva { get; private set; }
+        public Int32 ObjectInfoRva { get; private set; }
         public bool HasObjectInfo{ get { return ObjectInfoRva > 0; } }
 
         public MiniDumpHandleInfo HandleInfo { get; private set; }

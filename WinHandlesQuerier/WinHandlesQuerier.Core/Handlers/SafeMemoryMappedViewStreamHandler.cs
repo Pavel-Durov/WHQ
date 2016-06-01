@@ -43,7 +43,7 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
 
-        public static unsafe string ReadString(uint rva, SafeMemoryMappedViewHandle safeHandle)
+        public static unsafe string ReadString(Int32 rva, SafeMemoryMappedViewHandle safeHandle)
         {
             return RunSafe<string>(() =>
             {
@@ -60,7 +60,7 @@ namespace WinHandlesQuerier.Core.Handlers
             }, safeHandle);
         }
 
-        public static unsafe string ReadString(uint rva, uint length, SafeMemoryMappedViewHandle safeHandle)
+        public static unsafe string ReadString(int rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {
             return RunSafe<string>(() =>
             {
@@ -90,7 +90,7 @@ namespace WinHandlesQuerier.Core.Handlers
             }, safeHandle, count);
         }
 
-        public static unsafe T ReadStruct<T>(uint rva, IntPtr streamPtr, SafeMemoryMappedViewHandle safeHandle) where T : struct
+        public static unsafe T ReadStruct<T>(Int32 rva, IntPtr streamPtr, SafeMemoryMappedViewHandle safeHandle) where T : struct
         {
             return RunSafe<T>(() =>
             {
@@ -102,10 +102,9 @@ namespace WinHandlesQuerier.Core.Handlers
             }, safeHandle);
         }
 
-        public static unsafe T ReadStruct<T>(uint rva) where T : struct
+        public static unsafe T ReadStruct<T>(IntPtr rva) where T : struct
         {
-            IntPtr positionToReadFrom = new IntPtr((int)(rva));
-            return Marshal.PtrToStructure<T>(positionToReadFrom);
+            return Marshal.PtrToStructure<T>(rva);
         }
 
 

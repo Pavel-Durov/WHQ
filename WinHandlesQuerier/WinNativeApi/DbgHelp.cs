@@ -36,7 +36,7 @@ namespace DbgHelp
         public UInt32 SizeOfImage;
         public UInt32 CheckSum;
         public UInt32 TimeDateStamp;
-        public uint ModuleNameRva;
+        public Int32 ModuleNameRva;
         public Kernel32.VS_FIXEDFILEINFO VersionInfo;
         public MINIDUMP_LOCATION_DESCRIPTOR CvRecord;
         public MINIDUMP_LOCATION_DESCRIPTOR MiscRecord;
@@ -106,13 +106,13 @@ namespace DbgHelp
     public struct MINIDUMP_HANDLE_DESCRIPTOR_2
     {
         public UInt64 Handle;
-        public uint TypeNameRva;
-        public uint ObjectNameRva;
+        public Int32 TypeNameRva;
+        public Int32 ObjectNameRva;
         public UInt32 Attributes;
         public UInt32 GrantedAccess;
         public UInt32 HandleCount;
         public UInt32 PointerCount;
-        public uint ObjectInfoRva;
+        public Int32 ObjectInfoRva;
         public UInt32 Reserved0;
     }
 
@@ -129,8 +129,8 @@ namespace DbgHelp
     public struct MINIDUMP_HANDLE_DESCRIPTOR
     {
         public UInt64 Handle;
-        public uint TypeNameRva;
-        public uint ObjectNameRva;
+        public Int32 TypeNameRva;
+        public Int32 ObjectNameRva;
         public UInt32 Attributes;
         public UInt32 GrantedAccess;
         public UInt32 HandleCount;
