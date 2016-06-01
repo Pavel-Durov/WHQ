@@ -18,6 +18,16 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         protected const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
+        protected const uint CONTEXT_SIZE_AMD64 = 0x4d0;
+        protected const uint CONTEXT_SIZE_X86 = 0x2d0;
+        protected const uint CONTEXT_SIZE_ARM = 0x1a0;
+
+        public UnmanagedStackWalkerStrategy(uint contextSize)
+        {
+            ContextSize = contextSize;
+        }
+        public uint ContextSize { get; private set; }
+
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
             ClrRuntime runtime, IDebugClient debugClient, uint osThreadId, uint pid = Constants.INVALID_PID)
         {
@@ -97,6 +107,23 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         {
             return BitConverter.ToUInt32(bits, 0);
         }
+
+        //private uint GetThreadContextSize()
+        //{
+        //    uint result = 0;
+        //    var plat = _dataReader.GetArchitecture();
+
+        //    if (plat == Architecture.Amd64)
+        //        result = 0x4d0;
+        //    else if (plat == Architecture.X86)
+        //        result = 0x2d0;
+        //    else if (plat == Architecture.Arm)
+        //        result = 0x1a0;
+        //    else
+        //        throw new InvalidOperationException("Unexpected architecture.");
+
+        //    return result;
+        //}
 
         #region Abstract Methods
 

@@ -18,12 +18,10 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             _dataReader = dataReader;
             _debugClient = debugClient;
 
-            if (Environment.Is64BitProcess)
+            if(dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
             {
-                //TODO: 64bit Logic Implement 
                 _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient, _dataReader, runtime);
-            }
-            else
+            }else
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
             }

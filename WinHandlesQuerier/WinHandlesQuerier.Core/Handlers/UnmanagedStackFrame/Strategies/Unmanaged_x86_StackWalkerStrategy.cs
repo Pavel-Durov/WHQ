@@ -14,6 +14,11 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
+        public Unmanaged_x86_StackWalkerStrategy() : base(CONTEXT_SIZE_X86)
+        {
+
+        }
+
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;

@@ -21,101 +21,101 @@ namespace WinNativeApi.WinNT
         //      context record in the future.
         //
         [FieldOffset(0)]
-        DWORD64 P1Home;
+        public DWORD64 P1Home;
         [FieldOffset(1)]
-        DWORD64 P2Home;
+        public DWORD64 P2Home;
         [FieldOffset(3)]
-        DWORD64 P3Home;
-        [FieldOffset(4)]
-        DWORD64 P4Home;
+        public DWORD64 P3Home;
+            [FieldOffset(4)]
+        public DWORD64 P4Home;
         [FieldOffset(5)]
-        DWORD64 P5Home;
+        public DWORD64 P5Home;
         [FieldOffset(6)]
-        DWORD64 P6Home;
+        public DWORD64 P6Home;
 
         //
         // Control flags.
         //
         [FieldOffset(7)]
-        DWORD ContextFlags;
+        public DWORD ContextFlags;
         [FieldOffset(8)]
-        DWORD MxCsr;
+        public DWORD MxCsr;
 
         //
         // Segment Registers and processor flags.
         //
         [FieldOffset(9)]
-        WORD SegCs;
+        public WORD SegCs;
         [FieldOffset(10)]
-        WORD SegDs;
+        public WORD SegDs;
         [FieldOffset(11)]
-        WORD SegEs;
+        public WORD SegEs;
         [FieldOffset(12)]
-        WORD SegFs;
+        public WORD SegFs;
         [FieldOffset(13)]
-        WORD SegGs;
+        public WORD SegGs;
         [FieldOffset(14)]
-        WORD SegSs;
+        public WORD SegSs;
         [FieldOffset(15)]
-        DWORD EFlags;
+        public DWORD EFlags;
 
         //
         // Debug registers
         //
         [FieldOffset(16)]
-        DWORD64 Dr0;
+        public DWORD64 Dr0;
         [FieldOffset(17)]
-        DWORD64 Dr1;
+        public DWORD64 Dr1;
         [FieldOffset(18)]
-        DWORD64 Dr2;
+        public DWORD64 Dr2;
         [FieldOffset(19)]
-        DWORD64 Dr3;
+        public DWORD64 Dr3;
         [FieldOffset(20)]
-        DWORD64 Dr6;
+        public DWORD64 Dr6;
         [FieldOffset(21)]
-        DWORD64 Dr7;
+        public DWORD64 Dr7;
 
         //
         // Integer registers.
         //
         [FieldOffset(22)]
-        DWORD64 Rax;
+        public DWORD64 Rax;
         [FieldOffset(23)]
-        DWORD64 Rcx;
+        public DWORD64 Rcx;
         [FieldOffset(24)]
-        DWORD64 Rdx;
+        public DWORD64 Rdx;
         [FieldOffset(25)]
-        DWORD64 Rbx;
+        public DWORD64 Rbx;
         [FieldOffset(26)]
-        DWORD64 Rsp;
+        public DWORD64 Rsp;
         [FieldOffset(27)]
-        DWORD64 Rbp;
+        public DWORD64 Rbp;
         [FieldOffset(28)]
-        DWORD64 Rsi;
+        public DWORD64 Rsi;
         [FieldOffset(29)]
-        DWORD64 Rdi;
+        public DWORD64 Rdi;
         [FieldOffset(30)]
-        DWORD64 R8;
+        public DWORD64 R8;
         [FieldOffset(31)]
-        DWORD64 R9;
+        public DWORD64 R9;
         [FieldOffset(32)]
-        DWORD64 R10;
+        public DWORD64 R10;
         [FieldOffset(33)]
-        DWORD64 R11;
+        public DWORD64 R11;
         [FieldOffset(34)]
-        DWORD64 R12;
+        public DWORD64 R12;
         [FieldOffset(35)]
-        DWORD64 R13;
+        public DWORD64 R13;
         [FieldOffset(36)]
-        DWORD64 R14;
+        public DWORD64 R14;
         [FieldOffset(37)]
-        DWORD64 R15;
+        public DWORD64 R15;
 
         //
         // Program counter.
         //
         [FieldOffset(38)]
-        DWORD64 Rip;
+        public DWORD64 Rip;
 
         //
         // Floating point state.
@@ -130,21 +130,21 @@ namespace WinNativeApi.WinNT
         [FieldOffset(40)]
         M128A* VectorRegister;
         [FieldOffset(41)]
-        DWORD64 VectorControl;
+        public DWORD64 VectorControl;
 
         //
         // Special debug control registers.
         //
         [FieldOffset(42)]
-        DWORD64 DebugControl;
+        public DWORD64 DebugControl;
         [FieldOffset(43)]
-        DWORD64 LastBranchToRip;
+        public DWORD64 LastBranchToRip;
         [FieldOffset(44)]
-        DWORD64 LastBranchFromRip;
+        public DWORD64 LastBranchFromRip;
         [FieldOffset(45)]
-        DWORD64 LastExceptionToRip;
+        public DWORD64 LastExceptionToRip;
         [FieldOffset(46)]
-        DWORD64 LastExceptionFromRip;
+        public DWORD64 LastExceptionFromRip;
     }
 
     struct XMM_SAVE_AREA32

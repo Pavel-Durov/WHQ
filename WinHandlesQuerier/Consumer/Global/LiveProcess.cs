@@ -19,8 +19,7 @@ namespace Consumer.Global
 
             using (DataTarget target = DataTarget.AttachToProcess((int)pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
             {
-                if (Environment.Is64BitProcess &&
-                    target.Architecture != Architecture.Amd64 || target.Architecture != Architecture.Unknown)
+                if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
                 {
                     throw new InvalidOperationException($"Unexpected architecture. Process runs as x64");
                 }

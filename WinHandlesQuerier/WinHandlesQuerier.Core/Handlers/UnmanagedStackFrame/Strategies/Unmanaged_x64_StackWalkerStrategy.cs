@@ -13,13 +13,16 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     class Unmanaged_x64_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
-        public Unmanaged_x64_StackWalkerStrategy(IDebugAdvanced debugClient, IDataReader dataReader, ClrRuntime runtime)
+        public Unmanaged_x64_StackWalkerStrategy(IDebugAdvanced debugClient, IDataReader dataReader, ClrRuntime runtime) 
+            : base (CONTEXT_SIZE_AMD64)
         {
-            //TODO: Complte 64 bit logic
             _debugClient = debugClient;
             _dataReader = dataReader;
             _runtime = runtime;
+
+            
         }
+        
         IDataReader _dataReader;
         IDebugAdvanced _debugClient;
         ClrRuntime _runtime;
@@ -90,18 +93,21 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         public unsafe bool GetThreadContext(uint threadID, ref CONTEXT_AMD64 section)
         {
             bool result = false;
-            uint contextSize = GetThreadContextSize();
-            byte[] contextBytes = new byte[contextSize];
+            
+            byte[] contextBytes = new byte[ContextSize];
 
+            var handle = Kernel32.Functions.OpenThread(ThreadAccess.GET_CONTEXT, false, threadID);
             IntPtr unmanagedPointer = Marshal.AllocHGlobal(contextBytes.Length);
 
-            var h_result = _debugClient.GetThreadContext(unmanagedPointer, contextSize);
+            
+            var h_result = _debugClient.GetThreadContext(unmanagedPointer, ContextSize);
             if (h_result == Kernel32.Const.ERROR_SUCCESS)
             {
                 var gch = GCHandle.Alloc(contextBytes, GCHandleType.Pinned);
                 try
                 {
                     section = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
+                    
                     result = true;
                 }
                 finally
@@ -110,23 +116,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                     Marshal.FreeHGlobal(unmanagedPointer);
                 }
             }
-            return result;
-        }
-
-        private uint GetThreadContextSize()
-        {
-            uint result = 0;
-            var plat = _dataReader.GetArchitecture();
-
-            if (plat == Architecture.Amd64)
-                result = 0x4d0;
-            else if (plat == Architecture.X86)
-                result = 0x2d0;
-            else if (plat == Architecture.Arm)
-                result = 0x1a0;
-            else
-                throw new InvalidOperationException("Unexpected architecture.");
-
             return result;
         }
 
