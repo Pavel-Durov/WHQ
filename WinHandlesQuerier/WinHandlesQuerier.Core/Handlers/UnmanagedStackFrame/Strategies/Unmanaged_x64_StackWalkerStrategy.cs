@@ -29,7 +29,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             List<byte[]> result = null;
 
             //TODO: Complte 64 bit logic
-            CONTEXT threadContext = new CONTEXT();
+            var threadContext = new CONTEXT_AMD64();
 
             if (GetThreadContext(frame.OsThreadId, ref threadContext))
             {
@@ -51,7 +51,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         {
 
             //TODO: Complte 64 bit logic
-            CONTEXT threadContext = new CONTEXT();
+            var threadContext = new CONTEXT_AMD64();
 
             if (GetThreadContext(frame.OsThreadId, ref threadContext))
             {
@@ -62,7 +62,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             //TODO: Complte 64 bit logic
-            CONTEXT threadContext = new CONTEXT();
+            var threadContext = new CONTEXT_AMD64();
 
             if (GetThreadContext(frame.OsThreadId, ref threadContext))
             {
@@ -75,7 +75,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             UnifiedBlockingObject result = null;
 
             //TODO: Complte 64 bit logic
-            CONTEXT threadContext = new CONTEXT();
+            CONTEXT_AMD64 threadContext = new CONTEXT_AMD64();
 
             if (GetThreadContext(frame.OsThreadId, ref threadContext))
             {
@@ -87,7 +87,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         #region Helpers
 
-        public unsafe bool GetThreadContext(uint threadID, ref CONTEXT section)
+        public unsafe bool GetThreadContext(uint threadID, ref CONTEXT_AMD64 section)
         {
             bool result = false;
             uint contextSize = GetThreadContextSize();
@@ -101,7 +101,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                 var gch = GCHandle.Alloc(contextBytes, GCHandleType.Pinned);
                 try
                 {
-                    section = Marshal.PtrToStructure<CONTEXT>(gch.AddrOfPinnedObject());
+                    section = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
                     result = true;
                 }
                 finally
