@@ -12,9 +12,9 @@ namespace DumpTest
     public class Program
     {
         static void Main(string[] args)
-        {
+        {   
             Console.WriteLine("Test started");
-
+            Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}{Environment.NewLine}");
             DealWithPID();
 
             var deadLock = Task.Run(() => { DeadLock.Run(); });

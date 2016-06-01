@@ -179,7 +179,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             return (from frame in thread.StackTrace
                     let sourceLocation = SymbolCache.GetFileAndLineNumberSafe(frame)
-                    select new UnifiedStackFrame(frame, sourceLocation, (IntPtr)thread.ManagedThreadId)
+                    select new UnifiedStackFrame(frame, sourceLocation, (uint) thread.ManagedThreadId)
                     ).ToList();
         }
 
@@ -191,7 +191,7 @@ namespace WinHandlesQuerier.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, (IntPtr)info.OSThreadId, PID);
+            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info.OSThreadId, PID);
             return stackTrace;
         }
 

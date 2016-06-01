@@ -19,7 +19,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
-            ClrRuntime runtime, IDebugClient debugClient, IntPtr osThreadId, uint pid = Constants.INVALID_PID)
+            ClrRuntime runtime, IDebugClient debugClient, uint osThreadId, uint pid = Constants.INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)

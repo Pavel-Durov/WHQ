@@ -11,6 +11,7 @@ namespace Consumer
     {
         static void Main(string[] args)
         {
+            Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
 
 #if DEBUG && LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");

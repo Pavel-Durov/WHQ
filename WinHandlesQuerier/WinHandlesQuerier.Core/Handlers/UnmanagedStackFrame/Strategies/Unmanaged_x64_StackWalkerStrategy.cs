@@ -5,8 +5,8 @@ using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
 using Microsoft.Diagnostics.Runtime.Interop;
 using WinNativeApi.WinNT;
-using System.Threading;
 using System.Runtime.InteropServices;
+using Kernel32;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
@@ -20,12 +20,17 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         IDebugAdvanced _debugClient;
 
-        public override List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
+        public override List<byte[]> GetNativeParams(UnifiedStackFrame frame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = null;
 
             //TODO: Complte 64 bit logic
+            CONTEXT threadContext = new CONTEXT();
 
+            if (GetThreadContext(frame.OsThreadId, ref threadContext))
+            {
+                //TODO: something with threadContext
+            }
             return result;
         }
 
@@ -41,42 +46,23 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             //TODO: Complte 64 bit logic
-            Test(frame);
-        }
+            CONTEXT threadContext = new CONTEXT();
 
-        private void Test(UnifiedStackFrame frame)
-        {
-
-            int contextSize;
-
-            contextSize = 0x2d0;
-            // var plat = _debugClient.GetArchitecture();
-            //if (plat == Architecture.Amd64)
-            //    contextSize = 0x4d0;
-            //else if (plat == Architecture.X86)
-            //    contextSize = 0x2d0;
-            //else if (plat == Architecture.Arm)
-            //    contextSize = 0x1a0;
-            //else
-            //    throw new InvalidOperationException("Unexpected architecture.");
-
-            CONTEXT cont = new CONTEXT();
-            bool res = Kernel32.Functions.GetThreadContext(frame.OsThreadId, ref cont);
-            if (!res)
+            if (GetThreadContext(frame.OsThreadId, ref threadContext))
             {
-                var error = Marshal.GetLastWin32Error();
-
+                //TODO: something with threadContext
             }
-
-            byte[] context = new byte[contextSize];
-
-            var result = _debugClient.GetThreadContext(frame.OsThreadId, (uint)contextSize);
         }
 
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            Test(frame);
             //TODO: Complte 64 bit logic
+            CONTEXT threadContext = new CONTEXT();
+
+            if (GetThreadContext(frame.OsThreadId, ref threadContext))
+            {
+                //TODO: something with threadContext
+            }
         }
 
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
@@ -84,8 +70,46 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             UnifiedBlockingObject result = null;
 
             //TODO: Complte 64 bit logic
-            Test(frame);
+            CONTEXT threadContext = new CONTEXT();
+
+            if (GetThreadContext(frame.OsThreadId, ref threadContext))
+            {
+                //TODO: something with threadContext
+            }
             return result;
         }
+
+        #region Helpers
+
+        private bool GetThreadContext(uint osThreadId, ref CONTEXT refResult)
+        {
+            bool result = false;
+
+            refResult = new CONTEXT();
+            IntPtr handle = IntPtr.Zero;
+            try
+            {
+                handle = Kernel32.Functions.OpenThread(ThreadAccess.GET_CONTEXT, false, osThreadId);
+                bool res = Kernel32.Functions.GetThreadContext(handle, ref refResult);
+
+                if (res)
+                {
+                    var error = Marshal.GetLastWin32Error();
+                    result = error == Kernel32.Const.ERROR_SUCCESS;
+                    //else if (error == Kernel32.Const.ERROR_INVALID_HANDLE)
+                }
+            }
+            finally
+            {
+                if (handle != IntPtr.Zero)
+                {
+                    Kernel32.Functions.CloseHandle(handle);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }

@@ -12,12 +12,20 @@ namespace Kernel32
         public const UInt32 WAIT_ABANDONED = 0x00000080;
         public const UInt32 WAIT_OBJECT_0 = 0x00000000;
         public const UInt32 WAIT_TIMEOUT = 0x00000102;
+
+
+        #region System Error Codes
+
+        public const uint ERROR_ACCESS_DENIED = 0x5;//Access is denied.
+        public const uint ERROR_INVALID_HANDLE = 0x6; //The handle is invalid.
+        public const uint ERROR_SUCCESS = 0x0; //The operation completed successfully.
+        #endregion
     }
 
     public class Functions
     {
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr OpenThread(uint dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+        public static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT lpContext);
@@ -140,7 +148,21 @@ namespace Kernel32
 
     }
 
+    #region Structs
 
+    [Flags]
+    public enum ThreadAccess : int
+    {
+        TERMINATE = (0x0001),
+        SUSPEND_RESUME = (0x0002),
+        GET_CONTEXT = (0x0008),
+        SET_CONTEXT = (0x0010),
+        SET_INFORMATION = (0x0020),
+        QUERY_INFORMATION = (0x0040),
+        SET_THREAD_TOKEN = (0x0080),
+        IMPERSONATE = (0x0100),
+        DIRECT_IMPERSONATION = (0x0200)
+    }
 
     public enum FileMapAccessType : uint
     {
@@ -323,4 +345,6 @@ namespace Kernel32
         public IntPtr sacl;
         public IntPtr dacl;
     }
+
+    #endregion
 }

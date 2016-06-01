@@ -106,7 +106,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
-        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, IntPtr threadPtr, uint pID)
+        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, uint threadPtr, uint pID)
         {
             return _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, _debugClient, threadPtr, pID);
         }
