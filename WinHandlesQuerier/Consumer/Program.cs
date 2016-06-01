@@ -1,9 +1,9 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 using System;
 using Consumer.CmdParams;
 using Microsoft.Win32;
-
+using Assignments.Core.Infra;
 
 namespace Consumer
 {
@@ -26,7 +26,7 @@ namespace Consumer
                 {
                     Global.DumpFile.DoAnaytics(options.DumpFile);
                 }
-                else if(options.LivePid != Options.INVALID_PID)
+                else if(options.LivePid != Constants.INVALID_PID)
                 {
                     Global.LiveProcess.Run((uint)options.LivePid);
                 }

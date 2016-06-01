@@ -135,15 +135,24 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
                     var info = SafeMemoryMappedViewStreamHandler.ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>(handle.ObjectInfoRva, streamPointer, _safeMemoryMappedViewHandle);
                     if (info.NextInfoRva != 0)
                     {
-                        uint address = (uint)_baseOfView + handle.ObjectInfoRva;
-                        MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>(address);
-
-                        do
+                        try
                         {
-                            pObjectInfo = ObjectInformationHandler.DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
-                            if (pObjectInfo.NextInfoRva == 0) break;
+                            uint address = (uint)_baseOfView + handle.ObjectInfoRva;
+                            MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo = SafeMemoryMappedViewStreamHandler.ReadStruct<MINIDUMP_HANDLE_OBJECT_INFORMATION>(address);
+
+                            do
+                            {
+                                pObjectInfo = ObjectInformationHandler.DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
+                                if (pObjectInfo.NextInfoRva == 0) break;
+                            }
+                            while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
                         }
-                        while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
+                        catch (OverflowException ex)
+                        {
+
+                         
+                        }
+                        
                     }
                 }
             }

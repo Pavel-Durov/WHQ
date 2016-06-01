@@ -15,23 +15,25 @@ namespace WinHandlesQuerier.Core.Handlers
         /// <summary>
         /// Used for live process analysis
         /// </summary>
-        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, uint pid)
+        public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, uint pid) : this(dataTarget, runtime)
         {
             PID = pid;
-            _debugClient = debugClient;
-            _runtime = runtime;
-            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(debugClient);
+            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
         }
 
         /// <summary>
         /// Used for dump file analysis
         /// </summary>
-        public ProcessAnalyzer(IDebugClient debugClient, ClrRuntime runtime, string pathToDumpFile)
+        public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, string pathToDumpFile) : this(dataTarget, runtime)
         {
-            _debugClient = debugClient;
-            _runtime = runtime;
+            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
+        }
 
-            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, debugClient);
+        private ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime)
+        {
+            _debugClient = dataTarget.DebuggerInterface;
+            _dataReader = dataTarget.DataReader;
+            _runtime = runtime;
         }
 
         #region Members
@@ -40,7 +42,11 @@ namespace WinHandlesQuerier.Core.Handlers
         ProcessQuerierStrategy _blockingObjectsFetchingStrategy;
 
         IDebugClient _debugClient;
+        IDataReader _dataReader;
         private ClrRuntime _runtime;
+        private DataTarget dataTarget;
+        private ClrRuntime runtime;
+
         public uint PID { get; private set; }
         #endregion
 
@@ -179,7 +185,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             return (from frame in thread.StackTrace
                     let sourceLocation = SymbolCache.GetFileAndLineNumberSafe(frame)
-                    select new UnifiedStackFrame(frame, sourceLocation, (uint) thread.ManagedThreadId)
+                    select new UnifiedStackFrame(frame, sourceLocation, (uint)thread.ManagedThreadId)
                     ).ToList();
         }
 

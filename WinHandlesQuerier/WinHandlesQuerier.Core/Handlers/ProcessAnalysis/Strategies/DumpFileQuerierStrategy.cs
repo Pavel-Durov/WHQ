@@ -11,7 +11,8 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         ClrRuntime _runtime;
 
-        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient) : base(debugClient)
+        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader) 
+            : base(debugClient, dataReader, runtime)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
             _runtime = runtime;
@@ -23,7 +24,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         {
             var miniDumpHandles = _miniDump.GetHandles();
 
-            List<UnifiedBlockingObject> result = null;
+            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
 
             result.AddRange(base.GetUnmanagedBlockingObjects(unmanagedStack));
 

@@ -10,7 +10,7 @@ namespace Consumer.CmdParams
         [Option('d', "dump", HelpText = "Input dump file absolute path.")]
         public string DumpFile { get; set; }
 
-        [Option('p', "live", DefaultValue = Constants.INVALID_PID, HelpText = "Enter Live process pid.")]
+        [Option('p', "live", HelpText = "Enter Live process pid.")]
         public int LivePid { get; set; }
 
         [ParserState]

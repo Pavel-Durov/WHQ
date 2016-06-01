@@ -27,6 +27,7 @@ namespace Consumer.Global
             {
                 Console.WriteLine("Attached To Process Successfully");
                 DoAnaytics(target, pid);
+                
             }
 
             Console.ReadKey();
@@ -38,7 +39,7 @@ namespace Consumer.Global
             var runtime = target.ClrVersions[0].CreateRuntime();
 
             //Live process handler
-            ProcessAnalyzer handler = new ProcessAnalyzer(target.DebuggerInterface, runtime, pid);
+            ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, pid);
 
             var result = handler.Handle();
             PrintHandler.Print(result, true);

@@ -12,22 +12,26 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public abstract class ProcessQuerierStrategy
     {
-        public ProcessQuerierStrategy(IDebugClient debugClient)
+        public ProcessQuerierStrategy(IDebugClient debugClient, IDataReader dataReader, ClrRuntime runtime)
         {
+            _runtime = runtime;
+            _dataReader = dataReader;
+            _debugClient = debugClient;
+
             if (Environment.Is64BitProcess)
             {
                 //TODO: 64bit Logic Implement 
-                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient);
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient, _dataReader, runtime);
             }
             else
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
             }
-
-            _debugClient = debugClient;
         }
 
+        IDataReader _dataReader;
         IDebugClient _debugClient;
+        ClrRuntime _runtime;
         UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
 
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)

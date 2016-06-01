@@ -212,4 +212,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 Assignments/Assignments.VC.opendb
 
-WinHandlesQuerier/Logs/*
+*.txt

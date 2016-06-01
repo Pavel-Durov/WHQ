@@ -9,7 +9,8 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public class LiveProcessQuerierStrategy : ProcessQuerierStrategy
     {
-        public LiveProcessQuerierStrategy(IDebugClient debugClient) : base(debugClient)
+        public LiveProcessQuerierStrategy(IDebugClient debugClient, IDataReader dataReader, ClrRuntime runtime) 
+            : base(debugClient, dataReader, runtime)
         {
             _wctApi = new WctHandler();
         }

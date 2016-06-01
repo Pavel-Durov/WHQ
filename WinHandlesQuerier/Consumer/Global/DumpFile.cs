@@ -21,7 +21,7 @@ namespace Consumer.Global
                 ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
                 //Dump process handler
-                ProcessAnalyzer handler = new ProcessAnalyzer(target.DebuggerInterface, runtime, dumpFile);
+                ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, dumpFile);
 
                 var result = handler.Handle();
 
