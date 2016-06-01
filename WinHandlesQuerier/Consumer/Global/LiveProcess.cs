@@ -16,12 +16,18 @@ namespace Consumer.Global
 
                 pid = uint.Parse(Console.ReadLine());
             }
-          
+
             using (DataTarget target = DataTarget.AttachToProcess((int)pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
             {
+                if (Environment.Is64BitProcess &&
+                    target.Architecture != Architecture.Amd64 || target.Architecture != Architecture.Unknown)
+                {
+                    throw new InvalidOperationException($"Unexpected architecture. Process runs as x64");
+                }
+
                 Console.WriteLine("Attached To Process Successfully");
                 DoAnaytics(target, pid);
-                
+
             }
 
             Console.ReadKey();

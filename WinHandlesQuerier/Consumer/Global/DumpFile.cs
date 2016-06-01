@@ -16,17 +16,22 @@ namespace Consumer.Global
 
         internal static void DoAnaytics(string dumpFile)
         {
-            using (DataTarget target = DataTarget.LoadCrashDump(dumpFile)) 
+            using (DataTarget target = DataTarget.LoadCrashDump(dumpFile))
             {
+                if (Environment.Is64BitProcess &&
+                    target.Architecture != Architecture.Amd64 || target.Architecture != Architecture.Unknown)
+                {
+                    throw new InvalidOperationException($"Unexpected architecture. Process runs as x64");
+                }
+
                 ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
-                //Dump process handler
                 ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, dumpFile);
 
                 var result = handler.Handle();
 
                 PrintHandler.Print(result, true);
             }
-        }    
+        }
     }
 }

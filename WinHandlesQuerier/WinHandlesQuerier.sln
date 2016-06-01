@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpTest", "DumpTest\DumpTest.csproj", "{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}"
 EndProject
@@ -31,8 +31,8 @@ Global
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x64.ActiveCfg = Debug|x64
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x64.Build.0 = Debug|x64
-		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x86.Build.0 = Debug|Any CPU
+		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x86.ActiveCfg = Debug|x64
+		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Debug|x86.Build.0 = Debug|x64
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A84B20BE-D34E-46D0-9ECC-03DCA643DE64}.Release|x64.ActiveCfg = Release|Any CPU
@@ -43,8 +43,8 @@ Global
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x64.ActiveCfg = Debug|x64
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x64.Build.0 = Debug|x64
-		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x86.Build.0 = Debug|Any CPU
+		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x86.ActiveCfg = Debug|x86
+		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Debug|x86.Build.0 = Debug|x86
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CBD5EF88-8D63-4440-8D9F-9F21D2535609}.Release|x64.ActiveCfg = Release|Any CPU

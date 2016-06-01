@@ -1,4 +1,4 @@
-﻿//#define LIVE_PID_DEBUG
+﻿#define LIVE_PID_DEBUG
 
 using System;
 using Consumer.CmdParams;
@@ -13,7 +13,7 @@ namespace Consumer
         {
             Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
 
-#if DEBUG && LIVE_PID_DEBUG
+#if LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
             Global.LiveProcess.Run((uint)pid);
 #else
