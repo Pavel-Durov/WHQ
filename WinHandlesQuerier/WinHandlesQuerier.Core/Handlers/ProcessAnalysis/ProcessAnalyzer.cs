@@ -11,6 +11,7 @@ using Kernel32;
 using System.Runtime.InteropServices;
 using WinNativeApi.WinNT;
 using WinNativeApi;
+using Assignments.Core.Handlers;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -64,7 +65,8 @@ namespace WinHandlesQuerier.Core.Handlers
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 ThreadInfo specific_info = GetThreadInfo(threadIdx);
-                GetThreadContext(specific_info);
+
+                ThreadContextHandler.GetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
 
                 if (specific_info.IsManagedThread)
                 {
@@ -80,66 +82,6 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
         #region Thread Method
-
-        
-        public unsafe bool GetThreadContext(ThreadInfo threadInfo)
-        {
-            bool result = false;
-
-            byte[] contextBytes = new byte[GetThreadContextSize()];
-
-            if (SetCurrentThreadId(threadInfo.EngineThreadId) == DbgEng.S_OK)
-            {
-                var gch = GCHandle.Alloc(contextBytes, GCHandleType.Pinned);
-
-                var h_result = ((IDebugAdvanced)_debugClient).GetThreadContext(gch.AddrOfPinnedObject(), (uint)contextBytes.Length);
-
-                if (h_result == DbgEng.S_OK)
-                {
-                    try
-                    {
-                        threadInfo.ContextStruct = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
-                        result = true;
-                    }
-                    finally
-                    {
-                        gch.Free();
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private uint SetCurrentThreadId(uint engineThreadId)
-        {
-            IDebugSystemObjects sytemObject = ((IDebugSystemObjects)_debugClient);
-            uint set_h_result = (uint)sytemObject.SetCurrentThreadId(engineThreadId);
-
-            if (set_h_result == DbgEng.E_NOINTERFACE)
-            {
-                throw new InvalidOperationException("No thread with the specified ID was found.");
-            }
-            return set_h_result;
-        }
-
-
-        private uint GetThreadContextSize()
-        {
-            uint result = 0;
-            var plat = _dataReader.GetArchitecture();
-
-            if (plat == Architecture.Amd64)
-                result = 0x4d0;
-            else if (plat == Architecture.X86)
-                result = 0x2d0;
-            else if (plat == Architecture.Arm)
-                result = 0x1a0;
-            else
-                throw new InvalidOperationException("Unexpected architecture.");
-
-            return result;
-        }
 
         private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
         {
@@ -160,7 +102,7 @@ namespace WinHandlesQuerier.Core.Handlers
             ClrThread clr_thread = _runtime.Threads.Where(x => x.OSThreadId == specific_info.OSThreadId).FirstOrDefault();
             if (clr_thread != null)
             {
-                var managedStack = GetManagedStackTrace(clr_thread);
+                var managedStack = GetManagedStackTrace(clr_thread, specific_info);
                 List<UnifiedStackFrame> unmanagedStack = null;
 
                 try
@@ -201,56 +143,56 @@ namespace WinHandlesQuerier.Core.Handlers
 
         #region StackTrace
 
-        public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)
-        {
-            ThreadInfo threadInfo = GetThreadInfo(threadIndex);
-            List<UnifiedStackFrame> unifiedStackTrace = new List<UnifiedStackFrame>();
-            List<UnifiedStackFrame> nativeStackTrace = GetNativeStackTrace(threadInfo);
-            if (threadInfo.IsManagedThread)
-            {
-                List<UnifiedStackFrame> managedStackTrace = GetManagedStackTrace(threadInfo.ManagedThread);
-                int managedFrame = 0;
-                for (int nativeFrame = 0; nativeFrame < nativeStackTrace.Count; ++nativeFrame)
-                {
-                    bool found = false;
-                    for (int temp = managedFrame; temp < managedStackTrace.Count; ++temp)
-                    {
-                        if (nativeStackTrace[nativeFrame].InstructionPointer == managedStackTrace[temp].InstructionPointer)
-                        {
-                            managedStackTrace[temp].LinkedStackFrame = nativeStackTrace[nativeFrame];
-                            unifiedStackTrace.Add(managedStackTrace[temp]);
-                            managedFrame = temp + 1;
-                            found = true;
-                            break;
-                        }
-                        else if (managedFrame > 0)
-                        {
-                            // We have already seen at least one managed frame, and we're about
-                            // to skip a managed frame because we didn't find a matching native
-                            // frame. In this case, add the managed frame into the stack anyway.
-                            unifiedStackTrace.Add(managedStackTrace[temp]);
-                            managedFrame = temp + 1;
-                            found = true;
-                            break;
-                        }
-                    }
-                    // We didn't find a matching managed frame, so add the native frame directly.
-                    if (!found)
-                        unifiedStackTrace.Add(nativeStackTrace[nativeFrame]);
-                }
-            }
-            else
-            {
-                return nativeStackTrace;
-            }
-            return unifiedStackTrace;
-        }
+        //public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)
+        //{
+        //    ThreadInfo threadInfo = GetThreadInfo(threadIndex);
+        //    List<UnifiedStackFrame> unifiedStackTrace = new List<UnifiedStackFrame>();
+        //    List<UnifiedStackFrame> nativeStackTrace = GetNativeStackTrace(threadInfo);
+        //    if (threadInfo.IsManagedThread)
+        //    {
+        //        List<UnifiedStackFrame> managedStackTrace = GetManagedStackTrace(threadInfo.ManagedThread);
+        //        int managedFrame = 0;
+        //        for (int nativeFrame = 0; nativeFrame < nativeStackTrace.Count; ++nativeFrame)
+        //        {
+        //            bool found = false;
+        //            for (int temp = managedFrame; temp < managedStackTrace.Count; ++temp)
+        //            {
+        //                if (nativeStackTrace[nativeFrame].InstructionPointer == managedStackTrace[temp].InstructionPointer)
+        //                {
+        //                    managedStackTrace[temp].LinkedStackFrame = nativeStackTrace[nativeFrame];
+        //                    unifiedStackTrace.Add(managedStackTrace[temp]);
+        //                    managedFrame = temp + 1;
+        //                    found = true;
+        //                    break;
+        //                }
+        //                else if (managedFrame > 0)
+        //                {
+        //                    // We have already seen at least one managed frame, and we're about
+        //                    // to skip a managed frame because we didn't find a matching native
+        //                    // frame. In this case, add the managed frame into the stack anyway.
+        //                    unifiedStackTrace.Add(managedStackTrace[temp]);
+        //                    managedFrame = temp + 1;
+        //                    found = true;
+        //                    break;
+        //                }
+        //            }
+        //            // We didn't find a matching managed frame, so add the native frame directly.
+        //            if (!found)
+        //                unifiedStackTrace.Add(nativeStackTrace[nativeFrame]);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return nativeStackTrace;
+        //    }
+        //    return unifiedStackTrace;
+        //}
 
-        private List<UnifiedStackFrame> GetManagedStackTrace(ClrThread thread)
+        private List<UnifiedStackFrame> GetManagedStackTrace(ClrThread thread, ThreadInfo info)
         {
             return (from frame in thread.StackTrace
                     let sourceLocation = SymbolCache.GetFileAndLineNumberSafe(frame)
-                    select new UnifiedStackFrame(frame, sourceLocation, (uint)thread.ManagedThreadId)
+                    select _blockingObjectsFetchingStrategy.ConvertToUnified(frame, sourceLocation, info)
                     ).ToList();
         }
 
@@ -262,7 +204,7 @@ namespace WinHandlesQuerier.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info.OSThreadId, PID);
+            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info, PID);
             return stackTrace;
         }
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Handlers;
 using WinHandlesQuerier.Core.Model.Unified;
+using WinHandlesQuerier.Core.msos;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 {
@@ -29,12 +30,13 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         public uint ContextSize { get; private set; }
 
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
-            ClrRuntime runtime, IDebugClient debugClient, uint osThreadId, uint pid = Constants.INVALID_PID)
+            ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
-                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient, osThreadId);
+                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
+                frame.ThreadContext = info.ContextStruct;
                 Inpsect(frame, runtime, pid);
                 stackTrace.Add(frame);
             }

@@ -5,11 +5,14 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using WinNativeApi.WinNT;
 
 namespace WinHandlesQuerier.Core.Model.Unified
 {
     public class UnifiedStackFrame
     {
+        public CONTEXT_AMD64 ThreadContext { get; set; }
+
         public UnifiedStackFrameType Type { get; set; }
         public UnifiedBlockingObject BlockObject { get; set; }
 
@@ -45,11 +48,9 @@ namespace WinHandlesQuerier.Core.Model.Unified
         public UnifiedStackFrame LinkedStackFrame { get; set; } //Used for linking managed frame to native frame
         public List<byte[]> NativeParams { get; set; }
         public List<UnifiedHandle> Handles { get; set; }
-        public uint OsThreadId { get; set; }
 
-        public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols, uint osThreadId)
+        public UnifiedStackFrame(DEBUG_STACK_FRAME nativeFrame, IDebugSymbols2 debugSymbols)
         {
-            OsThreadId = osThreadId;
             FrameOffset = nativeFrame.FrameOffset;
 
             Type = UnifiedStackFrameType.Native;
@@ -93,9 +94,8 @@ namespace WinHandlesQuerier.Core.Model.Unified
             }
         }
 
-        public UnifiedStackFrame(ClrStackFrame frame, SourceLocation sourceLocation, uint osThreadId)
+        public UnifiedStackFrame(ClrStackFrame frame, SourceLocation sourceLocation)
         {
-            OsThreadId = osThreadId;
             if (frame.Kind == ClrStackFrameType.ManagedMethod)
                 Type = UnifiedStackFrameType.Managed;
             if (frame.Kind == ClrStackFrameType.Runtime)
