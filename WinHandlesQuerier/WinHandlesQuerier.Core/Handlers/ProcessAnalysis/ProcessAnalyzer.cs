@@ -7,6 +7,10 @@ using WinHandlesQuerier.Core.Model.Unified;
 using System;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 using WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies;
+using Kernel32;
+using System.Runtime.InteropServices;
+using WinNativeApi.WinNT;
+using WinNativeApi;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -60,6 +64,7 @@ namespace WinHandlesQuerier.Core.Handlers
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
                 ThreadInfo specific_info = GetThreadInfo(threadIdx);
+                GetThreadContext(specific_info);
 
                 if (specific_info.IsManagedThread)
                 {
@@ -75,6 +80,66 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
         #region Thread Method
+
+        
+        public unsafe bool GetThreadContext(ThreadInfo threadInfo)
+        {
+            bool result = false;
+
+            byte[] contextBytes = new byte[GetThreadContextSize()];
+
+            if (SetCurrentThreadId(threadInfo.EngineThreadId) == DbgEng.S_OK)
+            {
+                var gch = GCHandle.Alloc(contextBytes, GCHandleType.Pinned);
+
+                var h_result = ((IDebugAdvanced)_debugClient).GetThreadContext(gch.AddrOfPinnedObject(), (uint)contextBytes.Length);
+
+                if (h_result == DbgEng.S_OK)
+                {
+                    try
+                    {
+                        threadInfo.ContextStruct = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
+                        result = true;
+                    }
+                    finally
+                    {
+                        gch.Free();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private uint SetCurrentThreadId(uint engineThreadId)
+        {
+            IDebugSystemObjects sytemObject = ((IDebugSystemObjects)_debugClient);
+            uint set_h_result = (uint)sytemObject.SetCurrentThreadId(engineThreadId);
+
+            if (set_h_result == DbgEng.E_NOINTERFACE)
+            {
+                throw new InvalidOperationException("No thread with the specified ID was found.");
+            }
+            return set_h_result;
+        }
+
+
+        private uint GetThreadContextSize()
+        {
+            uint result = 0;
+            var plat = _dataReader.GetArchitecture();
+
+            if (plat == Architecture.Amd64)
+                result = 0x4d0;
+            else if (plat == Architecture.X86)
+                result = 0x2d0;
+            else if (plat == Architecture.Arm)
+                result = 0x1a0;
+            else
+                throw new InvalidOperationException("Unexpected architecture.");
+
+            return result;
+        }
 
         private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
         {

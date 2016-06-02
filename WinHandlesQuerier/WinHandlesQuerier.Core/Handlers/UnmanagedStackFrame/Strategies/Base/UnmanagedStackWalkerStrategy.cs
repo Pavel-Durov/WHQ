@@ -108,23 +108,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return BitConverter.ToUInt32(bits, 0);
         }
 
-        //private uint GetThreadContextSize()
-        //{
-        //    uint result = 0;
-        //    var plat = _dataReader.GetArchitecture();
-
-        //    if (plat == Architecture.Amd64)
-        //        result = 0x4d0;
-        //    else if (plat == Architecture.X86)
-        //        result = 0x2d0;
-        //    else if (plat == Architecture.Arm)
-        //        result = 0x1a0;
-        //    else
-        //        throw new InvalidOperationException("Unexpected architecture.");
-
-        //    return result;
-        //}
-
         #region Abstract Methods
 
         protected abstract void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);

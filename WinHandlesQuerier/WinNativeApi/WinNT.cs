@@ -11,7 +11,7 @@ namespace WinNativeApi.WinNT
     using LONGLONG = System.Int64;
 
     //https://social.msdn.microsoft.com/Forums/vstudio/en-US/f5af96bc-88ad-4b56-98a3-c6dc5114cb8a/getthreadcontext?forum=vcgeneral
-    [StructLayout(LayoutKind.Explicit, Pack = 16)]
+   // [StructLayout(LayoutKind.Explicit, Pack = 16)]
     public unsafe struct CONTEXT_AMD64
     {
         //
@@ -20,130 +20,84 @@ namespace WinNativeApi.WinNT
         // N.B. These fields are for convience - they could be used to extend the
         //      context record in the future.
         //
-        [FieldOffset(0)]
+        
         public DWORD64 P1Home;
-        [FieldOffset(1)]
         public DWORD64 P2Home;
-        [FieldOffset(3)]
         public DWORD64 P3Home;
-            [FieldOffset(4)]
         public DWORD64 P4Home;
-        [FieldOffset(5)]
         public DWORD64 P5Home;
-        [FieldOffset(6)]
         public DWORD64 P6Home;
 
         //
         // Control flags.
         //
-        [FieldOffset(7)]
         public DWORD ContextFlags;
-        [FieldOffset(8)]
         public DWORD MxCsr;
 
         //
         // Segment Registers and processor flags.
         //
-        [FieldOffset(9)]
         public WORD SegCs;
-        [FieldOffset(10)]
         public WORD SegDs;
-        [FieldOffset(11)]
         public WORD SegEs;
-        [FieldOffset(12)]
         public WORD SegFs;
-        [FieldOffset(13)]
         public WORD SegGs;
-        [FieldOffset(14)]
         public WORD SegSs;
-        [FieldOffset(15)]
         public DWORD EFlags;
 
         //
         // Debug registers
         //
-        [FieldOffset(16)]
         public DWORD64 Dr0;
-        [FieldOffset(17)]
         public DWORD64 Dr1;
-        [FieldOffset(18)]
         public DWORD64 Dr2;
-        [FieldOffset(19)]
         public DWORD64 Dr3;
-        [FieldOffset(20)]
         public DWORD64 Dr6;
-        [FieldOffset(21)]
         public DWORD64 Dr7;
 
         //
         // Integer registers.
         //
-        [FieldOffset(22)]
         public DWORD64 Rax;
-        [FieldOffset(23)]
         public DWORD64 Rcx;
-        [FieldOffset(24)]
         public DWORD64 Rdx;
-        [FieldOffset(25)]
         public DWORD64 Rbx;
-        [FieldOffset(26)]
         public DWORD64 Rsp;
-        [FieldOffset(27)]
         public DWORD64 Rbp;
-        [FieldOffset(28)]
         public DWORD64 Rsi;
-        [FieldOffset(29)]
         public DWORD64 Rdi;
-        [FieldOffset(30)]
         public DWORD64 R8;
-        [FieldOffset(31)]
         public DWORD64 R9;
-        [FieldOffset(32)]
         public DWORD64 R10;
-        [FieldOffset(33)]
         public DWORD64 R11;
-        [FieldOffset(34)]
         public DWORD64 R12;
-        [FieldOffset(35)]
         public DWORD64 R13;
-        [FieldOffset(36)]
         public DWORD64 R14;
-        [FieldOffset(37)]
         public DWORD64 R15;
 
         //
         // Program counter.
         //
-        [FieldOffset(38)]
         public DWORD64 Rip;
 
         //
         // Floating point state.
         //
-        [FieldOffset(39)]
-
         public DUMMYUNIONNAME dummyUnion;
 
         //
         // Vector registers.
         //
-        [FieldOffset(40)]
         M128A* VectorRegister;
-        [FieldOffset(41)]
         public DWORD64 VectorControl;
 
         //
         // Special debug control registers.
         //
-        [FieldOffset(42)]
         public DWORD64 DebugControl;
-        [FieldOffset(43)]
         public DWORD64 LastBranchToRip;
-        [FieldOffset(44)]
         public DWORD64 LastBranchFromRip;
-        [FieldOffset(45)]
         public DWORD64 LastExceptionToRip;
-        [FieldOffset(46)]
         public DWORD64 LastExceptionFromRip;
     }
 
@@ -179,7 +133,7 @@ namespace WinNativeApi.WinNT
     {
         [FieldOffset(0)]
         XMM_SAVE_AREA32 FltSave;
-        [FieldOffset(0)]
+        [FieldOffset(1)]
         DUMMY Dummy;
     }
 

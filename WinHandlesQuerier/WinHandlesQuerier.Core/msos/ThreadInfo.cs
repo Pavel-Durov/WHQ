@@ -1,4 +1,5 @@
 ﻿using Microsoft.Diagnostics.Runtime;
+using WinNativeApi.WinNT;
 
 namespace WinHandlesQuerier.Core.msos
 {
@@ -12,6 +13,8 @@ namespace WinHandlesQuerier.Core.msos
         public string Detail { get; set; }
 
         public bool IsManagedThread { get { return ManagedThread != null; } }
+
+        public CONTEXT_AMD64 ContextStruct { get; set; }
     }
 
 }
