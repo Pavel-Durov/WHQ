@@ -23,12 +23,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const uint CONTEXT_SIZE_X86 = 0x2d0;
         protected const uint CONTEXT_SIZE_ARM = 0x1a0;
 
-        public UnmanagedStackWalkerStrategy(uint contextSize)
-        {
-            ContextSize = contextSize;
-        }
-        public uint ContextSize { get; private set; }
-
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
             ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {

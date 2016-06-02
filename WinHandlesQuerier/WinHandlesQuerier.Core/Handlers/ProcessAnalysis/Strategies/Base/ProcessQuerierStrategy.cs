@@ -24,7 +24,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
             if (dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
             {
-                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient, _dataReader, runtime);
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
             }
             else
             {
@@ -123,7 +123,6 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         internal UnifiedStackFrame ConvertToUnified(ClrStackFrame frame, SourceLocation sourceLocation, ThreadInfo info)
         {
             var result = new UnifiedStackFrame(frame, sourceLocation);
-
             result.ThreadContext = info.ContextStruct;
 
             return result;

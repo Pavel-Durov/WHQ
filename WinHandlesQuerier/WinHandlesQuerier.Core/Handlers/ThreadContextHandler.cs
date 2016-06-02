@@ -31,7 +31,8 @@ namespace Assignments.Core.Handlers
                     {
                         try
                         {
-                            threadInfo.ContextStruct = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
+                            var structure = Marshal.PtrToStructure<CONTEXT_AMD64>(gch.AddrOfPinnedObject());
+                            threadInfo.ContextStruct = new Model.UnifiedThreadContext(structure);
                             result = true;
                         }
                         finally

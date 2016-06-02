@@ -6,12 +6,13 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WinNativeApi.WinNT;
+using Assignments.Core.Model;
 
 namespace WinHandlesQuerier.Core.Model.Unified
 {
     public class UnifiedStackFrame
     {
-        public CONTEXT_AMD64 ThreadContext { get; set; }
+        internal UnifiedThreadContext ThreadContext { get; set; }
 
         public UnifiedStackFrameType Type { get; set; }
         public UnifiedBlockingObject BlockObject { get; set; }

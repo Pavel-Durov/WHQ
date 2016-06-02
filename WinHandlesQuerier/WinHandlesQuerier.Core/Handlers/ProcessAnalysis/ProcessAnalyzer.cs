@@ -143,51 +143,6 @@ namespace WinHandlesQuerier.Core.Handlers
 
         #region StackTrace
 
-        //public List<UnifiedStackFrame> GetStackTrace(uint threadIndex)
-        //{
-        //    ThreadInfo threadInfo = GetThreadInfo(threadIndex);
-        //    List<UnifiedStackFrame> unifiedStackTrace = new List<UnifiedStackFrame>();
-        //    List<UnifiedStackFrame> nativeStackTrace = GetNativeStackTrace(threadInfo);
-        //    if (threadInfo.IsManagedThread)
-        //    {
-        //        List<UnifiedStackFrame> managedStackTrace = GetManagedStackTrace(threadInfo.ManagedThread);
-        //        int managedFrame = 0;
-        //        for (int nativeFrame = 0; nativeFrame < nativeStackTrace.Count; ++nativeFrame)
-        //        {
-        //            bool found = false;
-        //            for (int temp = managedFrame; temp < managedStackTrace.Count; ++temp)
-        //            {
-        //                if (nativeStackTrace[nativeFrame].InstructionPointer == managedStackTrace[temp].InstructionPointer)
-        //                {
-        //                    managedStackTrace[temp].LinkedStackFrame = nativeStackTrace[nativeFrame];
-        //                    unifiedStackTrace.Add(managedStackTrace[temp]);
-        //                    managedFrame = temp + 1;
-        //                    found = true;
-        //                    break;
-        //                }
-        //                else if (managedFrame > 0)
-        //                {
-        //                    // We have already seen at least one managed frame, and we're about
-        //                    // to skip a managed frame because we didn't find a matching native
-        //                    // frame. In this case, add the managed frame into the stack anyway.
-        //                    unifiedStackTrace.Add(managedStackTrace[temp]);
-        //                    managedFrame = temp + 1;
-        //                    found = true;
-        //                    break;
-        //                }
-        //            }
-        //            // We didn't find a matching managed frame, so add the native frame directly.
-        //            if (!found)
-        //                unifiedStackTrace.Add(nativeStackTrace[nativeFrame]);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return nativeStackTrace;
-        //    }
-        //    return unifiedStackTrace;
-        //}
-
         private List<UnifiedStackFrame> GetManagedStackTrace(ClrThread thread, ThreadInfo info)
         {
             return (from frame in thread.StackTrace
