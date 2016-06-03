@@ -19,10 +19,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         protected const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
 
-        protected const uint CONTEXT_SIZE_AMD64 = 0x4d0;
-        protected const uint CONTEXT_SIZE_X86 = 0x2d0;
-        protected const uint CONTEXT_SIZE_ARM = 0x1a0;
-
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
             ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {

@@ -10,6 +10,11 @@ namespace Assignments.Core.Handlers
 {
     public class ThreadContextHandler
     {
+        const uint CONTEXT_SIZE_AMD64 = 0x4d0;
+        const uint CONTEXT_SIZE_X86 = 0x2d0;
+        const uint CONTEXT_SIZE_ARM = 0x1a0;
+
+
         public static unsafe bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader)
         {
             bool result = false;
@@ -67,11 +72,11 @@ namespace Assignments.Core.Handlers
             var plat = dataReader.GetArchitecture();
 
             if (plat == Architecture.Amd64)
-                result = 0x4d0;
+                result = CONTEXT_SIZE_AMD64;
             else if (plat == Architecture.X86)
-                result = 0x2d0;
+                result = CONTEXT_SIZE_X86;
             else if (plat == Architecture.Arm)
-                result = 0x1a0;
+                result = CONTEXT_SIZE_ARM;
             else
                 throw new InvalidOperationException("Unexpected architecture.");
 
