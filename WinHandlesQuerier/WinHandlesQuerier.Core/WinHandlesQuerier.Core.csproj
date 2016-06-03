@@ -82,6 +82,7 @@
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessQuerierStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileQuerierStrategy.cs" />
     <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
+    <Compile Include="Handlers\ThreadContextHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
     <Compile Include="Model\MiniDump\MiniDumpModule.cs" />
+    <Compile Include="Model\Unified\Thread\UnifiedThreadContext.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />
     <Compile Include="Model\Unified\UnifiedBlockingObject.cs" />

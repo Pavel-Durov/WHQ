@@ -7,6 +7,10 @@ using System;
 using Microsoft.Diagnostics.Runtime.Interop;
 using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies;
+using WinNativeApi;
+using System.Runtime.InteropServices;
+using WinNativeApi.WinNT;
+using Assignments.Core;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -18,10 +22,11 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             _dataReader = dataReader;
             _debugClient = debugClient;
 
-            if(dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
+            if (dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
             {
-                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy((IDebugAdvanced)debugClient, _dataReader, runtime);
-            }else
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
+            }
+            else
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
             }
@@ -47,7 +52,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
             foreach (var frame in unmanagedStack)
             {
-                if(frame?.Handles?.Count > 0)
+                if (frame?.Handles?.Count > 0)
                 {
                     foreach (var handle in frame.Handles)
                     {
@@ -108,9 +113,19 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
-        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, uint threadPtr, uint pID)
+        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, ThreadInfo info, uint pID)
         {
-            return _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, _debugClient, threadPtr, pID);
+            var result =  _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, _debugClient, info, pID);
+            return result;
+        }
+
+
+        internal UnifiedStackFrame ConvertToUnified(ClrStackFrame frame, SourceLocation sourceLocation, ThreadInfo info)
+        {
+            var result = new UnifiedStackFrame(frame, sourceLocation);
+            result.ThreadContext = info.ContextStruct;
+
+            return result;
         }
     }
 }

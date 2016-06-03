@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Handlers;
 using WinHandlesQuerier.Core.Model.Unified;
+using WinHandlesQuerier.Core.msos;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 {
@@ -22,19 +23,14 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected const uint CONTEXT_SIZE_X86 = 0x2d0;
         protected const uint CONTEXT_SIZE_ARM = 0x1a0;
 
-        public UnmanagedStackWalkerStrategy(uint contextSize)
-        {
-            ContextSize = contextSize;
-        }
-        public uint ContextSize { get; private set; }
-
         internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, 
-            ClrRuntime runtime, IDebugClient debugClient, uint osThreadId, uint pid = Constants.INVALID_PID)
+            ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
             for (uint i = 0; i < framesFilled; ++i)
             {
-                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient, osThreadId);
+                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
+                frame.ThreadContext = info.ContextStruct;
                 Inpsect(frame, runtime, pid);
                 stackTrace.Add(frame);
             }
@@ -107,23 +103,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         {
             return BitConverter.ToUInt32(bits, 0);
         }
-
-        //private uint GetThreadContextSize()
-        //{
-        //    uint result = 0;
-        //    var plat = _dataReader.GetArchitecture();
-
-        //    if (plat == Architecture.Amd64)
-        //        result = 0x4d0;
-        //    else if (plat == Architecture.X86)
-        //        result = 0x2d0;
-        //    else if (plat == Architecture.Arm)
-        //        result = 0x1a0;
-        //    else
-        //        throw new InvalidOperationException("Unexpected architecture.");
-
-        //    return result;
-        //}
 
         #region Abstract Methods
 
