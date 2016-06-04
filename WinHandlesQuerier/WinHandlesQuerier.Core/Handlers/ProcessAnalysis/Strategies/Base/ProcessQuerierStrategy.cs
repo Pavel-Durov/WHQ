@@ -11,6 +11,7 @@ using WinNativeApi;
 using System.Runtime.InteropServices;
 using WinNativeApi.WinNT;
 using Assignments.Core;
+using Assignments.Core.Handlers.ThreadContext.Strategies;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -25,10 +26,12 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             if (dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
+                _threadContextStrategy = new ThreadContext_x64_Strategy();
             }
             else
             {
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
+                _threadContextStrategy = new ThreadContext_x86_Strategy();
             }
         }
 
@@ -36,6 +39,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         IDebugClient _debugClient;
         ClrRuntime _runtime;
         UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
+        ThreadContextStrategy _threadContextStrategy;
 
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
@@ -61,6 +65,11 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
                 }
             }
             return result;
+        }
+
+        internal void GetThreadContext(ThreadInfo specific_info)
+        {
+            _threadContextStrategy.GetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
         }
 
         /// <summary>
