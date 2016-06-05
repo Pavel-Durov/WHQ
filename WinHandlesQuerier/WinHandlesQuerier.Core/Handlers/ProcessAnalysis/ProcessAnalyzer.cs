@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using WinNativeApi.WinNT;
 using WinNativeApi;
 using Assignments.Core.Handlers;
+using Assignments.Core.Handlers.ThreadContext.Strategies;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -23,7 +24,7 @@ namespace WinHandlesQuerier.Core.Handlers
         public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, uint pid) : this(dataTarget, runtime)
         {
             PID = pid;
-            _blockingObjectsFetchingStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
+            _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace WinHandlesQuerier.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, string pathToDumpFile) : this(dataTarget, runtime)
         {
-            _blockingObjectsFetchingStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
+            _processQuerierStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
         }
 
         private ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime)
@@ -43,8 +44,9 @@ namespace WinHandlesQuerier.Core.Handlers
 
         #region Members
 
-        public bool IsLiveProcess { get { return _blockingObjectsFetchingStrategy is LiveProcessQuerierStrategy; } }
-        ProcessQuerierStrategy _blockingObjectsFetchingStrategy;
+        public bool IsLiveProcess { get { return _processQuerierStrategy is LiveProcessQuerierStrategy; } }
+        ProcessQuerierStrategy _processQuerierStrategy;
+   
 
         IDebugClient _debugClient;
         IDataReader _dataReader;
@@ -66,7 +68,8 @@ namespace WinHandlesQuerier.Core.Handlers
             {
                 ThreadInfo specific_info = GetThreadInfo(threadIdx);
 
-                ThreadContextHandler.GetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
+                _processQuerierStrategy.GetThreadContext(specific_info);
+
 
                 if (specific_info.IsManagedThread)
                 {
@@ -88,7 +91,7 @@ namespace WinHandlesQuerier.Core.Handlers
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info);
 
-            var blockingObjects = _blockingObjectsFetchingStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
+            var blockingObjects = _processQuerierStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
 
             result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjects);
 
@@ -115,7 +118,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 }
 
 
-                var blockingObjs = _blockingObjectsFetchingStrategy.GetManagedBlockingObjects(clr_thread, unmanagedStack, _runtime);
+                var blockingObjs = _processQuerierStrategy.GetManagedBlockingObjects(clr_thread, unmanagedStack, _runtime);
 
                 result = new UnifiedManagedThread(specific_info, managedStack, unmanagedStack, blockingObjs);
 
@@ -147,7 +150,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             return (from frame in thread.StackTrace
                     let sourceLocation = SymbolCache.GetFileAndLineNumberSafe(frame)
-                    select _blockingObjectsFetchingStrategy.ConvertToUnified(frame, sourceLocation, info)
+                    select _processQuerierStrategy.ConvertToUnified(frame, sourceLocation, info)
                     ).ToList();
         }
 
@@ -159,7 +162,7 @@ namespace WinHandlesQuerier.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = _blockingObjectsFetchingStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info, PID);
+            var stackTrace = _processQuerierStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info, PID);
             return stackTrace;
         }
 

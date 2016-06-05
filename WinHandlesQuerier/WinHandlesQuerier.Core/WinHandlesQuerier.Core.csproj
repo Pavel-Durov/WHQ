@@ -82,7 +82,9 @@
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessQuerierStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileQuerierStrategy.cs" />
     <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
-    <Compile Include="Handlers\ThreadContextHandler.cs" />
+    <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
+    <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />
+    <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
