@@ -6,6 +6,7 @@
 
 int main()
 {
+	std::cout << "PID: " << GetCurrentProcessId() << std::endl;
 
 	HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, L"Alfred");
 	
