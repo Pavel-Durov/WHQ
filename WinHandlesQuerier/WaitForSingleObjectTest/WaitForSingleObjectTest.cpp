@@ -1,11 +1,22 @@
-// WaitForSingleObjectTest.cpp : Defines the entry point for the console application.
-//
 
 #include "stdafx.h"
+#include<Windows.h>
+#include <iostream>
 
 
 int main()
 {
-    return 0;
+
+	HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, L"Alfred");
+	
+	std::cout << "WaitForSingleObject :: handle:"<< hEvent << std::endl;
+
+	WaitForSingleObject(hEvent, INFINITE);
+
+	std::cout << "CloseHandle" << std::endl;
+
+	CloseHandle(hEvent);
+
+	return 0;
 }
 
