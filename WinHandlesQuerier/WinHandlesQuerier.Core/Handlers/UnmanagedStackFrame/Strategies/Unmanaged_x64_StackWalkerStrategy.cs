@@ -65,8 +65,10 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             //TODO: Complte 64 bit logic
             if (frame.ThreadContext != null)
             {
-                if (_globalConfigs.OsVersion == WinVersions.Win_10)
-                {
+                if (_globalConfigs.OsVersion == WinVersions.Win_10 
+                    || _globalConfigs.OsVersion == WinVersions.Win_8
+                    || _globalConfigs.OsVersion == WinVersions.Win_8_1)
+                { 
                     if(frame.ThreadContext.Is64Bit)
                     {
                         //1st Parameter is located in : RCX, 2nd Parameter is located in : RDX

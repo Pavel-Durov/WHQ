@@ -11,7 +11,7 @@ namespace WinNativeApi.WinNT
     using LONGLONG = System.Int64;
 
     //https://social.msdn.microsoft.com/Forums/vstudio/en-US/f5af96bc-88ad-4b56-98a3-c6dc5114cb8a/getthreadcontext?forum=vcgeneral
-    [StructLayout(LayoutKind.Explicit, Pack = 16)]
+    [StructLayout(LayoutKind.Explicit)]
     public unsafe struct CONTEXT_AMD64
     {
         //

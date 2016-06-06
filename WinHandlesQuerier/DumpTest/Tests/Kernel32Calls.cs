@@ -14,7 +14,14 @@ namespace DumpTest.Tests
         public static void Run()
         {
             CriticalSectionCalls();
-            WaitCalls();
+            MultiWaitCalls();
+            SingleWaitCalls();
+        }
+
+        private static void SingleWaitCalls()
+        {
+            ManualResetEvent even = new ManualResetEvent(false);
+            var mulRes2 = Functions.WaitForSingleObject(even.SafeWaitHandle.DangerousGetHandle(), int.MaxValue);
         }
 
         public static IntPtr section;
@@ -28,7 +35,7 @@ namespace DumpTest.Tests
             await Task.Delay(int.MaxValue);
         }
 
-        private static void WaitCalls()
+        private static void MultiWaitCalls()
         {
             IntPtr[] arr = new IntPtr[3];
             for (int i = 0; i < 3; i++)
@@ -41,8 +48,10 @@ namespace DumpTest.Tests
             var mulRes0 = Functions.WaitForMultipleObjects(3, arr, true, 0);
             var mulRes1 = Functions.WaitForMultipleObjects(3, arr, false, 0);
             var mulRes2 = Functions.WaitForMultipleObjects(3, arr, true, int.MaxValue);
+           
+
         }
-       
+
         public const Int32 INFINITE = -1;
         public const Int32 WAIT_ABANDONED = 0x80;
         public const Int32 WAIT_OBJECT_0 = 0x00;
