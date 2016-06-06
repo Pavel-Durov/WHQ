@@ -26,8 +26,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             PID = pid;
             _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
-            
-            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
+            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture, Environment.OSVersion);
         }
 
         /// <summary>
@@ -35,8 +34,9 @@ namespace WinHandlesQuerier.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, string pathToDumpFile) : this(dataTarget, runtime)
         {
-            _processQuerierStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
-            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
+            var dumpStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
+            _processQuerierStrategy = dumpStrategy;
+            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture, dumpStrategy.SystemInfo);
         }
 
         private ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime)

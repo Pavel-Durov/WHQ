@@ -4,6 +4,7 @@ using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
+using WinHandlesQuerier.Core.Handlers.MiniDump;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -16,6 +17,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         }
 
         MiniDump.MiniDumpHandler _miniDump;
+
+
+        public MiniDumpSystemInfo SystemInfo => _miniDump.GetSystemInfo();
 
         public override CPUArchitecture CPUArchitechture
         {
