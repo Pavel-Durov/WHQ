@@ -11,7 +11,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 {
     internal abstract class UnmanagedStackWalkerStrategy
     {
-        public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObjectEx";
+        public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObject";
         public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
         public const string ENTER_CRITICAL_SECTION_FUNCTION_NAME = "EnterCriticalSection";
 
