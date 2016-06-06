@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +91,7 @@
     <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctHandler.cs" />
+    <Compile Include="Infra\Config.cs" />
     <Compile Include="Infra\Constants.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />

@@ -23,6 +23,13 @@ void print_os_info()
 
 int main()
 {
+
+#ifdef DEBUG
+	std::cout << "DEBUG" << std::endl;
+#else
+	std::cout << "RELEASE" << std::endl;
+#endif
+
 	print_os_info();
 	std::cout << "PID: " << GetCurrentProcessId() << std::endl;
 

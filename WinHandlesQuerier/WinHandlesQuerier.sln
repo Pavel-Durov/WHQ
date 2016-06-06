@@ -25,6 +25,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WaitForSingleObjectTest", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EnterCriticalSectionTest", "EnterCriticalSectionTest\EnterCriticalSectionTest.vcxproj", "{FC7D3F8F-E6E4-4D80-9B1F-05ABECA31D01}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinDbj", "WinDbj", "{567D23DA-F314-416E-A0C9-A8933B5DEA6B}"
+	ProjectSection(SolutionItems) = preProject
+		Functions_64xCallingConventions.txt = Functions_64xCallingConventions.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForSingleObjectTest", "WaitForSingleObjectTest", "{73B6F8ED-1920-4E00-8F99-9D06A876ECD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NT 10.0 (Windows 10)", "NT 10.0 (Windows 10)", "{AD8B36DB-4DF4-45A1-9F10-99FCFAA08424}"
+	ProjectSection(SolutionItems) = preProject
+		Out.txt = Out.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,5 +133,8 @@ Global
 		{5B00C9FA-D109-45F2-B5F9-936489358FF5} = {8AA5C1A7-4619-4DB3-8258-5D24D0521839}
 		{22A695E7-EA91-4C77-B917-5172B55FF0CC} = {8AA5C1A7-4619-4DB3-8258-5D24D0521839}
 		{FC7D3F8F-E6E4-4D80-9B1F-05ABECA31D01} = {8AA5C1A7-4619-4DB3-8258-5D24D0521839}
+		{567D23DA-F314-416E-A0C9-A8933B5DEA6B} = {8AA5C1A7-4619-4DB3-8258-5D24D0521839}
+		{73B6F8ED-1920-4E00-8F99-9D06A876ECD0} = {567D23DA-F314-416E-A0C9-A8933B5DEA6B}
+		{AD8B36DB-4DF4-45A1-9F10-99FCFAA08424} = {73B6F8ED-1920-4E00-8F99-9D06A876ECD0}
 	EndGlobalSection
 EndGlobal

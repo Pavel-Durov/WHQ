@@ -3,22 +3,43 @@ using WinHandlesQuerier.Core.Model.Unified;
 using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
+using System;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     public class DumpFileQuerierStrategy : ProcessQuerierStrategy
     {
-
-        ClrRuntime _runtime;
-
         public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader) 
             : base(debugClient, dataReader, runtime)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
-            _runtime = runtime;
         }
 
         MiniDump.MiniDumpHandler _miniDump;
+
+        public override CPUArchitecture CPUArchitechture
+        {
+            get
+            {
+                CPUArchitecture architechture;
+
+                var systemInfo = _miniDump.GetSystemInfo();
+
+                if (systemInfo.ProcessorArchitecture == DbgHelp.MiniDumpProcessorArchitecture.PROCESSOR_ARCHITECTURE_INTEL)
+                {
+                    architechture = CPUArchitecture.x86;
+                }
+                else if (systemInfo.ProcessorArchitecture == DbgHelp.MiniDumpProcessorArchitecture.PROCESSOR_ARCHITECTURE_AMD64)
+                {
+                    architechture = CPUArchitecture.x64;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unexpected architecture.");
+                }
+                return architechture;
+            }
+        }
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
