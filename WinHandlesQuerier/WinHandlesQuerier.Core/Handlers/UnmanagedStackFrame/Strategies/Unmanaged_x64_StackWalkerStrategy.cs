@@ -46,7 +46,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;
-
+            
             if (frame.ThreadContext != null)
             {
 
