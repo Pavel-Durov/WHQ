@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
+using WinBase;
 using WinNativeApi.WinNT;
 using HANDLE = System.IntPtr;
 
@@ -111,20 +112,20 @@ namespace Kernel32
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern void InitializeCriticalSection(out IntPtr
+        public static extern void InitializeCriticalSection(out CRITICAL_SECTION
     lpCriticalSection);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern void EnterCriticalSection(ref IntPtr
+        public static extern void EnterCriticalSection(ref CRITICAL_SECTION
    lpCriticalSection);
 
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern void LeaveCriticalSection(ref IntPtr
+        public static extern void LeaveCriticalSection(ref CRITICAL_SECTION
            lpCriticalSection);
 
         [DllImport("kernel32.dll")]
-        public static extern bool TryEnterCriticalSection(ref IntPtr
+        public static extern bool TryEnterCriticalSection(ref CRITICAL_SECTION
    lpCriticalSection);
         /// <summary>
         /// This value can be returned by CreateMutex() and is found in

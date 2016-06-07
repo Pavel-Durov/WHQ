@@ -35,9 +35,10 @@ namespace Consumer.Global
         private static void DoAnaytics(DataTarget target, uint pid)
         {
 
-            var runtime = target.ClrVersions[0].CreateRuntime();
+            var clrVer = target.ClrVersions[0];
 
             //Live process handler
+            var runtime = clrVer.CreateRuntime();
             ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, pid);
 
             var result = handler.Handle();

@@ -25,9 +25,9 @@ int main()
 {
 
 #ifdef DEBUG
-	std::cout << "DEBUG" << std::endl;
+	std::cout << "DEBUG MODE" << std::endl;
 #else
-	std::cout << "RELEASE" << std::endl;
+	std::cout << "RELEASE MODE" << std::endl;
 #endif
 
 	print_os_info();

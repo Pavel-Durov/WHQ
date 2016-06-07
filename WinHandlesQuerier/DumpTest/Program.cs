@@ -1,4 +1,4 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 
 using System;
@@ -6,13 +6,16 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DumpTest.Tests;
 using Microsoft.Win32;
+using System.Threading;
+using Kernel32;
+using WinBase;
 
 namespace DumpTest
 {
     public class Program
     {
         static void Main(string[] args)
-        {   
+        {
             Console.WriteLine("Test started");
             Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}{Environment.NewLine}");
             DealWithPID();
@@ -45,8 +48,6 @@ namespace DumpTest
 #if LIVE_PID_DEBUG
             Registry.CurrentUser.SetValue("my-ruthles-pid-key", proc.Id);
 #endif
-
-            Console.WriteLine("Pid wrote to shared txt file");
         }
 
 

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WinBase;
 
 namespace DumpTest.Tests
 {
@@ -13,42 +14,51 @@ namespace DumpTest.Tests
     {
         public static void Run()
         {
-            CriticalSectionCalls();
+           CriticalSectionCalls();
             MultiWaitCalls();
             SingleWaitCalls();
         }
 
-        private static void SingleWaitCalls()
+        private static async void SingleWaitCalls()
         {
-            ManualResetEvent even = new ManualResetEvent(false);
-            var mulRes2 = Functions.WaitForSingleObject(even.SafeWaitHandle.DangerousGetHandle(), int.MaxValue);
+            await Task.Run(() =>
+           {
+               ManualResetEvent even = new ManualResetEvent(false);
+               var handle = even.SafeWaitHandle.DangerousGetHandle();
+               Console.WriteLine("handle : 0x{0}, Int : {1}", handle.ToString("X"), handle);
+               var mulRes2 = Functions.WaitForSingleObject(handle, int.MaxValue);
+           });
         }
 
-        public static IntPtr section;
-
+        public static CRITICAL_SECTION section = new CRITICAL_SECTION();
         private static async void CriticalSectionCalls()
         {
-
-            Functions.InitializeCriticalSection(out section);
-            Console.WriteLine($"InitializeCriticalSection id: {Task.CurrentId} ");
-            Functions.EnterCriticalSection(ref section);
-            await Task.Delay(int.MaxValue);
+            await Task.Run(async() =>
+            {
+                Console.WriteLine();
+                Functions.InitializeCriticalSection(out section);
+                Console.WriteLine($"InitializeCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
+                Functions.EnterCriticalSection(ref section);
+                await Task.Delay(int.MaxValue);
+            });
         }
 
-        private static void MultiWaitCalls()
+        private static async void MultiWaitCalls()
         {
-            IntPtr[] arr = new IntPtr[3];
-            for (int i = 0; i < 3; i++)
+            await Task.Run(() =>
             {
-                var loopAutoEvent = new AutoResetEvent(false);
-                arr[i] = loopAutoEvent.Handle;
-            }
+                IntPtr[] arr = new IntPtr[3];
+                for (int i = 0; i < 3; i++)
+                {
+                    var loopAutoEvent = new AutoResetEvent(false);
+                    arr[i] = loopAutoEvent.Handle;
+                }
 
-            Console.WriteLine(" - Kernel32Calls WaitForMultipleObjects");
-            var mulRes0 = Functions.WaitForMultipleObjects(3, arr, true, 0);
-            var mulRes1 = Functions.WaitForMultipleObjects(3, arr, false, 0);
-            var mulRes2 = Functions.WaitForMultipleObjects(3, arr, true, int.MaxValue);
-           
+                Console.WriteLine(" - Kernel32Calls WaitForMultipleObjects");
+                var mulRes0 = Functions.WaitForMultipleObjects(3, arr, true, 0);
+                var mulRes1 = Functions.WaitForMultipleObjects(3, arr, false, 0);
+                var mulRes2 = Functions.WaitForMultipleObjects(3, arr, true, int.MaxValue);
+            });
 
         }
 
@@ -59,5 +69,5 @@ namespace DumpTest.Tests
         public const Int32 WAIT_FAILED = -1;
     }
 
-   
+
 }
