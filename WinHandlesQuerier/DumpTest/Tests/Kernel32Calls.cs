@@ -14,9 +14,9 @@ namespace DumpTest.Tests
     {
         public static void Run()
         {
-           CriticalSectionCalls();
-            MultiWaitCalls();
-            SingleWaitCalls();
+            CriticalSectionCalls();
+            //MultiWaitCalls();
+            //SingleWaitCalls();
         }
 
         private static async void SingleWaitCalls()
@@ -31,16 +31,32 @@ namespace DumpTest.Tests
         }
 
         public static CRITICAL_SECTION section = new CRITICAL_SECTION();
-        private static async void CriticalSectionCalls()
+        private static void CriticalSectionCalls()
         {
-            await Task.Run(async() =>
+            //Simulating DeadLock
+            new Thread(() =>
             {
                 Console.WriteLine();
                 Functions.InitializeCriticalSection(out section);
-                Console.WriteLine($"InitializeCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
+                Console.WriteLine($"EnterCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
                 Functions.EnterCriticalSection(ref section);
-                await Task.Delay(int.MaxValue);
-            });
+
+                var inner = new Thread(() =>
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"EnterCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
+                    Functions.EnterCriticalSection(ref section);
+
+                    Thread.Sleep(2000);
+                    Console.WriteLine($"LeaveCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
+                    Functions.LeaveCriticalSection(ref section);
+                });
+                inner.Start();
+                inner.Join();
+
+                Console.WriteLine($"LeaveCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
+                Functions.LeaveCriticalSection(ref section);
+            }).Start();
         }
 
         private static async void MultiWaitCalls()
