@@ -63,17 +63,15 @@ namespace DumpTest.Tests
         {
             await Task.Run(() =>
             {
-                IntPtr[] arr = new IntPtr[3];
-                for (int i = 0; i < 3; i++)
+                IntPtr[] arr = new IntPtr[19];
+                for (int i = 0; i < arr.Length; i++)
                 {
                     var loopAutoEvent = new AutoResetEvent(false);
                     arr[i] = loopAutoEvent.Handle;
                 }
+                var mulRes2 = Functions.WaitForMultipleObjects(19, arr, true, int.MaxValue);
+                Console.WriteLine("Functions.WaitForMultipleObjects");
 
-                Console.WriteLine(" - Kernel32Calls WaitForMultipleObjects");
-                var mulRes0 = Functions.WaitForMultipleObjects(3, arr, true, 0);
-                var mulRes1 = Functions.WaitForMultipleObjects(3, arr, false, 0);
-                var mulRes2 = Functions.WaitForMultipleObjects(3, arr, true, int.MaxValue);
             });
 
         }

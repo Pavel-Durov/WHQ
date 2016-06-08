@@ -6,9 +6,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DumpTest.Tests;
 using Microsoft.Win32;
-using System.Threading;
-using Kernel32;
-using WinBase;
 
 namespace DumpTest
 {

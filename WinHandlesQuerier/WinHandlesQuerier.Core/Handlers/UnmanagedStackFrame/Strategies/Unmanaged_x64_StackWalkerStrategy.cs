@@ -5,6 +5,7 @@ using WinHandlesQuerier.Core.Model.Unified;
 using Microsoft.Diagnostics.Runtime.Interop;
 using WinNativeApi.WinNT;
 using Assignments.Core.Infra;
+using System;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
@@ -24,32 +25,18 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         Config _globalConfigs;
 
-        public override List<byte[]> GetNativeParams(UnifiedStackFrame frame, ClrRuntime runtime, int paramCount)
-        {
-            List<byte[]> result = null;
-
-            //TODO: Complte 64 bit logic
-
-            return result;
-        }
-
-        public override List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
-        {
-            List<byte[]> result = null;
-
-            //TODO: Complte 64 bit logic
-
-            return result;
-        }
-
-
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;
-            
+
             if (frame.ThreadContext != null)
             {
-
+                if (_globalConfigs.OsVersion == WinVersions.Win_10
+                  || _globalConfigs.OsVersion == WinVersions.Win_8
+                  || _globalConfigs.OsVersion == WinVersions.Win_8_1)
+                {
+                    var firstParam = frame.ThreadContext.Context_amd64.Rcx;
+                }
             }
 
             return result;
@@ -57,20 +44,19 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-
-            //TODO: Complte 64 bit logic
-
             if (frame.ThreadContext != null)
             {
                 if (_globalConfigs.OsVersion == WinVersions.Win_10
                    || _globalConfigs.OsVersion == WinVersions.Win_8
                    || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
-
+                    //1st : handlesCount (DWORD)
                     var firstParam = frame.ThreadContext.Context_amd64.Rbx;
+                    //2nd: Handles pointer (HANDLE)
                     var secondParam = frame.ThreadContext.Context_amd64.R13;
-
-                    //var thirdParam = frame.ThreadContext.Context_amd64.rsp;
+                    //3rd: WaitAll (BOOLEAN)
+                    var thirdParam = frame.ThreadContext.Context_amd64.R15;
+                    //4th: Timeout (DWORD)
                     var fourthParam = frame.ThreadContext.Context_amd64.R12;
                 }
             }
@@ -78,8 +64,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-
-            //TODO: Complte 64 bit logic
             if (frame.ThreadContext != null)
             {
                 if (_globalConfigs.OsVersion == WinVersions.Win_10

@@ -106,10 +106,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 
         abstract protected void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
-        public abstract List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount);
-
-        public abstract List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime);
-
         protected abstract UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime);
 
         #endregion

@@ -42,7 +42,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
-        public override List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
+        protected List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -64,7 +64,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
-        public override List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
+        public List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
         {
             List<byte[]> result = new List<byte[]>();
             int sum = 0;
