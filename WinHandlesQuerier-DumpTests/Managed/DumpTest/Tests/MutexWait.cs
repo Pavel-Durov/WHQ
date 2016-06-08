@@ -1,9 +1,5 @@
 ﻿using Kernel32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,9 +37,6 @@ namespace DumpTest.Tests
 
                     //some work simulation
                     await Task.Delay(TimeSpan.FromHours(10));
-
-                    //Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} releases the mutex");
-                   // mutex.ReleaseMutex();
                 }
             }
         }

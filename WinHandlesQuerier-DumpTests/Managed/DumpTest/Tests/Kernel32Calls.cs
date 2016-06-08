@@ -15,8 +15,8 @@ namespace DumpTest.Tests
         public static void Run()
         {
             CriticalSectionCalls();
-            //MultiWaitCalls();
-            //SingleWaitCalls();
+            MultiWaitCalls();
+            SingleWaitCalls();
         }
 
         private static async void SingleWaitCalls()
@@ -25,7 +25,9 @@ namespace DumpTest.Tests
            {
                ManualResetEvent even = new ManualResetEvent(false);
                var handle = even.SafeWaitHandle.DangerousGetHandle();
+
                Console.WriteLine("handle : 0x{0}, Int : {1}", handle.ToString("X"), handle);
+
                var mulRes2 = Functions.WaitForSingleObject(handle, int.MaxValue);
            });
         }
@@ -43,7 +45,7 @@ namespace DumpTest.Tests
 
                 var inner = new Thread(() =>
                 {
-                    Console.WriteLine();
+                    Console.WriteLine("--DEAD LOCK--");
                     Console.WriteLine($"EnterCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
                     Functions.EnterCriticalSection(ref section);
 
@@ -69,18 +71,13 @@ namespace DumpTest.Tests
                     var loopAutoEvent = new AutoResetEvent(false);
                     arr[i] = loopAutoEvent.Handle;
                 }
+
                 var mulRes2 = Functions.WaitForMultipleObjects(19, arr, true, int.MaxValue);
-                Console.WriteLine("Functions.WaitForMultipleObjects");
+
+                Console.WriteLine($"WaitForMultipleObjects - Count: 19, bWaitAll : true, wait: {int.MaxValue} / {int.MaxValue.ToString("X")}");
 
             });
-
         }
-
-        public const Int32 INFINITE = -1;
-        public const Int32 WAIT_ABANDONED = 0x80;
-        public const Int32 WAIT_OBJECT_0 = 0x00;
-        public const Int32 WAIT_TIMEOUT = 0x102;
-        public const Int32 WAIT_FAILED = -1;
     }
 
 

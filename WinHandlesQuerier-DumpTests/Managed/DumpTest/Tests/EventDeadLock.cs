@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace DumpTest.Tests
 {
-    public class DeadLock
+    public class EventDeadLock
     {
         static object _sync = new object();
         static object _sync2 = new object();
