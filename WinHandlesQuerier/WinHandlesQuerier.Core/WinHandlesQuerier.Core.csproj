@@ -86,9 +86,9 @@
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctHandler.cs" />
     <Compile Include="Infra\Config.cs" />
