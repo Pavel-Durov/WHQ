@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{19082F41-446E-4D4E-A1DB-58053667E4F6}</ProjectGuid>
+    <ProjectGuid>{5022FA36-61C0-4803-B7A7-772FC0C040CB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NativeWinDeclarationsValidator</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

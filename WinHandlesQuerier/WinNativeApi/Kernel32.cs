@@ -13,6 +13,7 @@ namespace Kernel32
         public const UInt32 WAIT_ABANDONED = 0x00000080;
         public const UInt32 WAIT_OBJECT_0 = 0x00000000;
         public const UInt32 WAIT_TIMEOUT = 0x00000102;
+        public const int MAXIMUM_WAIT_OBJECTS = 0x00000102;
 
 
         #region System Error Codes

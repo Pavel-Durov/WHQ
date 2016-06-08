@@ -1,22 +1,23 @@
 ﻿using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
-using System.Collections.Generic;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
-using Microsoft.Diagnostics.Runtime.Interop;
-using WinNativeApi.WinNT;
 using Assignments.Core.Infra;
-using System;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     /// <summary>
-    /// https://msdn.microsoft.com/en-us/library/9z1stfyw.aspx
+    /// This class is responsible for fetching function parameters.
+    /// 
+    /// Since it's x64 StackWalkerStrategy, 
+    /// it relies on x64 Calling Convention - passing parameters to function using CPU registers. 
+    /// 
+    ///https://msdn.microsoft.com/en-us/library/9z1stfyw.aspx
     ///RCX - Volatile - First integer argument
     ///RDX - Volatile -Second integer argument
     ///R8 - Volatile - Third integer argument
     ///R9 - Volatile - Fourth integer argument
     /// </summary>
-    class Unmanaged_x64_StackWalkerStrategy : UnmanagedStackWalkerStrategy
+    internal class Unmanaged_x64_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
         public Unmanaged_x64_StackWalkerStrategy()
         {
@@ -36,6 +37,8 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                   || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
                     var firstParam = frame.ThreadContext.Context_amd64.Rcx;
+
+                    result = new UnifiedBlockingObject(firstParam, UnifiedBlockingType.CriticalSectionObject);
                 }
             }
 
@@ -51,13 +54,15 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                    || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
                     //1st : handlesCount (DWORD)
-                    var firstParam = frame.ThreadContext.Context_amd64.Rbx;
+                    var hWaitCount = frame.ThreadContext.Context_amd64.Rbx;
                     //2nd: Handles pointer (HANDLE)
-                    var secondParam = frame.ThreadContext.Context_amd64.R13;
+                    var hPtr = frame.ThreadContext.Context_amd64.R13;
                     //3rd: WaitAll (BOOLEAN)
                     var thirdParam = frame.ThreadContext.Context_amd64.R15;
                     //4th: Timeout (DWORD)
                     var fourthParam = frame.ThreadContext.Context_amd64.R12;
+
+                    EnrichUnifiedStackFrame(frame, runtime, pid, hWaitCount, hPtr);
                 }
             }
         }
@@ -73,7 +78,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                     if (frame.ThreadContext.Is64Bit)
                     {
                         var handle = frame.ThreadContext.Context_amd64.Rdi;
-                        var waitMs = frame.ThreadContext.Context_amd64.Rsi;
+                        EnrichUnifiedStackFrame(frame, handle, pid);
                     }
                 }
             }

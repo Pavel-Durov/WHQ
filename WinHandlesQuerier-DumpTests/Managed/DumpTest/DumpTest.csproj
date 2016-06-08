@@ -94,7 +94,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WinNativeApi\WinNativeApi.csproj">
+    <ProjectReference Include="..\..\..\WinHandlesQuerier\WinNativeApi\WinNativeApi.csproj">
       <Project>{bc696670-7b56-44d5-b62c-46a9c2ff00ea}</Project>
       <Name>WinNativeApi</Name>
     </ProjectReference>

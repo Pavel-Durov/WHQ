@@ -15,7 +15,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
 
     public enum OriginSource
     {
-        WCT, MiniDump, ClrMD, StackWalker
+        WCT, MiniDump, ClrMD, StackWalker, ThreadContextRegisters
     }
 
     public class UnifiedBlockingObject
@@ -48,7 +48,8 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Type = UnifiedBlockingType.WaitChainInfoObject;
         }
 
-        public UnifiedBlockingObject(MiniDumpHandle handle) : this(OriginSource.MiniDump)
+        public UnifiedBlockingObject(MiniDumpHandle handle) 
+            : this(OriginSource.MiniDump)
         {
             KernelObjectName = handle.ObjectName;
             KernelObjectTypeName = handle.TypeName;
@@ -57,7 +58,8 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle.Handle;
         }
 
-        public UnifiedBlockingObject(CRITICAL_SECTION section, uint handle) : this(OriginSource.StackWalker)
+        public UnifiedBlockingObject(CRITICAL_SECTION section, uint handle) 
+            : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));
@@ -66,7 +68,8 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle;
         }
 
-        public UnifiedBlockingObject(uint handle, string objectName, string objectType) : this(OriginSource.StackWalker)
+        public UnifiedBlockingObject(ulong handle, string objectName, string objectType) 
+            : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Handle = handle;
@@ -76,6 +79,12 @@ namespace WinHandlesQuerier.Core.Model.Unified
             WaitReason = ConvertToUnified(objectType);
         }
 
+        public UnifiedBlockingObject(ulong handle, UnifiedBlockingType criticalSectionObject) 
+            : this(OriginSource.ThreadContextRegisters)
+        {
+            Handle = handle;
+            Type = criticalSectionObject;
+        }
 
         private void SetWaiters(BlockingObject item)
         {

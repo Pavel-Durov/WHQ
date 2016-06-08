@@ -6,16 +6,25 @@ using WinNativeApi;
 
 namespace Assignments.Core.Handlers.ThreadContext.Strategies
 {
-    abstract class ThreadContextStrategy
+    internal abstract class ThreadContextStrategy
     {
+        #region Constants
+
         protected const uint CONTEXT_SIZE_AMD64 = 0x4d0;
         protected const uint CONTEXT_SIZE_X86 = 0x2d0;
         protected const uint CONTEXT_SIZE_ARM = 0x1a0;
 
-        public uint ContextSize { get;protected set; }
+        #endregion
+
+        public ThreadContextStrategy(uint contextSize)
+        {
+            ContextSize = contextSize;
+        }
+
+        public uint ContextSize { get; protected set; }
 
         public abstract bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader);
-       
+
         protected uint SetCurrentThreadId(uint engineThreadId, IDebugAdvanced debugClient)
         {
             IDebugSystemObjects sytemObject = ((IDebugSystemObjects)debugClient);

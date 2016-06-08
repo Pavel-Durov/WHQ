@@ -12,7 +12,13 @@ using WinHandlesQuerier.Core.Exceptions;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
-    class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
+    /// <summary>
+    /// This class is responsible for fetching function parameters.
+    /// 
+    /// Since it's x86 StackWalkerStrategy, 
+    /// it relies on x86 Calling Convention - passing parameters to function on the stack. 
+    /// </summary>
+    internal class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
         protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
         {
@@ -42,7 +48,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
-        protected List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
+        List<byte[]> GetNativeParams(UnifiedStackFrame stackFrame, ClrRuntime runtime, int paramCount)
         {
             List<byte[]> result = new List<byte[]>();
 
@@ -53,7 +59,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
             for (int i = 0; i < paramCount; i++)
             {
-                paramBuffer = new byte[4];
+                paramBuffer = new byte[IntPtr.Size];
                 offset += (uint)IntPtr.Size;
                 if (runtime.ReadMemory(offset, paramBuffer, 4, out bytesRead))
                 {
@@ -61,28 +67,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                 }
             }
 
-            return result;
-        }
-
-        public List<byte[]> ReadFromMemmory(uint startAddress, uint count, ClrRuntime runtime)
-        {
-            List<byte[]> result = new List<byte[]>();
-            int sum = 0;
-            //TODO: Check if dfor can be inserted into the REadMemmory result (seems to be..)
-            for (int i = 0; i < count; i++)
-            {
-                byte[] readedBytes = new byte[4];
-                if (runtime.ReadMemory(startAddress, readedBytes, 4, out sum))
-                {
-                    result.Add(readedBytes);
-                }
-                else
-                {
-                    throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", startAddress));
-                }
-                //Advancing the pointer by 4 (32-bit system)
-                startAddress += (uint)IntPtr.Size;
-            }
             return result;
         }
 
@@ -95,31 +79,16 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             var HandlesCunt = BitConverter.ToUInt32(paramz[0], 0);
             var HandleAddress = BitConverter.ToUInt32(paramz[1], 0);
 
-            var handles = ReadFromMemmory(HandleAddress, HandlesCunt, runtime);
-            foreach (var handle in handles)
-            {
-                uint handleUint = Convert(handle);
-
-                UnifiedHandle unifiedHandle = GenerateUnifiedHandle(handleUint, pid);
-                if (unifiedHandle != null)
-                {
-                    frame.Handles.Add(unifiedHandle);
-                }
-            }
+            EnrichUnifiedStackFrame(frame, runtime, pid, HandlesCunt, HandleAddress);
         }
 
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             var paramz = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
 
-            var handleUint = Convert(paramz[0]);
+            var handle = Convert(paramz[0]);
 
-            UnifiedHandle unifiedHandle = GenerateUnifiedHandle(handleUint, pid);
-            if (unifiedHandle != null)
-            {
-                frame.Handles = new List<UnifiedHandle>();
-                frame.Handles.Add(unifiedHandle);
-            }
+            EnrichUnifiedStackFrame(frame, handle, pid);
         }
     }
 }

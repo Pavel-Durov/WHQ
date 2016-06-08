@@ -9,9 +9,9 @@ namespace Assignments.Core.Handlers.ThreadContext.Strategies
 {
     class ThreadContext_x86_Strategy : ThreadContextStrategy
     {
-        public ThreadContext_x86_Strategy()
+        public ThreadContext_x86_Strategy() : base(CONTEXT_SIZE_X86)
         {
-            ContextSize = CONTEXT_SIZE_X86;
+
         }
 
         public override bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader)
