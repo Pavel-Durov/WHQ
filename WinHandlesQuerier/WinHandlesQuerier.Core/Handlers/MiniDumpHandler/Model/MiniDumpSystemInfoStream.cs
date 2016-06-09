@@ -18,6 +18,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             _systemInfo = systemInfo;
 
             IsX86 = this.ProcessorArchitecture == MiniDumpProcessorArchitecture.PROCESSOR_ARCHITECTURE_INTEL;
+
             if (IsX86)
             {   
                 X86CpuInfo = new X86CpuInfo(_systemInfo.Cpu);

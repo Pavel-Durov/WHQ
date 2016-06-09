@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -70,6 +71,7 @@
     <Compile Include="Extentions\StringBuilderExtentions.cs" />
     <Compile Include="Extentions\ToStringExtention.cs" />
     <Compile Include="Handlers\LogHandler.cs" />
+    <Compile Include="Handlers\MachineOsVersionHandler.cs" />
     <Compile Include="Handlers\MemoryMapFileHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\Model\MiniDumpSystemInfoStream.cs" />
     <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\NonX86CpuInfo.cs" />
@@ -85,11 +87,12 @@
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrame\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctHandler.cs" />
+    <Compile Include="Infra\Config.cs" />
     <Compile Include="Infra\Constants.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />

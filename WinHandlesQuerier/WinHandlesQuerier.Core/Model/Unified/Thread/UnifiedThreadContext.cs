@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinHandlesQuerier.Core.msos;
 using WinNativeApi.WinNT;
 
 namespace Assignments.Core.Model
 {
     internal class UnifiedThreadContext
     {
-        public UnifiedThreadContext(CONTEXT context)
+        public UnifiedThreadContext(CONTEXT context, ThreadInfo threadInfo) : this(false)
         {
-            _context = context;
+            Context = context;
         }
 
-        public UnifiedThreadContext(CONTEXT_AMD64 context)
+        public UnifiedThreadContext(CONTEXT_AMD64 context, ThreadInfo threadInfo) : this(true)
         {
-            _context_amd64 = context;
+            Context_amd64 = context;
+            OSThreadId = threadInfo.OSThreadId;
         }
 
-        CONTEXT _context;
-        CONTEXT_AMD64 _context_amd64;
+        public UnifiedThreadContext(bool is64bit)
+        {
+            Is64Bit = is64bit;
+        }
+
+        public uint OSThreadId { get; private set; }
+        public bool Is64Bit { get; private set; }
+
+        public CONTEXT Context { get; private set; }
+        public CONTEXT_AMD64 Context_amd64 { get; private set; }
+
     }
 }

@@ -13,6 +13,7 @@ using WinNativeApi.WinNT;
 using WinNativeApi;
 using Assignments.Core.Handlers;
 using Assignments.Core.Handlers.ThreadContext.Strategies;
+using Assignments.Core.Infra;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -25,6 +26,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             PID = pid;
             _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
+            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
         }
 
         /// <summary>
@@ -32,7 +34,9 @@ namespace WinHandlesQuerier.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, string pathToDumpFile) : this(dataTarget, runtime)
         {
-            _processQuerierStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
+            var dumpStrategy = new DumpFileQuerierStrategy(pathToDumpFile, _runtime, _debugClient, _dataReader);
+            _processQuerierStrategy = dumpStrategy;
+            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture, dumpStrategy.SystemInfo);
         }
 
         private ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime)
@@ -40,13 +44,13 @@ namespace WinHandlesQuerier.Core.Handlers
             _debugClient = dataTarget.DebuggerInterface;
             _dataReader = dataTarget.DataReader;
             _runtime = runtime;
+            _globalConfig = Config.GetInstance();
         }
 
         #region Members
 
-        public bool IsLiveProcess { get { return _processQuerierStrategy is LiveProcessQuerierStrategy; } }
         ProcessQuerierStrategy _processQuerierStrategy;
-   
+        Config _globalConfig;   
 
         IDebugClient _debugClient;
         IDataReader _dataReader;

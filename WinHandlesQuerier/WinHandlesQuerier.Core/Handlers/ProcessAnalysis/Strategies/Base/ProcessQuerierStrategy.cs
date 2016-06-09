@@ -15,6 +15,11 @@ using Assignments.Core.Handlers.ThreadContext.Strategies;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
+    public enum CPUArchitecture
+    {
+        x86, x64
+    }
+
     public abstract class ProcessQuerierStrategy
     {
         public ProcessQuerierStrategy(IDebugClient debugClient, IDataReader dataReader, ClrRuntime runtime)
@@ -35,11 +40,13 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
-        IDataReader _dataReader;
-        IDebugClient _debugClient;
-        ClrRuntime _runtime;
-        UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
-        ThreadContextStrategy _threadContextStrategy;
+        internal IDataReader _dataReader;
+        internal IDebugClient _debugClient;
+        internal ClrRuntime _runtime;
+        internal UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
+        internal ThreadContextStrategy _threadContextStrategy;
+
+        public abstract CPUArchitecture CPUArchitechture { get; }
 
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {

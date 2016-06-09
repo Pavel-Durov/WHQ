@@ -9,9 +9,9 @@ namespace Assignments.Core.Handlers.ThreadContext.Strategies
 {
     class ThreadContext_x86_Strategy : ThreadContextStrategy
     {
-        public ThreadContext_x86_Strategy()
+        public ThreadContext_x86_Strategy() : base(CONTEXT_SIZE_X86)
         {
-            ContextSize = CONTEXT_SIZE_X86;
+
         }
 
         public override bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader)
@@ -37,7 +37,7 @@ namespace Assignments.Core.Handlers.ThreadContext.Strategies
                     try
                     {
                         var structure = Marshal.PtrToStructure<CONTEXT>(gch.AddrOfPinnedObject());
-                        threadInfo.ContextStruct = new Model.UnifiedThreadContext(structure);
+                        threadInfo.ContextStruct = new Model.UnifiedThreadContext(structure, threadInfo);
                         result = true;
                     }
                     finally
