@@ -26,7 +26,7 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             PID = pid;
             _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
-            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture, Environment.OSVersion);
+            _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
         }
 
         /// <summary>

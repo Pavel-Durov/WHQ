@@ -1,4 +1,5 @@
-﻿using Microsoft.Diagnostics.Runtime;
+﻿using Assignments.Core.Handlers;
+using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,10 +40,12 @@ namespace Assignments.Core.Infra
         /// Used for Live process Initialization
         /// </summary>
         /// <param name="cpuArchitecture"></param>
-        public void Init(CPUArchitecture cpuArchitecture, OperatingSystem system)
+        public void Init(CPUArchitecture cpuArchitecture)
         {
             CpuArchitecture = cpuArchitecture;
-            SetWinVErsion((uint)system.Version.Major, (uint)system.Version.Minor);
+
+            //SetWinVErsion((uint)Environment.OSVersion.Version.Major, (uint)Environment.OSVersion.Version.Minor);
+            SetWinVErsion(MachineOsVersionHandler.WinMajorVersion, MachineOsVersionHandler.WinMinorVersion);
         }
 
         /// <summary>

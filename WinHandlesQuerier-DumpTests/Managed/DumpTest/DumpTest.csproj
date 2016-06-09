@@ -84,7 +84,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\DeadLock.cs" />
+    <Compile Include="Tests\EventDeadLock.cs" />
     <Compile Include="Tests\Kernel32Calls.cs" />
     <Compile Include="Tests\MutexWait.cs" />
     <Compile Include="Tests\ThreadEventWait.cs" />

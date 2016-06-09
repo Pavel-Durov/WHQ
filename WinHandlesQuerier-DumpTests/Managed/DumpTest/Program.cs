@@ -17,7 +17,7 @@ namespace DumpTest
             Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}{Environment.NewLine}");
             DealWithPID();
 
-            var deadLock = Task.Run(() => { DeadLock.Run(); });
+            var deadLock = Task.Run(() => { EventDeadLock.Run(); });
 
             var kernel32Task = Task.Run(() => { Kernel32Calls.Run(); });
 
