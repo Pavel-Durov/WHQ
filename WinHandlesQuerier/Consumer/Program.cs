@@ -1,9 +1,10 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 using System;
 using Consumer.CmdParams;
-using Microsoft.Win32;
 using Assignments.Core.Infra;
+using Consumer.ProccessStrategies;
+using WinHandlesQuerier.Core.Handlers;
 
 namespace Consumer
 {
@@ -20,16 +21,24 @@ namespace Consumer
 
             var options = new Options();
 
+            ProcessStrategy _processStrategy = null;
+
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
                 if (options.DumpFile != null)
                 {
-                    Global.DumpFile.DoAnaytics(options.DumpFile);
+                    _processStrategy = new DumpFileProcessStrategy(options.DumpFile);
+                    
                 }
                 else if(options.LivePid != Constants.INVALID_PID)
                 {
-                    Global.LiveProcess.Run((uint)options.LivePid);
+                    _processStrategy = new LiveProcessStrategy((uint)options.LivePid);
                 }
+
+                var result = _processStrategy.Run();
+                PrintHandler.Print(result, true);
+
+                Console.ReadKey(); 
             }
 #endif
             Console.ReadKey();

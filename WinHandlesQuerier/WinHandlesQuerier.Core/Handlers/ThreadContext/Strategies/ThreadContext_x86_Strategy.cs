@@ -4,6 +4,7 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using WinHandlesQuerier.Core.msos;
 using System.Runtime.InteropServices;
 using WinNativeApi;
+using WinNativeApi.WinNT;
 
 namespace Assignments.Core.Handlers.ThreadContext.Strategies
 {
@@ -36,7 +37,7 @@ namespace Assignments.Core.Handlers.ThreadContext.Strategies
                 {
                     try
                     {
-                        var structure = Marshal.PtrToStructure<CONTEXT>(gch.AddrOfPinnedObject());
+                        var structure = Marshal.PtrToStructure<CONTEXT_X86>(gch.AddrOfPinnedObject());
                         threadInfo.ContextStruct = new Model.UnifiedThreadContext(structure, threadInfo);
                         result = true;
                     }
