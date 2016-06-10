@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Handlers;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 
-namespace Consumer.ProccessStrategies
+namespace Consumer.ProcessStrategies
 {
     internal class DumpFileProcessStrategy : ProcessStrategy
     {

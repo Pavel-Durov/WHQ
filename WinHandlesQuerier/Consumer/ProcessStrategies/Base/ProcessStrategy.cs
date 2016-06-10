@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 
-namespace Consumer.ProccessStrategies
+namespace Consumer.ProcessStrategies
 {
     abstract class ProcessStrategy
     {

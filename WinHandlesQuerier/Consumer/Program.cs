@@ -3,7 +3,7 @@
 using System;
 using Consumer.CmdParams;
 using Assignments.Core.Infra;
-using Consumer.ProccessStrategies;
+using Consumer.ProcessStrategies;
 using WinHandlesQuerier.Core.Handlers;
 
 namespace Consumer
