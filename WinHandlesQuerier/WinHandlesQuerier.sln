@@ -55,10 +55,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnterCriticalSection", "Ent
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForMultipleObjects", "WaitForMultipleObjects", "{751684BC-DDA1-4A0C-9E1F-34FDBA9C229A}"
 	ProjectSection(SolutionItems) = preProject
-		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_EnterCriticalSectionTest_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_EnterCriticalSectionTest_WinDbgOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_ConsoleOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_ConsoleOutput.txt
-		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_EnterCriticalSectionTest_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_EnterCriticalSectionTest_WinDbgOutput.txt
+		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_WinDbgOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_ConsoleOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_ConsoleOutput.txt
+		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_WinDbgOutput.txt
 	EndProjectSection
 EndProject
 Global

@@ -58,7 +58,7 @@ namespace WinHandlesQuerier.Core.Model.Unified
             Handle = handle.Handle;
         }
 
-        public UnifiedBlockingObject(CRITICAL_SECTION section, uint handle) 
+        public UnifiedBlockingObject(CRITICAL_SECTION section, ulong handle) 
             : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();

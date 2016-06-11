@@ -39,20 +39,7 @@ ntdll!NtWaitForMultipleObjects+0x14:
 10 000000a0`635ffe30 00007ffa`d78d8102 mscoree!CorExeMain_Exported+0xb
 11 000000a0`635ffe60 00007ffa`da4bc5b4 kernel32!BaseThreadInitThunk+0x22
 12 000000a0`635ffe90 00000000`00000000 ntdll!RtlUserThreadStart+0x34
-0:000> uf ntdll!NtWaitForMultipleObjects
-ntdll!NtWaitForMultipleObjects:
-00007ffa`da505c20 4c8bd1          mov     r10,rcx
-00007ffa`da505c23 b85b000000      mov     eax,5Bh
-00007ffa`da505c28 f604250803fe7f01 test    byte ptr [SharedUserData+0x308 (00000000`7ffe0308)],1
-00007ffa`da505c30 7503            jne     ntdll!NtWaitForMultipleObjects+0x15 (00007ffa`da505c35)  Branch
 
-ntdll!NtWaitForMultipleObjects+0x12:
-00007ffa`da505c32 0f05            syscall
-00007ffa`da505c34 c3              ret
-
-ntdll!NtWaitForMultipleObjects+0x15:
-00007ffa`da505c35 cd2e            int     2Eh
-00007ffa`da505c37 c3              ret
 0:000> uf KERNELBASE!WaitForMultipleObjectsEx
 KERNELBASE!WaitForMultipleObjectsEx:
 00007ffa`d7653a60 4c8bdc          mov     r11,rsp

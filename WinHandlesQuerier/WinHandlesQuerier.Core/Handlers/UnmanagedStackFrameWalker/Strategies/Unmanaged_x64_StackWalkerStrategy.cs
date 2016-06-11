@@ -2,6 +2,7 @@
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
 using Assignments.Core.Infra;
+using System;
 
 namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 {
@@ -45,6 +46,12 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
+
+        /// <summary>
+        /// Original Function call example: 
+        ///  var mulRes2 = Functions.WaitForMultipleObjects(19, arr, true, int.MaxValue);
+        ///  
+        /// </summary>
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             if (frame.ThreadContext != null)
@@ -53,14 +60,43 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                    || _globalConfigs.OsVersion == WinVersions.Win_8
                    || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
+
+                    
                     //1st : handlesCount (DWORD)
                     var hWaitCount = frame.ThreadContext.Context_amd64.Rbx;
+                    if(hWaitCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
+                    {
+                        throw new ArgumentOutOfRangeException($"Cannot await on more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{hWaitCount}");
+                    }
+
                     //2nd: Handles pointer (HANDLE)
+                    //RDX - Volatile -Second integer argument
+                    //Assembly
+                    //00007ffa`d7653a95 4c8bea          mov     r13,rdx
+                    //R13 == RDX
                     var hPtr = frame.ThreadContext.Context_amd64.R13;
+
+
                     //3rd: WaitAll (BOOLEAN)
-                    var thirdParam = frame.ThreadContext.Context_amd64.R15;
-                    //4th: Timeout (DWORD)
-                    var fourthParam = frame.ThreadContext.Context_amd64.R12;
+                    ///R8 - Volatile - Third integer argument
+                    //
+                    //00007ffa`d7653a90 4489442444      mov     dword ptr [rsp+44h],r8d
+                    //var thirdParam = frame.ThreadContext.Context_amd64.R15;
+
+                    var rspPtr = frame.StackPointer + 44 + sizeof(ulong);
+                    byte[] buffer = new byte[sizeof(ulong)];
+                    int read = 0;
+                    bool waitAllFlagParam;
+                    if (runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
+                    {
+                        waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
+                    }
+
+                    //4th: Timeout (DWORD) 
+                    //R9 - Volatile - Fourth integer argument
+                    //Assembly:
+                    //00007ffa`d7653a8d 458be1          mov     r12d,r9d
+                    var waitTime = frame.ThreadContext.Context_amd64.R12;
 
                     EnrichUnifiedStackFrame(frame, runtime, pid, hWaitCount, hPtr);
                 }
