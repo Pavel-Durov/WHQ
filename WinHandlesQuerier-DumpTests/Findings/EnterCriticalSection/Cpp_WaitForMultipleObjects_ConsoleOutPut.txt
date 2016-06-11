@@ -1,0 +1,170 @@
+
+Microsoft (R) Windows Debugger Version 10.0.10586.567 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\temp\dumps\Testing\x64\EnterCriticalSectionTest\EnterCriticalSectionTest_UnManaged.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 10 Version 10586 MP (8 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+Built by: 10.0.10586.0 (th2_release.151029-1700)
+Machine Name:
+Debug session time: Sat Jun 11 17:38:35.000 2016 (UTC + 3:00)
+System Uptime: 2 days 23:05:24.397
+Process Uptime: 0 days 0:00:20.000
+..............
+ntdll!NtWaitForSingleObject+0x14:
+00007ffa`da505164 c3              ret
+0:000> k
+ # Child-SP          RetAddr           Call Site
+00 0000005b`f4cff5d8 00007ffa`d762aadf ntdll!NtWaitForSingleObject+0x14
+01 0000005b`f4cff5e0 00007ffa`9da91ecf KERNELBASE!WaitForSingleObjectEx+0x8f
+*** WARNING: Unable to verify checksum for EnterCriticalSectionTest_UnManaged.exe
+02 0000005b`f4cff680 00007ff7`74a312b6 msvcp140!_Thrd_join+0x1f [f:\dd\vctools\crt\crtw32\stdcpp\thr\cthread.c @ 50]
+03 (Inline Function) --------`-------- EnterCriticalSectionTest_UnManaged!std::thread::join+0x5d [c:\program files (x86)\microsoft visual studio 14.0\vc\include\thread @ 194]
+04 0000005b`f4cff6b0 00007ff7`74a31d10 EnterCriticalSectionTest_UnManaged!main+0x126 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]
+05 (Inline Function) --------`-------- EnterCriticalSectionTest_UnManaged!invoke_main+0x22 [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 64]
+06 0000005b`f4cff840 00007ffa`d78d8102 EnterCriticalSectionTest_UnManaged!__scrt_common_main_seh+0x124 [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 255]
+07 0000005b`f4cff880 00007ffa`da4bc5b4 kernel32!BaseThreadInitThunk+0x22
+08 0000005b`f4cff8b0 00000000`00000000 ntdll!RtlUserThreadStart+0x34
+0:000> r
+rax=0000000000003400 rbx=0000000000000000 rcx=0000000000000080
+rdx=00000000ffffffff rsi=00000000ffffffff rdi=0000000000000080
+rip=00007ffada505164 rsp=0000005bf4cff5d8 rbp=0000000000000000
+ r8=0000000000000000  r9=0000000000000000 r10=0000000000000000
+r11=0000000000000064 r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+ntdll!NtWaitForSingleObject+0x14:
+00007ffa`da505164 c3              ret
+0:000> .frame ntdll!NtWaitForSingleObject
+                                        ^ Range error in '.frame ntdll!NtWaitForSingleObject'
+0:000> uf ntdll!NtWaitForSingleObject
+ntdll!NtWaitForSingleObject:
+00007ffa`da505150 4c8bd1          mov     r10,rcx
+00007ffa`da505153 b804000000      mov     eax,4
+00007ffa`da505158 f604250803fe7f01 test    byte ptr [SharedUserData+0x308 (00000000`7ffe0308)],1
+00007ffa`da505160 7503            jne     ntdll!NtWaitForSingleObject+0x15 (00007ffa`da505165)  Branch
+
+ntdll!NtWaitForSingleObject+0x12:
+00007ffa`da505162 0f05            syscall
+00007ffa`da505164 c3              ret
+
+ntdll!NtWaitForSingleObject+0x15:
+00007ffa`da505165 cd2e            int     2Eh
+00007ffa`da505167 c3              ret
+0:000> uf EnterCriticalSectionTest_UnManaged!main
+EnterCriticalSectionTest_UnManaged!main [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 29]:
+   29 00007ff7`74a31190 4053            push    rbx
+   29 00007ff7`74a31192 4881ec80010000  sub     rsp,180h
+   29 00007ff7`74a31199 48c7442428feffffff mov   qword ptr [rsp+28h],0FFFFFFFFFFFFFFFEh
+   29 00007ff7`74a311a2 488b05573e0000  mov     rax,qword ptr [EnterCriticalSectionTest_UnManaged!__security_cookie (00007ff7`74a35000)]
+   29 00007ff7`74a311a9 4833c4          xor     rax,rsp
+   29 00007ff7`74a311ac 4889842470010000 mov     qword ptr [rsp+170h],rax
+   30 00007ff7`74a311b4 33d2            xor     edx,edx
+   30 00007ff7`74a311b6 41b814010000    mov     r8d,114h
+   30 00007ff7`74a311bc 488d4c2450      lea     rcx,[rsp+50h]
+   30 00007ff7`74a311c1 e824170000      call    EnterCriticalSectionTest_UnManaged!memset (00007ff7`74a328ea)
+   30 00007ff7`74a311c6 c744245014010000 mov     dword ptr [rsp+50h],114h
+   30 00007ff7`74a311ce 488d4c2450      lea     rcx,[rsp+50h]
+   30 00007ff7`74a311d3 ff15271e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_GetVersionExW (00007ff7`74a33000)]
+   30 00007ff7`74a311d9 448b442458      mov     r8d,dword ptr [rsp+58h]
+   30 00007ff7`74a311de 8b542454        mov     edx,dword ptr [rsp+54h]
+   30 00007ff7`74a311e2 488d0dff210000  lea     rcx,[EnterCriticalSectionTest_UnManaged!`string' (00007ff7`74a333e8)]
+   30 00007ff7`74a311e9 e812080000      call    EnterCriticalSectionTest_UnManaged!printf (00007ff7`74a31a00)
+   31 00007ff7`74a311ee ff15141e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_GetCurrentProcessId (00007ff7`74a33008)]
+   31 00007ff7`74a311f4 8bd8            mov     ebx,eax
+   31 00007ff7`74a311f6 488d1503220000  lea     rdx,[EnterCriticalSectionTest_UnManaged!`string' (00007ff7`74a33400)]
+   31 00007ff7`74a311fd 488b0de41e0000  mov     rcx,qword ptr [EnterCriticalSectionTest_UnManaged!_imp_?coutstd (00007ff7`74a330e8)]
+   31 00007ff7`74a31204 e807030000      call    EnterCriticalSectionTest_UnManaged!std::operator<<<std::char_traits<char> > (00007ff7`74a31510)
+   31 00007ff7`74a31209 488bc8          mov     rcx,rax
+   31 00007ff7`74a3120c 8bd3            mov     edx,ebx
+   31 00007ff7`74a3120e ff15cc1e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_??6?$basic_ostreamDU?$char_traitsDstdstdQEAAAEAV01KZ (00007ff7`74a330e0)]
+   31 00007ff7`74a31214 488bc8          mov     rcx,rax
+   31 00007ff7`74a31217 488d15d2040000  lea     rdx,[EnterCriticalSectionTest_UnManaged!std::endl<char,std::char_traits<char> > (00007ff7`74a316f0)]
+   31 00007ff7`74a3121e ff15b41e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_??6?$basic_ostreamDU?$char_traitsDstdstdQEAAAEAV01P6AAEAV01AEAV01ZZ (00007ff7`74a330d8)]
+   33 00007ff7`74a31224 488d1525010000  lea     rdx,[EnterCriticalSectionTest_UnManaged!task (00007ff7`74a31350)]
+   33 00007ff7`74a3122b 488d4c2420      lea     rcx,[rsp+20h]
+   33 00007ff7`74a31230 e81b050000      call    EnterCriticalSectionTest_UnManaged!std::make_unique<std::tuple<void (__cdecl*)(void)>,void (__cdecl&)(void)> (00007ff7`74a31750)
+   33 00007ff7`74a31235 90              nop
+   33 00007ff7`74a31236 488bd0          mov     rdx,rax
+   33 00007ff7`74a31239 488d4c2440      lea     rcx,[rsp+40h]
+   33 00007ff7`74a3123e e84d050000      call    EnterCriticalSectionTest_UnManaged!std::_Launch<std::unique_ptr<std::tuple<void (__cdecl*)(void)>,std::default_delete<std::tuple<void (__cdecl*)(void)> > > > (00007ff7`74a31790)
+   33 00007ff7`74a31243 90              nop
+   33 00007ff7`74a31244 488b4c2420      mov     rcx,qword ptr [rsp+20h]
+   33 00007ff7`74a31249 4885c9          test    rcx,rcx
+   33 00007ff7`74a3124c 740b            je      EnterCriticalSectionTest_UnManaged!main+0xc9 (00007ff7`74a31259)  Branch
+
+EnterCriticalSectionTest_UnManaged!main+0xbe [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 33]:
+   33 00007ff7`74a3124e ba08000000      mov     edx,8
+   33 00007ff7`74a31253 e83c080000      call    EnterCriticalSectionTest_UnManaged!operator delete (00007ff7`74a31a94)
+   33 00007ff7`74a31258 90              nop
+
+EnterCriticalSectionTest_UnManaged!main+0xc9 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31259 8b542448        mov     edx,dword ptr [rsp+48h]
+   34 00007ff7`74a3125d 85d2            test    edx,edx
+   34 00007ff7`74a3125f 0f95c0          setne   al
+   34 00007ff7`74a31262 84c0            test    al,al
+   34 00007ff7`74a31264 750f            jne     EnterCriticalSectionTest_UnManaged!main+0xe5 (00007ff7`74a31275)  Branch
+
+EnterCriticalSectionTest_UnManaged!main+0xd6 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31266 b901000000      mov     ecx,1
+   34 00007ff7`74a3126b ff15df1e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_?_Throw_Cpp_errorstdYAXHZ (00007ff7`74a33150)]
+   34 00007ff7`74a31271 8b542448        mov     edx,dword ptr [rsp+48h]
+
+EnterCriticalSectionTest_UnManaged!main+0xe5 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31275 85d2            test    edx,edx
+   34 00007ff7`74a31277 7509            jne     EnterCriticalSectionTest_UnManaged!main+0xf2 (00007ff7`74a31282)  Branch
+
+EnterCriticalSectionTest_UnManaged!main+0xe9 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31279 8d4a01          lea     ecx,[rdx+1]
+   34 00007ff7`74a3127c ff15ce1e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_?_Throw_Cpp_errorstdYAXHZ (00007ff7`74a33150)]
+
+EnterCriticalSectionTest_UnManaged!main+0xf2 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31282 ff15b81e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp__Thrd_id (00007ff7`74a33140)]
+   34 00007ff7`74a31288 39442448        cmp     dword ptr [rsp+48h],eax
+   34 00007ff7`74a3128c 0f94c0          sete    al
+   34 00007ff7`74a3128f 84c0            test    al,al
+   34 00007ff7`74a31291 740b            je      EnterCriticalSectionTest_UnManaged!main+0x10e (00007ff7`74a3129e)  Branch
+
+EnterCriticalSectionTest_UnManaged!main+0x103 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a31293 b905000000      mov     ecx,5
+   34 00007ff7`74a31298 ff15b21e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_?_Throw_Cpp_errorstdYAXHZ (00007ff7`74a33150)]
+
+EnterCriticalSectionTest_UnManaged!main+0x10e [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a3129e 0f28442440      movaps  xmm0,xmmword ptr [rsp+40h]
+   34 00007ff7`74a312a3 660f7f442430    movdqa  xmmword ptr [rsp+30h],xmm0
+   34 00007ff7`74a312a9 33d2            xor     edx,edx
+   34 00007ff7`74a312ab 488d4c2430      lea     rcx,[rsp+30h]
+   34 00007ff7`74a312b0 ff154a1e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp__Thrd_join (00007ff7`74a33100)]
+   34 00007ff7`74a312b6 85c0            test    eax,eax
+   34 00007ff7`74a312b8 740c            je      EnterCriticalSectionTest_UnManaged!main+0x136 (00007ff7`74a312c6)  Branch
+
+EnterCriticalSectionTest_UnManaged!main+0x12a [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]:
+   34 00007ff7`74a312ba b902000000      mov     ecx,2
+   34 00007ff7`74a312bf ff158b1e0000    call    qword ptr [EnterCriticalSectionTest_UnManaged!_imp_?_Throw_Cpp_errorstdYAXHZ (00007ff7`74a33150)]
+   34 00007ff7`74a312c5 90              nop
+
+EnterCriticalSectionTest_UnManaged!main+0x136 [c:\vc\git\myprojects\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 36]:
+   36 00007ff7`74a312c6 33c0            xor     eax,eax
+   37 00007ff7`74a312c8 488b8c2470010000 mov     rcx,qword ptr [rsp+170h]
+   37 00007ff7`74a312d0 4833cc          xor     rcx,rsp
+   37 00007ff7`74a312d3 e898070000      call    EnterCriticalSectionTest_UnManaged!__security_check_cookie (00007ff7`74a31a70)
+   37 00007ff7`74a312d8 4881c480010000  add     rsp,180h
+   37 00007ff7`74a312df 5b              pop     rbx
+   37 00007ff7`74a312e0 c3              ret
+0:000> r
+rax=0000000000003400 rbx=0000000000000000 rcx=0000000000000080
+rdx=00000000ffffffff rsi=00000000ffffffff rdi=0000000000000080
+rip=00007ffada505164 rsp=0000005bf4cff5d8 rbp=0000000000000000
+ r8=0000000000000000  r9=0000000000000000 r10=0000000000000000
+r11=0000000000000064 r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+ntdll!NtWaitForSingleObject+0x14:
+00007ffa`da505164 c3              ret

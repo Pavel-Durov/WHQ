@@ -78,6 +78,8 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                     if (frame.ThreadContext.Is64Bit)
                     {
                         var handle = frame.ThreadContext.Context_amd64.Rdi;
+                        var watTime = frame.ThreadContext.Context_amd64.R12;
+
                         EnrichUnifiedStackFrame(frame, handle, pid);
                     }
                 }

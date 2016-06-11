@@ -212,9 +212,6 @@ _Pvt_Extensions/
 ModelManifest.xml
 Assignments/Assignments.VC.opendb
 
-*.txt
-
-
 # Compiled Object files
 *.slo
 *.lo

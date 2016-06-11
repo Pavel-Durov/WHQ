@@ -1,0 +1,9 @@
+Test started
+Is64BitProcess : True
+
+PID : 2360
+WaitForMultipleObjects - Count: 19, bWaitAll : true, wait: 2147483647 / 7FFFFFFF
+
+
+
+

@@ -1,0 +1,5 @@
+Test started
+Is64BitProcess : True
+
+PID : 12668
+WaitForSingleObject : handle 1124, 0x464
