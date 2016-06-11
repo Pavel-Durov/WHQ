@@ -3,8 +3,8 @@
 using System;
 using Consumer.CmdParams;
 using Assignments.Core.Infra;
-using Consumer.ProcessStrategies;
 using WinHandlesQuerier.Core.Handlers;
+using Consumer.ProcessStrategies;
 
 namespace Consumer
 {

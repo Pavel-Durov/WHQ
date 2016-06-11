@@ -88,9 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmdParams\Options.cs" />
-    <Compile Include="ProccessStrategies\DumpFileProcessStrategy.cs" />
-    <Compile Include="ProccessStrategies\LiveProcessStrategy.cs" />
-    <Compile Include="ProccessStrategies\Base\ProcessStrategy.cs" />
+    <Compile Include="ProcessStrategies\Base\ProcessStrategy.cs" />
+    <Compile Include="ProcessStrategies\DumpFileProcessStrategy.cs" />
+    <Compile Include="ProcessStrategies\LiveProcessStrategy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
