@@ -56,7 +56,7 @@ namespace Kernel32
         public static extern bool CloseHandle(HANDLE hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
+        public static extern Int32 WaitForSingleObject(HANDLE Handle, uint Wait);
 
 
         [DllImport("kernel32.dll", SetLastError = true)]

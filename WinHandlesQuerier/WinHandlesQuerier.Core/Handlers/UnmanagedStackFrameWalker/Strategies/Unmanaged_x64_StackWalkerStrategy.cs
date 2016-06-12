@@ -37,6 +37,8 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                   || _globalConfigs.OsVersion == WinVersions.Win_8
                   || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
+                    //TODO: Sems like Rcx isn't moved..
+
                     var firstParam = frame.ThreadContext.Context_amd64.Rcx;
 
                     result = new UnifiedBlockingObject(firstParam, UnifiedBlockingType.CriticalSectionObject);
@@ -49,7 +51,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
         /// <summary>
         /// Original Function call example: 
-        ///  var mulRes2 = Functions.WaitForMultipleObjects(19, arr, true, int.MaxValue);
+        /// var mulRes2 = Functions.WaitForMultipleObjects(19, arr, true, int.MaxValue);
         ///  
         /// </summary>
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
@@ -60,13 +62,11 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                    || _globalConfigs.OsVersion == WinVersions.Win_8
                    || _globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
-
-                    
                     //1st : handlesCount (DWORD)
-                    var hWaitCount = frame.ThreadContext.Context_amd64.Rbx;
-                    if(hWaitCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
+                    var handlesCount = frame.ThreadContext.Context_amd64.Rbx;
+                    if (handlesCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
                     {
-                        throw new ArgumentOutOfRangeException($"Cannot await on more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{hWaitCount}");
+                        throw new ArgumentOutOfRangeException($"Cannot await on more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{handlesCount}");
                     }
 
                     //2nd: Handles pointer (HANDLE)
@@ -74,7 +74,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                     //Assembly
                     //00007ffa`d7653a95 4c8bea          mov     r13,rdx
                     //R13 == RDX
-                    var hPtr = frame.ThreadContext.Context_amd64.R13;
+                    var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
 
 
                     //3rd: WaitAll (BOOLEAN)
@@ -98,11 +98,17 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                     //00007ffa`d7653a8d 458be1          mov     r12d,r9d
                     var waitTime = frame.ThreadContext.Context_amd64.R12;
 
-                    EnrichUnifiedStackFrame(frame, runtime, pid, hWaitCount, hPtr);
+                    EnrichUnifiedStackFrame(frame, runtime, pid, handlesCount, hArrayPtr);
                 }
             }
         }
 
+        /// <summary>
+        ///  Original Function call example: 
+        ///    Kernel32.Functions.WaitForSingleObject(hEvent, waitTime);
+        ///    
+        /// 
+        /// </summary>
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             if (frame.ThreadContext != null)
@@ -113,10 +119,23 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                 {
                     if (frame.ThreadContext.Is64Bit)
                     {
-                        var handle = frame.ThreadContext.Context_amd64.Rdi;
-                        var watTime = frame.ThreadContext.Context_amd64.R12;
 
-                        EnrichUnifiedStackFrame(frame, handle, pid);
+                        ///RCX - Volatile - First integer argument
+                        ///Handler ptr
+                        var handle = frame.ThreadContext.Context_amd64.Rdi;
+
+                        ///RDX - Volatile -Second integer argument
+                        ///WaitAmount
+                        var watTime = frame.ThreadContext.Context_amd64.R13;
+                        //Cannot be obtained - since the value is overriden:
+                        //
+
+                        //EnrichUnifiedStackFrame(frame, handle, pid);
+
+                        //TODO:   
+                        //In manged (C#) code WaitForSingleObject function called as WaitForMultipleObjects
+                        //So it can be treated as WaitForMultipleObjects call convention - but with diffrent registers flow
+
                     }
                 }
             }

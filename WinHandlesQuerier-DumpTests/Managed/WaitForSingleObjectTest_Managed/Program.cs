@@ -14,9 +14,11 @@ namespace WaitForSingleObjectTest_Managed
             Console.WriteLine("PID : " + proc.Id);
 
             IntPtr hEvent = Kernel32.Functions.CreateEvent(IntPtr.Zero, true, false, "SomethingSomething");
+            
+            uint waitTime = 1234567890;
+            Console.WriteLine($"WaitForSingleObject : handle {hEvent}, 0x{hEvent.ToString("X")}, waitTime: {waitTime}, 0x{waitTime.ToString("X")}");
 
-            Console.WriteLine($"WaitForSingleObject : handle {hEvent}, 0x{hEvent.ToString("X")}");
-            Kernel32.Functions.WaitForSingleObject(hEvent, Kernel32.Const.INFINITE);
+            Kernel32.Functions.WaitForSingleObject(hEvent, waitTime);
 
             Console.WriteLine("Done Waiting");
 

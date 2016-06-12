@@ -49,8 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaitForMultipleObjectsTest_
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnterCriticalSection", "EnterCriticalSection", "{AC05E9BB-D68F-43A6-BA9D-4EFADA037CCA}"
 	ProjectSection(SolutionItems) = preProject
-		..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Cpp_WaitForMultipleObjects_ConsoleOutPut.txt = ..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Cpp_WaitForMultipleObjects_ConsoleOutPut.txt
-		..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Csharp_WaitForMultipleObjects_WinDbgOutput.txt.txt = ..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Csharp_WaitForMultipleObjects_WinDbgOutput.txt.txt
+		..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Cpp_EnterCriticalSectionTest_ConsoleOutPut.txt = ..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Cpp_EnterCriticalSectionTest_ConsoleOutPut.txt
+		..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Csharp_EnterCriticalSectionTest_WinDbgOutput.txt.txt = ..\WinHandlesQuerier-DumpTests\Findings\EnterCriticalSection\Csharp_EnterCriticalSectionTest_WinDbgOutput.txt.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForMultipleObjects", "WaitForMultipleObjects", "{751684BC-DDA1-4A0C-9E1F-34FDBA9C229A}"
