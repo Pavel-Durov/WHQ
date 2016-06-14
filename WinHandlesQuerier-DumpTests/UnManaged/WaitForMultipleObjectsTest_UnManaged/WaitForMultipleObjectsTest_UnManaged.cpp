@@ -2,9 +2,6 @@
 #include "stdafx.h"
 #include<Windows.h>
 #include <iostream>
-#include <VersionHelpers.h>
-#include <windows.h>
-#include <string>
 
 #pragma warning(disable : 4996)
 
@@ -23,21 +20,19 @@ void print_os_info()
 
 int main()
 {
-
-#ifdef DEBUG
-	std::cout << "DEBUG MODE" << std::endl;
-#else
-	std::cout << "RELEASE MODE" << std::endl;
-#endif
-
 	print_os_info();
+	HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, L"Alfred");
+	HANDLE hMutex = CreateMutex(nullptr, FALSE, L"Bertha");
+	HANDLE handles[] = { hEvent, hMutex };
+
 	std::cout << "PID: " << GetCurrentProcessId() << std::endl;
 
-	HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, L"Alfred");
+	auto size = ARRAYSIZE(handles);
 
-	std::cout << "WaitForSingleObject :: handle:" << hEvent << std::endl;
+	std::cout << "WaitForMultipleObjects" <<"size : "
+		<< size <<",handles : " << handles <<", WaitTime (INFINITE): "<< INFINITE << std::endl;
 
-	WaitForSingleObject(hEvent, INFINITE);
+	WaitForMultipleObjects(size, handles, TRUE, INFINITE);
 
 	std::cout << "CloseHandle" << std::endl;
 
@@ -45,6 +40,3 @@ int main()
 
 	return 0;
 }
-
-
-

@@ -1,13 +1,15 @@
-
 #include "stdafx.h"
 #include<Windows.h>
 #include <iostream>
+#include <VersionHelpers.h>
+#include <windows.h>
+#include <string>
+#include <stdlib.h>
 
 #pragma warning(disable : 4996)
 
 void print_os_info()
 {
-	//http://stackoverflow.com/questions/1963992/check-windows-version
 	OSVERSIONINFOW info;
 	ZeroMemory(&info, sizeof(OSVERSIONINFOW));
 	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
@@ -15,21 +17,31 @@ void print_os_info()
 	LPOSVERSIONINFOW lp_info = &info;
 	GetVersionEx(lp_info);
 
+	//std::cout<<(system("systeminfo")) << std::endl;
+
 	printf("Windows version: %u.%u\n", info.dwMajorVersion, info.dwMinorVersion);
 }
 
 int main()
 {
+
+#ifdef DEBUG
+	std::cout << "DEBUG MODE" << std::endl;
+#else
+	std::cout << "RELEASE MODE" << std::endl;
+#endif
+
+
+	
+
 	print_os_info();
+	std::cout << "PID: " << GetCurrentProcessId() << std::endl;
+
 	HANDLE hEvent = CreateEvent(nullptr, TRUE, FALSE, L"Alfred");
-	HANDLE hMutex = CreateMutex(nullptr, FALSE, L"Bertha");
-	HANDLE handles[] = { hEvent, hMutex };
 
-	std::cout << "PID: "<< GetCurrentProcessId() << std::endl;
+	std::cout << "WaitForSingleObject :: handle:" << hEvent << std::endl;
 
-	std::cout << "WaitForMultipleObjects" << std::endl;
-
-	WaitForMultipleObjects(ARRAYSIZE(handles), handles, TRUE, 60000);
+	WaitForSingleObject(hEvent, INFINITE);
 
 	std::cout << "CloseHandle" << std::endl;
 
@@ -37,4 +49,3 @@ int main()
 
 	return 0;
 }
-

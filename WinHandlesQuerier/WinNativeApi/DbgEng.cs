@@ -9,7 +9,6 @@ namespace WinNativeApi
     //DbgEng.h
     public class DbgEng
     {
-
         #region Constants
 
         public const uint S_OK = 0x00000000; /*Operation successful*/

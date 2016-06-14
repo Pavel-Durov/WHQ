@@ -1,0 +1,261 @@
+
+Microsoft (R) Windows Debugger Version 10.0.10586.567 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_Managed.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 10 Version 10586 MP (8 procs) Free x64
+Product: WinNt, suite: SingleUserTS
+Built by: 10.0.10586.0 (th2_release.151029-1700)
+Machine Name:
+Debug session time: Sun Jun 12 16:56:59.000 2016 (UTC + 3:00)
+System Uptime: 0 days 0:53:20.405
+Process Uptime: 0 days 0:00:49.000
+............................................
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffd`c04d5c34 c3              ret
+0:000> k
+ # Child-SP          RetAddr           Call Site
+00 000000a5`19cfe648 00007ffd`bd343b4f ntdll!NtWaitForMultipleObjects+0x14
+01 000000a5`19cfe650 00007ffd`a963d3b2 KERNELBASE!WaitForMultipleObjectsEx+0xef
+02 000000a5`19cfe950 00007ffd`a963d24c clr!WaitForMultipleObjectsEx_SO_TOLERANT+0x62
+03 000000a5`19cfe9b0 00007ffd`a963d045 clr!Thread::DoAppropriateWaitWorker+0x1e4
+04 000000a5`19cfeab0 00007ffd`a96f7dd2 clr!Thread::DoAppropriateWait+0x7d
+05 000000a5`19cfeb30 00007ffd`a96d15e8 clr!CLREventBase::WaitEx+0xc8
+06 000000a5`19cfebc0 00007ffd`a98addc8 clr!CLREventWaitWithTry+0x58
+07 000000a5`19cfec60 00007ffd`a9697955 clr!ThreadStore::WaitForOtherThreads+0x216438
+08 000000a5`19cfeca0 00007ffd`a96dbad1 clr!RunMainPost+0x3e
+09 000000a5`19cfecf0 00007ffd`a967dc3e clr!Assembly::ExecuteMainMethod+0xf7
+0a 000000a5`19cfefe0 00007ffd`a967dea3 clr!SystemDomain::ExecuteMainMethod+0x5ea
+0b 000000a5`19cff610 00007ffd`a967de7a clr!ExecuteEXE+0x3f
+0c 000000a5`19cff680 00007ffd`a969023c clr!_CorExeMainInternal+0xb2
+0d 000000a5`19cff710 00007ffd`a9f1802d clr!CorExeMain+0x14
+0e 000000a5`19cff750 00007ffd`aa961184 mscoreei!CorExeMain+0xe0
+0f 000000a5`19cff7a0 00007ffd`aa9610ab mscoree!ShellShim__CorExeMain+0xb8
+10 000000a5`19cff7d0 00007ffd`bfda8102 mscoree!CorExeMain_Exported+0xb
+11 000000a5`19cff800 00007ffd`c048c5b4 kernel32!BaseThreadInitThunk+0x22
+12 000000a5`19cff830 00000000`00000000 ntdll!RtlUserThreadStart+0x34
+0:000> uf KERNELBASE!WaitForMultipleObjectsEx
+KERNELBASE!WaitForMultipleObjectsEx:
+00007ffd`bd343a60 4c8bdc          mov     r11,rsp
+00007ffd`bd343a63 49895b18        mov     qword ptr [r11+18h],rbx
+00007ffd`bd343a67 49897320        mov     qword ptr [r11+20h],rsi
+00007ffd`bd343a6b 57              push    rdi
+00007ffd`bd343a6c 4154            push    r12
+00007ffd`bd343a6e 4155            push    r13
+00007ffd`bd343a70 4156            push    r14
+00007ffd`bd343a72 4157            push    r15
+00007ffd`bd343a74 4881ecd0020000  sub     rsp,2D0h
+00007ffd`bd343a7b 488b057eb51700  mov     rax,qword ptr [KERNELBASE!_security_cookie (00007ffd`bd4bf000)]
+00007ffd`bd343a82 4833c4          xor     rax,rsp
+00007ffd`bd343a85 48898424c0020000 mov     qword ptr [rsp+2C0h],rax
+00007ffd`bd343a8d 458be1          mov     r12d,r9d
+00007ffd`bd343a90 4489442444      mov     dword ptr [rsp+44h],r8d
+00007ffd`bd343a95 4c8bea          mov     r13,rdx
+00007ffd`bd343a98 8bd9            mov     ebx,ecx
+00007ffd`bd343a9a 48c744246048000000 mov   qword ptr [rsp+60h],48h
+00007ffd`bd343aa3 c744246801000000 mov     dword ptr [rsp+68h],1
+00007ffd`bd343aab 33c0            xor     eax,eax
+00007ffd`bd343aad 4889442470      mov     qword ptr [rsp+70h],rax
+00007ffd`bd343ab2 4889442478      mov     qword ptr [rsp+78h],rax
+00007ffd`bd343ab7 49898388fdffff  mov     qword ptr [r11-278h],rax
+00007ffd`bd343abe 49898390fdffff  mov     qword ptr [r11-270h],rax
+00007ffd`bd343ac5 49898398fdffff  mov     qword ptr [r11-268h],rax
+00007ffd`bd343acc 498983a0fdffff  mov     qword ptr [r11-260h],rax
+00007ffd`bd343ad3 498983a8fdffff  mov     qword ptr [r11-258h],rax
+00007ffd`bd343ada 8bb42420030000  mov     esi,dword ptr [rsp+320h]
+00007ffd`bd343ae1 85f6            test    esi,esi
+00007ffd`bd343ae3 0f855d010000    jne     KERNELBASE!WaitForMultipleObjectsEx+0x1e6 (00007ffd`bd343c46)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x89:
+00007ffd`bd343ae9 65488b0c2560000000 mov   rcx,qword ptr gs:[60h]
+00007ffd`bd343af2 48894c2438      mov     qword ptr [rsp+38h],rcx
+00007ffd`bd343af7 32d2            xor     dl,dl
+00007ffd`bd343af9 83fb40          cmp     ebx,40h
+00007ffd`bd343afc 0f878d000000    ja      KERNELBASE!WaitForMultipleObjectsEx+0x12f (00007ffd`bd343b8f)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xa2:
+00007ffd`bd343b02 33ff            xor     edi,edi
+
+KERNELBASE!WaitForMultipleObjectsEx+0xa4:
+00007ffd`bd343b04 897c2448        mov     dword ptr [rsp+48h],edi
+00007ffd`bd343b08 3bfb            cmp     edi,ebx
+00007ffd`bd343b0a 7318            jae     KERNELBASE!WaitForMultipleObjectsEx+0xc4 (00007ffd`bd343b24)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xac:
+00007ffd`bd343b0c 8bc7            mov     eax,edi
+00007ffd`bd343b0e 4c8d3cfd00000000 lea     r15,[rdi*8]
+00007ffd`bd343b16 478b342f        mov     r14d,dword ptr [r15+r13]
+00007ffd`bd343b1a 4183fef4        cmp     r14d,0FFFFFFF4h
+00007ffd`bd343b1e 737a            jae     KERNELBASE!WaitForMultipleObjectsEx+0x13a (00007ffd`bd343b9a)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xc0:
+00007ffd`bd343b20 ffc7            inc     edi
+00007ffd`bd343b22 ebe0            jmp     KERNELBASE!WaitForMultipleObjectsEx+0xa4 (00007ffd`bd343b04)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xc4:
+00007ffd`bd343b24 4183fcff        cmp     r12d,0FFFFFFFFh
+00007ffd`bd343b28 753c            jne     KERNELBASE!WaitForMultipleObjectsEx+0x106 (00007ffd`bd343b66)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xca:
+00007ffd`bd343b2a 4533f6          xor     r14d,r14d
+
+KERNELBASE!WaitForMultipleObjectsEx+0xcd:
+00007ffd`bd343b2d 448b7c2444      mov     r15d,dword ptr [rsp+44h]
+
+KERNELBASE!WaitForMultipleObjectsEx+0xd2:
+00007ffd`bd343b32 4585ff          test    r15d,r15d
+00007ffd`bd343b35 7553            jne     KERNELBASE!WaitForMultipleObjectsEx+0x12a (00007ffd`bd343b8a)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xd7:
+00007ffd`bd343b37 458d4701        lea     r8d,[r15+1]
+
+KERNELBASE!WaitForMultipleObjectsEx+0xdb:
+00007ffd`bd343b3b 4c89742420      mov     qword ptr [rsp+20h],r14
+00007ffd`bd343b40 440fb6ce        movzx   r9d,sil
+00007ffd`bd343b44 498bd5          mov     rdx,r13
+00007ffd`bd343b47 8bcb            mov     ecx,ebx
+00007ffd`bd343b49 ff15c1930800    call    qword ptr [KERNELBASE!_imp_NtWaitForMultipleObjects (00007ffd`bd3ccf10)]
+00007ffd`bd343b4f 8bf8            mov     edi,eax
+00007ffd`bd343b51 89442440        mov     dword ptr [rsp+40h],eax
+00007ffd`bd343b55 85c0            test    eax,eax
+00007ffd`bd343b57 0f88ac000000    js      KERNELBASE!WaitForMultipleObjectsEx+0x1a9 (00007ffd`bd343c09)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xfd:
+00007ffd`bd343b5d 85f6            test    esi,esi
+00007ffd`bd343b5f 7520            jne     KERNELBASE!WaitForMultipleObjectsEx+0x121 (00007ffd`bd343b81)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x101:
+00007ffd`bd343b61 e9a3000000      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x1a9 (00007ffd`bd343c09)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x106:
+00007ffd`bd343b66 4969c410270000  imul    rax,r12,2710h
+00007ffd`bd343b6d 4889442450      mov     qword ptr [rsp+50h],rax
+00007ffd`bd343b72 48f7d8          neg     rax
+00007ffd`bd343b75 4889442450      mov     qword ptr [rsp+50h],rax
+00007ffd`bd343b7a 4c8d742450      lea     r14,[rsp+50h]
+00007ffd`bd343b7f ebac            jmp     KERNELBASE!WaitForMultipleObjectsEx+0xcd (00007ffd`bd343b2d)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x121:
+00007ffd`bd343b81 3d01010000      cmp     eax,101h
+00007ffd`bd343b86 747c            je      KERNELBASE!WaitForMultipleObjectsEx+0x1a4 (00007ffd`bd343c04)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x128:
+00007ffd`bd343b88 eb7f            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x1a9 (00007ffd`bd343c09)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x12a:
+00007ffd`bd343b8a 4533c0          xor     r8d,r8d
+00007ffd`bd343b8d ebac            jmp     KERNELBASE!WaitForMultipleObjectsEx+0xdb (00007ffd`bd343b3b)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x12f:
+00007ffd`bd343b8f bf0d0000c0      mov     edi,0C000000Dh
+00007ffd`bd343b94 897c2440        mov     dword ptr [rsp+40h],edi
+00007ffd`bd343b98 eb6f            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x1a9 (00007ffd`bd343c09)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x13a:
+00007ffd`bd343b9a 4183fef6        cmp     r14d,0FFFFFFF6h
+00007ffd`bd343b9e 7780            ja      KERNELBASE!WaitForMultipleObjectsEx+0xc0 (00007ffd`bd343b20)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x140:
+00007ffd`bd343ba0 84d2            test    dl,dl
+00007ffd`bd343ba2 7532            jne     KERNELBASE!WaitForMultipleObjectsEx+0x176 (00007ffd`bd343bd6)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x144:
+00007ffd`bd343ba4 4c8bc3          mov     r8,rbx
+00007ffd`bd343ba7 49c1e003        shl     r8,3
+00007ffd`bd343bab 498bd5          mov     rdx,r13
+00007ffd`bd343bae 488d8c24c0000000 lea     rcx,[rsp+0C0h]
+00007ffd`bd343bb6 e889950300      call    KERNELBASE!memcpy (00007ffd`bd37d144)
+00007ffd`bd343bbb 4c8dac24c0000000 lea     r13,[rsp+0C0h]
+00007ffd`bd343bc3 4c89ac24b0000000 mov     qword ptr [rsp+0B0h],r13
+00007ffd`bd343bcb b201            mov     dl,1
+00007ffd`bd343bcd 88542430        mov     byte ptr [rsp+30h],dl
+00007ffd`bd343bd1 488b4c2438      mov     rcx,qword ptr [rsp+38h]
+
+KERNELBASE!WaitForMultipleObjectsEx+0x176:
+00007ffd`bd343bd6 488b4120        mov     rax,qword ptr [rcx+20h]
+00007ffd`bd343bda 4183fef6        cmp     r14d,0FFFFFFF6h
+00007ffd`bd343bde 7506            jne     KERNELBASE!WaitForMultipleObjectsEx+0x186 (00007ffd`bd343be6)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x180:
+00007ffd`bd343be0 488b4820        mov     rcx,qword ptr [rax+20h]
+00007ffd`bd343be4 eb10            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x196 (00007ffd`bd343bf6)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x186:
+00007ffd`bd343be6 4183fef5        cmp     r14d,0FFFFFFF5h
+00007ffd`bd343bea 7506            jne     KERNELBASE!WaitForMultipleObjectsEx+0x192 (00007ffd`bd343bf2)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x18c:
+00007ffd`bd343bec 488b4828        mov     rcx,qword ptr [rax+28h]
+00007ffd`bd343bf0 eb04            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x196 (00007ffd`bd343bf6)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x192:
+00007ffd`bd343bf2 488b4830        mov     rcx,qword ptr [rax+30h]
+
+KERNELBASE!WaitForMultipleObjectsEx+0x196:
+00007ffd`bd343bf6 4b890c2f        mov     qword ptr [r15+r13],rcx
+00007ffd`bd343bfa 488b4c2438      mov     rcx,qword ptr [rsp+38h]
+00007ffd`bd343bff e91cffffff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0xc0 (00007ffd`bd343b20)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1a4:
+00007ffd`bd343c04 e929ffffff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0xd2 (00007ffd`bd343b32)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1a9:
+00007ffd`bd343c09 85f6            test    esi,esi
+00007ffd`bd343c0b 754b            jne     KERNELBASE!WaitForMultipleObjectsEx+0x1f8 (00007ffd`bd343c58)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1ad:
+00007ffd`bd343c0d 85ff            test    edi,edi
+00007ffd`bd343c0f 0f8899c20400    js      KERNELBASE!DsAddCloneDCW+0x11e6e (00007ffd`bd38feae)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1b5:
+00007ffd`bd343c15 8bdf            mov     ebx,edi
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1b7:
+00007ffd`bd343c17 8bc3            mov     eax,ebx
+00007ffd`bd343c19 488b8c24c0020000 mov     rcx,qword ptr [rsp+2C0h]
+00007ffd`bd343c21 4833cc          xor     rcx,rsp
+00007ffd`bd343c24 e8a75d0300      call    KERNELBASE!_security_check_cookie (00007ffd`bd3799d0)
+00007ffd`bd343c29 4c8d9c24d0020000 lea     r11,[rsp+2D0h]
+00007ffd`bd343c31 498b5b40        mov     rbx,qword ptr [r11+40h]
+00007ffd`bd343c35 498b7348        mov     rsi,qword ptr [r11+48h]
+00007ffd`bd343c39 498be3          mov     rsp,r11
+00007ffd`bd343c3c 415f            pop     r15
+00007ffd`bd343c3e 415e            pop     r14
+00007ffd`bd343c40 415d            pop     r13
+00007ffd`bd343c42 415c            pop     r12
+00007ffd`bd343c44 5f              pop     rdi
+00007ffd`bd343c45 c3              ret
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1e6:
+00007ffd`bd343c46 33d2            xor     edx,edx
+00007ffd`bd343c48 488d4c2460      lea     rcx,[rsp+60h]
+00007ffd`bd343c4d ff153d920800    call    qword ptr [KERNELBASE!_imp_RtlActivateActivationContextUnsafeFast (00007ffd`bd3cce90)]
+00007ffd`bd343c53 e991feffff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x89 (00007ffd`bd343ae9)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x1f8:
+00007ffd`bd343c58 488d4c2460      lea     rcx,[rsp+60h]
+00007ffd`bd343c5d ff1535920800    call    qword ptr [KERNELBASE!_imp_RtlDeactivateActivationContextUnsafeFast (00007ffd`bd3cce98)]
+00007ffd`bd343c63 eba8            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x1ad (00007ffd`bd343c0d)  Branch
+
+KERNELBASE!DsAddCloneDCW+0x11e6e:
+00007ffd`bd38feae 83cbff          or      ebx,0FFFFFFFFh
+00007ffd`bd38feb1 8bcf            mov     ecx,edi
+00007ffd`bd38feb3 e878cbf8ff      call    KERNELBASE!BaseSetLastNTError (00007ffd`bd31ca30)
+00007ffd`bd38feb8 90              nop
+00007ffd`bd38feb9 e9593dfbff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x1b7 (00007ffd`bd343c17)  Branch
+0:000> r
+rax=000001dd18a40740 rbx=0000000000000001 rcx=000001dd18a41020
+rdx=00000000ffffffff rsi=0000000000000001 rdi=0000000000000001
+rip=00007ffdc04d5c34 rsp=000000a519cfe648 rbp=000000a519cfea59
+ r8=0000000000000001  r9=000000a519cfeca0 r10=00007ffda9c6c868
+r11=000000a519cfe750 r12=00000000ffffffff r13=000001dd18a41020
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+ntdll!NtWaitForMultipleObjects+0x14:
+00007ffd`c04d5c34 c3              ret

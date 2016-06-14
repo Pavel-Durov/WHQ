@@ -30,7 +30,7 @@ namespace Kernel32
         public static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT lpContext);
+        public static extern bool GetThreadContext(IntPtr hThread, ref CONTEXT_X86 lpContext);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetCurrentProcess();
@@ -56,7 +56,7 @@ namespace Kernel32
         public static extern bool CloseHandle(HANDLE hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
+        public static extern Int32 WaitForSingleObject(HANDLE Handle, uint Wait);
 
 
         [DllImport("kernel32.dll", SetLastError = true)]

@@ -1,22 +1,27 @@
-﻿using WinHandlesQuerier.Core.Handlers;
-using Microsoft.Diagnostics.Runtime;
+﻿using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinHandlesQuerier.Core.Handlers;
+using WinHandlesQuerier.Core.Model.Unified.Thread;
 
-namespace Consumer.Global
+namespace Consumer.ProcessStrategies
 {
-    class DumpFile
+    internal class DumpFileProcessStrategy : ProcessStrategy
     {
+        public DumpFileProcessStrategy(string filePath) : base(filePath)
+        {
+
+        }
         const int PID_NOT_FOUND = -1;
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
-        internal static void DoAnaytics(string dumpFile)
+
+        public override List<UnifiedThread> Run()
         {
-            using (DataTarget target = DataTarget.LoadCrashDump(dumpFile))
+            using (DataTarget target = DataTarget.LoadCrashDump(_filePath))
             {
                 if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
                 {
@@ -25,11 +30,9 @@ namespace Consumer.Global
 
                 ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
-                ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, dumpFile);
+                ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath);
 
-                var result = handler.Handle();
-
-                PrintHandler.Print(result, true);
+                return handler.Handle();
             }
         }
     }

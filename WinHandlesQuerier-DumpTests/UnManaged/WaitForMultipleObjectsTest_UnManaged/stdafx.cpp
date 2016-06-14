@@ -1,5 +1,5 @@
 // stdafx.cpp : source file that includes just the standard includes
-// WaitForSingleObjectTest.pch will be the pre-compiled header
+// WaitForMultipleObjectsTest_UnManaged.pch will be the pre-compiled header
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"

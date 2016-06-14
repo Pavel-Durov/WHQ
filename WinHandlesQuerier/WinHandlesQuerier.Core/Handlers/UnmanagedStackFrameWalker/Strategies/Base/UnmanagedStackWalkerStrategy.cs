@@ -41,7 +41,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
                     throw new AccessingNonReadableMemmory(string.Format("Accessing Unreadable memorry at {0}", startAddress));
                 }
                 //Advancing the pointer by 4 (32-bit system)
-                startAddress += (uint)IntPtr.Size;
+                startAddress += (ulong)IntPtr.Size;
             }
             return result;
         }
@@ -147,7 +147,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             frame.Handles = new List<UnifiedHandle>();
             foreach (var handle in handles)
             {
-                uint handleUint = Convert(handle);
+                ulong handleUint = Convert(handle);
 
                 UnifiedHandle unifiedHandle = GenerateUnifiedHandle(handleUint, pid);
 
@@ -158,9 +158,9 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             }
         }
 
-        protected uint Convert(byte[] bits)
+        protected ulong Convert(byte[] bits)
         {
-            return BitConverter.ToUInt32(bits, 0);
+            return BitConverter.ToUInt64(bits, 0);
         }
 
         #region Abstract Methods

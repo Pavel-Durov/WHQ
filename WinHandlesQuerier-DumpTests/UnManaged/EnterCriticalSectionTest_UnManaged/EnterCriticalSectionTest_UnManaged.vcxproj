@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{FC7D3F8F-E6E4-4D80-9B1F-05ABECA31D01}</ProjectGuid>
+    <ProjectGuid>{87702CA2-8CEF-4058-9205-DC7D51BB9F4E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>EnterCriticalSectionTest</RootNamespace>
+    <RootNamespace>EnterCriticalSectionTest_UnManaged</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,7 +146,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnterCriticalSectionTest.cpp" />
+    <ClCompile Include="EnterCriticalSectionTest_UnManaged.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
