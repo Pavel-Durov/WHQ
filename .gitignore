@@ -25,6 +25,9 @@ bld/
 # Visual Studio 2015 cache/options directory
 .vs/
 
+
+*.VC.db
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -241,7 +244,5 @@ Assignments/Assignments.VC.opendb
 *.exe
 *.out
 *.app
-WinHandlesQuerier/WinHandlesQuerier.VC.opendb
-WinHandlesQuerier/WinHandlesQuerier.VC.VC.opendb
 WinHandlesQuerier/WinHandlesQuerier.VC.db
-WinHandlesQuerier/WinHandlesQuerier.VC.db
+WinHandlesQuerier/Consumer/Logs/*.txt
