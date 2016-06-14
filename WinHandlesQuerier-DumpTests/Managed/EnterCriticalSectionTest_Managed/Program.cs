@@ -1,8 +1,7 @@
-﻿using Kernel32;
-using System;
+﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
-using WinBase;
 
 namespace EnterCriticalSectionTest_Managed
 {
@@ -23,28 +22,45 @@ namespace EnterCriticalSectionTest_Managed
             new Thread(() =>
             {
                 Console.WriteLine();
-                Functions.InitializeCriticalSection(out section);
+                InitializeCriticalSection(out section);
                 Console.WriteLine($"EnterCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
-                Functions.EnterCriticalSection(ref section);
+                EnterCriticalSection(ref section);
 
                 var inner = new Thread(() =>
                 {
                     Console.WriteLine("--DEAD LOCK--");
                     Console.WriteLine($"EnterCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
-                    Functions.EnterCriticalSection(ref section);
+                    EnterCriticalSection(ref section);
 
                     Thread.Sleep(2000);
                     Console.WriteLine($"LeaveCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
-                    Functions.LeaveCriticalSection(ref section);
+                    LeaveCriticalSection(ref section);
                 });
                 inner.Start();
                 inner.Join();
 
                 Console.WriteLine($"LeaveCriticalSection id: {Thread.CurrentThread.ManagedThreadId} ");
-                Functions.LeaveCriticalSection(ref section);
+                LeaveCriticalSection(ref section);
             }).Start();
         }
 
-      
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void EnterCriticalSection(ref CRITICAL_SECTION lpCriticalSection);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void InitializeCriticalSection(out CRITICAL_SECTION lpCriticalSection);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void LeaveCriticalSection(ref CRITICAL_SECTION lpCriticalSection);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CRITICAL_SECTION
+        {
+            public Int64 LockCount;
+            public Int64 RecursionCount;
+            public IntPtr OwningThread;        // from the thread's ClientId->UniqueThread
+            public IntPtr LockSemaphore;
+            public UIntPtr SpinCount;        // force size on 64-bit systems when packed
+        };
     }
 }

@@ -1,10 +1,9 @@
+RELEASE
 Test started
 Is64BitProcess : True
 
-PID : 11400
-WaitForSingleObject : handle 820, 0x334, waitTime: 1234567890, 0x499602D2
-
-
+PID : 11200
+WaitForSingleObject : handle 1044, 0x414, waitTime: 1234567890, 0x499602D2
 
 
 
