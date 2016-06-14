@@ -33,8 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Findings", "Findings", "{CD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForSingleObject", "WaitForSingleObject", "{A8859F55-F699-4B8A-AC71-526284A7B94C}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt = ..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt
-		..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt
+		..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_ConsoleOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_ConsoleOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_WinDbgOutput.txt
 	EndProjectSection
