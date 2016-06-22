@@ -43,7 +43,7 @@ namespace WinHandlesQuerier.Core.Handlers
             }
             else
             {
-                HandleWctRequestError(g_WctIntPtr);
+                HandleWctRequestError();
             }
 
             //Finaly ...
@@ -65,7 +65,7 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
 
-        private void HandleWctRequestError(IntPtr g_WctIntPtr)
+        private void HandleWctRequestError()
         {
             var lastErrorCode = Marshal.GetLastWin32Error();
 

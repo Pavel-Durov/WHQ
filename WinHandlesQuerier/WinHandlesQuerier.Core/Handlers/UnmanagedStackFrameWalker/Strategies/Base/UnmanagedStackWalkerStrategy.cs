@@ -2,6 +2,7 @@
 using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Exceptions;
 using WinHandlesQuerier.Core.Handlers;
@@ -48,19 +49,29 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 
 
 
-        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled,
+        internal List<UnifiedStackFrame> ConvertToUnified(IEnumerable<DEBUG_STACK_FRAME> stackFrames,
             ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {
+            bool waitFound = false;
+            var reversed = stackFrames.Reverse();
             List<UnifiedStackFrame> stackTrace = new List<UnifiedStackFrame>();
-            for (uint i = 0; i < framesFilled; ++i)
+
+            foreach (var frame in reversed)
             {
-                var frame = new UnifiedStackFrame(stackFrames[i], (IDebugSymbols2)debugClient);
-                frame.ThreadContext = info.ContextStruct;
-                Inpsect(frame, runtime, pid);
-                stackTrace.Add(frame);
+                var unified_frame = new UnifiedStackFrame(frame, (IDebugSymbols2)debugClient);
+                unified_frame.ThreadContext = info.ContextStruct;
+
+                if (!waitFound)
+                {
+                    waitFound = Inpsect(unified_frame, runtime, pid);
+                }
+
+                stackTrace.Add(unified_frame);
             }
+
             return stackTrace;
         }
+
         internal bool CheckForWinApiCalls(UnifiedStackFrame frame, string key)
         {
             bool result = frame != null
@@ -90,21 +101,27 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 
 
 
-        protected void Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
+        protected bool Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
+            bool waitCallFound = false;
 
             if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithSingle(frame, runtime, pid);
+                waitCallFound = true;
             }
-            else if (CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
+            else if (waitCallFound = CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithMultiple(frame, runtime, pid);
+                waitCallFound = true;
             }
-            else
+            else if(CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
             {
-                //CheckForCriticalSections(frame, runtime, result);
+                //waitCallFound = true;
+                //
             }
+
+            return waitCallFound;
         }
 
         protected UnifiedHandle GenerateUnifiedHandle(ulong handleUint, uint pid)

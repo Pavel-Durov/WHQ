@@ -129,9 +129,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
-        internal List<UnifiedStackFrame> ConvertToUnified(DEBUG_STACK_FRAME[] stackFrames, uint framesFilled, ClrRuntime _runtime, ThreadInfo info, uint pID)
+        internal List<UnifiedStackFrame> ConvertToUnified(IEnumerable<DEBUG_STACK_FRAME> stackFrames, ClrRuntime runtime, ThreadInfo info, uint pID)
         {
-            var result =  _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, _debugClient, info, pID);
+            var result =  _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, runtime, _debugClient, info, pID);
             return result;
         }
 

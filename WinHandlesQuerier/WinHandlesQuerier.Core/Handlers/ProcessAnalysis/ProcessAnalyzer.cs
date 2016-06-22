@@ -166,7 +166,8 @@ namespace WinHandlesQuerier.Core.Handlers
             uint framesFilled;
             Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
-            var stackTrace = _processQuerierStrategy.ConvertToUnified(stackFrames, framesFilled, _runtime, info, PID);
+            
+            var stackTrace = _processQuerierStrategy.ConvertToUnified(stackFrames.Take((int)framesFilled), _runtime, info, PID);
             return stackTrace;
         }
 
