@@ -48,6 +48,23 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
+
+
+        protected override void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
+        {
+            if (frame.ThreadContext != null)
+            {
+                //1nd: CriticalSeciton pointer (HANDLE)
+                //RCX - Volatile -Second integer argument
+                //
+                //Assembly : 
+                //00007ff8`c74baa6b 488bf9          mov     rdi,rcx
+                //Rdi is Nonvolatile register
+                var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
+                EnrichUnifiedStackFrame(frame, criticalSectionPtr, pid);
+            }
+        }
+
         /// <summary>
         /// Original Function call example: 
         ///     DWORD WaitForMultipleObjects(DWORD  nCount,HANDLE* lpHandles,BOOL bWaitAll,DWORD dwMilliseconds);
@@ -126,5 +143,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                 EnrichUnifiedStackFrame(frame, handle, pid);
             }
         }
+
     }
 }

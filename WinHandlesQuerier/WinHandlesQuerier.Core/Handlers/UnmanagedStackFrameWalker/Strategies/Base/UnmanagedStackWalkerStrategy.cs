@@ -108,17 +108,14 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithSingle(frame, runtime, pid);
-                waitCallFound = true;
             }
             else if (waitCallFound = CheckForWinApiCalls(frame, WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME))
             {
                 DealWithMultiple(frame, runtime, pid);
-                waitCallFound = true;
             }
             else if(CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
             {
-                //waitCallFound = true;
-                //
+               ReadCriticalSectionData(frame, runtime);
             }
 
             return waitCallFound;
@@ -185,6 +182,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected abstract void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
         protected abstract void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
+        protected abstract void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
         protected abstract UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime);
 

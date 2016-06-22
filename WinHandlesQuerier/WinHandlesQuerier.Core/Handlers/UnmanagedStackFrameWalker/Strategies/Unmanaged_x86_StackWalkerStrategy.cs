@@ -70,6 +70,15 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
+        protected override void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
+        {
+            var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+            var criticalSectionPtr = Convert(paramz[0]);
+
+            EnrichUnifiedStackFrame(frame, criticalSectionPtr, pid);
+        }
+
+
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             var paramz = GetNativeParams(frame, runtime, WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT);
@@ -85,7 +94,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             var paramz = GetNativeParams(frame, runtime, WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT);
-
             var handle = Convert(paramz[0]);
 
             EnrichUnifiedStackFrame(frame, handle, pid);
