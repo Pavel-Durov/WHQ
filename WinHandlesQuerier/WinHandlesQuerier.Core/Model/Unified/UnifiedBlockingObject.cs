@@ -79,11 +79,11 @@ namespace WinHandlesQuerier.Core.Model.Unified
             WaitReason = ConvertToUnified(objectType);
         }
 
-        public UnifiedBlockingObject(ulong handle, UnifiedBlockingType criticalSectionObject) 
+        public UnifiedBlockingObject(ulong handle, UnifiedBlockingType type) 
             : this(OriginSource.ThreadContextRegisters)
         {
             Handle = handle;
-            Type = criticalSectionObject;
+            Type = type;
         }
 
         private void SetWaiters(BlockingObject item)

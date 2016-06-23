@@ -87,6 +87,7 @@
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
+    <Compile Include="Handlers\UnmanagedBlockingObjectsHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />

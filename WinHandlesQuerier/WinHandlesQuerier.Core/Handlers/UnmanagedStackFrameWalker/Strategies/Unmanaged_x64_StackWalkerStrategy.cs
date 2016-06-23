@@ -29,7 +29,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         ///     void WINAPI EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
         ///     
         /// </summary>
-        protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
+        protected override UnifiedBlockingObject GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;
 
@@ -50,7 +50,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
 
 
 
-        protected override void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
+        protected override void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             if (frame.ThreadContext != null)
             {

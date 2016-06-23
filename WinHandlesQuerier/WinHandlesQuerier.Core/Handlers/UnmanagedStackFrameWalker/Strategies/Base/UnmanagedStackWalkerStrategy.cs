@@ -48,7 +48,6 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         }
 
 
-
         internal List<UnifiedStackFrame> ConvertToUnified(IEnumerable<DEBUG_STACK_FRAME> stackFrames,
             ClrRuntime runtime, IDebugClient debugClient, ThreadInfo info, uint pid = Constants.INVALID_PID)
         {
@@ -81,13 +80,13 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return result;
         }
 
-        internal bool CheckForCriticalSectionCalls(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
+        internal bool GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
         {
             bool result = false;
 
-            if (CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+            if (frame.Handles != null)
             {
-                blockingObject = ReadCriticalSectionData(frame, runtime);
+                blockingObject = GetCriticalSectionBlockingObject(frame, runtime);
                 result = blockingObject != null;
             }
             else
@@ -115,7 +114,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             }
             else if(CheckForWinApiCalls(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
             {
-               ReadCriticalSectionData(frame, runtime);
+               DealWithCriticalSection(frame, runtime, pid);
             }
 
             return waitCallFound;
@@ -177,14 +176,16 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return BitConverter.ToUInt64(bits, 0);
         }
 
+
+
         #region Abstract Methods
 
         protected abstract void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
         protected abstract void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
-        protected abstract void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
+        protected abstract void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
-        protected abstract UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime);
+        protected abstract UnifiedBlockingObject GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime);
 
         #endregion
 

@@ -8,7 +8,7 @@ using System;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
-    public class LiveProcessQuerierStrategy : ProcessQuerierStrategy
+    internal class LiveProcessQuerierStrategy : ProcessQuerierStrategy
     {
         public LiveProcessQuerierStrategy(IDebugClient debugClient, IDataReader dataReader, ClrRuntime runtime)
             : base(debugClient, dataReader, runtime)
@@ -38,26 +38,8 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
         public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            List<UnifiedBlockingObject> result = null;
-
             ThreadWCTInfo wct_threadInfo = _wctApi.GetBlockingObjects(thread.OSThreadId);
-
-            if (wct_threadInfo?.WctBlockingObjects.Count > 0)
-            {
-                result = new List<UnifiedBlockingObject>();
-
-                if (wct_threadInfo.WctBlockingObjects?.Count > 0)
-                {
-                    foreach (var blockingObj in wct_threadInfo.WctBlockingObjects)
-                    {
-                        result.Add(new UnifiedBlockingObject(blockingObj));
-                    }
-                }
-            }
-
-            result.AddRange(base.GetUnmanagedBlockingObjects(unmanagedStack));
-
-            return result;
+            return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(wct_threadInfo, unmanagedStack);
         }
     }
 }

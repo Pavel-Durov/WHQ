@@ -20,7 +20,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
     /// </summary>
     internal class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
-        protected override UnifiedBlockingObject ReadCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime)
+        protected override UnifiedBlockingObject GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime)
         {
             UnifiedBlockingObject result = null;
             var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
@@ -70,7 +70,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             return result;
         }
 
-        protected override void DealWithCriticalSectionData(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
+        protected override void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
             var criticalSectionPtr = Convert(paramz[0]);

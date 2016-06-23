@@ -12,15 +12,13 @@ using System.Runtime.InteropServices;
 using WinNativeApi.WinNT;
 using Assignments.Core;
 using Assignments.Core.Handlers.ThreadContext.Strategies;
+using Assignments.Core.Handlers;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
-    public enum CPUArchitecture
-    {
-        x86, x64
-    }
+    public enum CPUArchitecture { x86, x64 }
 
-    public abstract class ProcessQuerierStrategy
+    internal abstract class ProcessQuerierStrategy
     {
         public ProcessQuerierStrategy(IDebugClient debugClient, IDataReader dataReader, ClrRuntime runtime)
         {
@@ -38,6 +36,8 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
                 _unmanagedStackWalkerStrategy = new Unmanaged_x86_StackWalkerStrategy();
                 _threadContextStrategy = new ThreadContext_x86_Strategy();
             }
+
+            _unmanagedBlockingObjectsHandler = new UnmanagedBlockingObjectsHandler(_unmanagedStackWalkerStrategy);
         }
 
         internal IDataReader _dataReader;
@@ -45,33 +45,13 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         internal ClrRuntime _runtime;
         internal UnmanagedStackWalkerStrategy _unmanagedStackWalkerStrategy;
         internal ThreadContextStrategy _threadContextStrategy;
+        protected UnmanagedBlockingObjectsHandler _unmanagedBlockingObjectsHandler;
 
         public abstract CPUArchitecture CPUArchitechture { get; }
 
         public virtual List<UnifiedBlockingObject> GetManagedBlockingObjects(ClrThread thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
-            if (thread.BlockingObjects?.Count > 0)
-            {
-                foreach (var item in thread.BlockingObjects)
-                {
-                    result.Add(new UnifiedBlockingObject(item));
-                }
-            }
-
-            CheckForCriticalSections(result, unmanagedStack, runtime);
-
-            foreach (var frame in unmanagedStack)
-            {
-                if (frame?.Handles?.Count > 0)
-                {
-                    foreach (var handle in frame.Handles)
-                    {
-                        result.Add(new UnifiedBlockingObject(handle.Id, handle.ObjectName, handle.Type));
-                    }
-                }
-            }
-            return result;
+            return _unmanagedBlockingObjectsHandler.GetManagedBlockingObjects(thread, unmanagedStack, runtime);
         }
 
         internal void GetThreadContext(ThreadInfo specific_info)
@@ -79,59 +59,24 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             _threadContextStrategy.GetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
         }
 
-        /// <summary>
-        /// Walks the given stackFrameList and checks if it's contains CRITICAL_SECTION calls
-        /// </summary>
-        protected void CheckForCriticalSections(List<UnifiedBlockingObject> list, List<UnifiedStackFrame> stack, ClrRuntime runtime)
+        public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSectionBlockingObjects(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            var criticalSectionObjects = GetCriticalSections(stack, runtime);
-
-            if (criticalSectionObjects.Any())
-            {
-                if (list == null)
-                    list = new List<UnifiedBlockingObject>();
-
-                list.AddRange(criticalSectionObjects);
-            }
+            return _unmanagedBlockingObjectsHandler.GetCriticalSectionBlockingObjects(unmanagedStack, runtime);
         }
+
 
         protected List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(List<UnifiedStackFrame> unmanagedStack)
         {
-            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
-
-            var framesWithHandles = from c in unmanagedStack
-                                    where c.Handles?.Count > 0
-                                    select c;
-
-            foreach (var frame in framesWithHandles)
-            {
-                foreach (var handle in frame.Handles)
-                {
-                    result.Add(new UnifiedBlockingObject(handle.Id, handle.ObjectName, handle.Type));
-                }
-            }
-
-            return result;
-        }
-
-        public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSections(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
-        {
-            foreach (var item in unmanagedStack)
-            {
-                UnifiedBlockingObject blockObject;
-
-                if (_unmanagedStackWalkerStrategy.CheckForCriticalSectionCalls(item, runtime, out blockObject))
-                {
-                    yield return blockObject;
-                }
-            }
+            return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(unmanagedStack);
         }
 
         public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
+
+
         internal List<UnifiedStackFrame> ConvertToUnified(IEnumerable<DEBUG_STACK_FRAME> stackFrames, ClrRuntime runtime, ThreadInfo info, uint pID)
         {
-            var result =  _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, runtime, _debugClient, info, pID);
+            var result = _unmanagedStackWalkerStrategy.ConvertToUnified(stackFrames, runtime, _debugClient, info, pID);
             return result;
         }
 
