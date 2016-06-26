@@ -37,12 +37,21 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             {
                 //1nd: CriticalSeciton pointer (HANDLE)
                 //RCX - Volatile -Second integer argument
-                //
-                //Assembly : 
-                //00007ff8`c74baa6b 488bf9          mov     rdi,rcx
-                //Rdi is Nonvolatile register
-                var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
-                result = new UnifiedBlockingObject(criticalSectionPtr, UnifiedBlockingType.CriticalSectionObject);
+
+                if (_globalConfigs.OsVersion == WinVersions.Win_8_1)
+                {
+                    //00007ff8`c74baa6b 488bf9          mov     rdi,rcx
+                    //Rdi is Nonvolatile register
+                    var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
+                    result = new UnifiedBlockingObject(criticalSectionPtr, UnifiedBlockingType.CriticalSectionObject);
+                }
+                else if (_globalConfigs.OsVersion == WinVersions.Win_10)
+                {
+                    //00007ffd`b57310cb 488bf9          mov     rdi,rcx
+                    //Rdi is Nonvolatile register
+                    var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
+                    result = new UnifiedBlockingObject(criticalSectionPtr, UnifiedBlockingType.CriticalSectionObject);
+                }
             }
 
             return result;
@@ -56,12 +65,21 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
             {
                 //1nd: CriticalSeciton pointer (HANDLE)
                 //RCX - Volatile -Second integer argument
-                //
-                //Assembly : 
-                //00007ff8`c74baa6b 488bf9          mov     rdi,rcx
-                //Rdi is Nonvolatile register
-                var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
-                EnrichUnifiedStackFrame(frame, criticalSectionPtr, pid);
+
+                if (_globalConfigs.OsVersion == WinVersions.Win_8_1)
+                {
+                    //00007ff8`c74baa6b 488bf9          mov     rdi,rcx
+                    //Rdi is Nonvolatile register
+                    var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
+                    EnrichUnifiedStackFrame(frame, criticalSectionPtr, pid);
+                }
+                else if (_globalConfigs.OsVersion == WinVersions.Win_10)
+                {
+                    //00007ffd`b57310cb 488bf9          mov     rdi,rcx
+                    //Rdi is Nonvolatile register
+                    var criticalSectionPtr = frame.ThreadContext.Context_amd64.Rdi;
+                    EnrichUnifiedStackFrame(frame, criticalSectionPtr, pid);
+                }
             }
         }
 
@@ -73,50 +91,87 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         {
             if (frame.ThreadContext != null)
             {
-                //1st : handlesCount (DWORD)
-                //Assembly:
-                //00007ffb`bb183a98 8bd9            mov     ebx,ecx
-                //
-                //Rbx = Ebx , Rbx is a Nonvolatile register
-                var handlesCount = frame.ThreadContext.Context_amd64.Rbx;
-                if (handlesCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
+                if (_globalConfigs.OsVersion == WinVersions.Win_8_1)
                 {
-                    throw new ArgumentOutOfRangeException($"Cannot await for more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{handlesCount}");
+                    //RCX, RDX, R8, and R9
+
+                    //RCX
+                    //00007ffd`b57312e5 8bd9            mov     ebx,ecx
+                    var handlesCount = frame.ThreadContext.Context_amd64.Rbx;
+                    if (handlesCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
+                    {
+                        throw new ArgumentOutOfRangeException($"Cannot await for more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{handlesCount}");
+                    }
+
+                    //RDX
+                    //00007ffd`b57312e2 4c8bea          mov     r13,rdx
+                    var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
+
+                    //R8
+                    //00007ffd`b57312ca 4489442418      mov dword ptr[rsp + 18h],r8d
+                    var rspPtr = frame.StackPointer + 18 + (ulong)IntPtr.Size;
+                    byte[] buffer = new byte[IntPtr.Size];
+                    int read = 0;
+                    bool waitAllFlagParam;
+                    if (runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
+                    {
+                        waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
+                    }
+
+                    //R9
+                    //00007ffd`b57312df 458bf1          mov     r14d,r9d
+                    var waitTime = frame.ThreadContext.Context_amd64.R14;
+
+                    EnrichUnifiedStackFrame(frame, runtime, pid, handlesCount, hArrayPtr);
                 }
-
-                //2nd: Handles pointer (HANDLE)
-                //RDX - Volatile -Second integer argument
-                //Assembly
-                //00007ffa`d7653a95 4c8bea          mov     r13,rdx
-                //
-                //R13 is a Nonvolatile register
-                var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
-
-
-                //3rd: WaitAll (BOOLEAN)
-                ///R8 - Volatile - Third integer argument
-                //
-                //00007ffa`d7653a90 4489442444      mov     dword ptr [rsp+44h],r8d
-                //
-                //this one fetched from the stack.
-                var rspPtr = frame.StackPointer + 44 + (ulong)IntPtr.Size;
-                byte[] buffer = new byte[IntPtr.Size];
-                int read = 0;
-                bool waitAllFlagParam;
-                if (runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
+                else if (_globalConfigs.OsVersion == WinVersions.Win_10)
                 {
-                    waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
+
+                    //1st : handlesCount (DWORD)
+                    //Assembly:
+                    //00007ffb`bb183a98 8bd9            mov     ebx,ecx
+                    //
+                    //Rbx = Ebx , Rbx is a Nonvolatile register
+                    var handlesCount = frame.ThreadContext.Context_amd64.Rbx;
+                    if (handlesCount > Kernel32.Const.MAXIMUM_WAIT_OBJECTS)
+                    {
+                        throw new ArgumentOutOfRangeException($"Cannot await for more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{handlesCount}");
+                    }
+
+                    //2nd: Handles pointer (HANDLE)
+                    //RDX - Volatile -Second integer argument
+                    //Assembly
+                    //00007ffa`d7653a95 4c8bea          mov     r13,rdx
+                    //
+                    //R13 is a Nonvolatile register
+                    var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
+
+
+                    //3rd: WaitAll (BOOLEAN)
+                    ///R8 - Volatile - Third integer argument
+                    //
+                    //00007ffa`d7653a90 4489442444      mov     dword ptr [rsp+44h],r8d
+                    //
+                    //this one fetched from the stack.
+                    var rspPtr = frame.StackPointer + 44 + (ulong)IntPtr.Size;
+                    byte[] buffer = new byte[IntPtr.Size];
+                    int read = 0;
+                    bool waitAllFlagParam;
+                    if (runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
+                    {
+                        waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
+                    }
+
+                    //4th: Timeout (DWORD) 
+                    //R9 - Volatile - Fourth integer argument
+                    //Assembly:
+                    //00007ffa`d7653a8d 458be1          mov     r12d,r9d
+                    //
+                    //R12 is a Nonvolatile register
+                    var waitTime = frame.ThreadContext.Context_amd64.R12;
+
+                    EnrichUnifiedStackFrame(frame, runtime, pid, handlesCount, hArrayPtr);
                 }
-
-                //4th: Timeout (DWORD) 
-                //R9 - Volatile - Fourth integer argument
-                //Assembly:
-                //00007ffa`d7653a8d 458be1          mov     r12d,r9d
-                //
-                //R12 is a Nonvolatile register
-                var waitTime = frame.ThreadContext.Context_amd64.R12;
-
-                EnrichUnifiedStackFrame(frame, runtime, pid, handlesCount, hArrayPtr);
             }
         }
 
@@ -128,21 +183,29 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         {
             if (frame.ThreadContext != null)
             {
-                ///RCX - Volatile - First integer argument
-                ///Handler ptr
-                ///
-                ///00007ff8`c74baa6b 488bf9          mov     rdi,rcx
-                ///
-                ///Rdi is a Nonvolatile register
-                var handle = frame.ThreadContext.Context_amd64.Rdi;
-
-                ///RDX - Volatile -Second integer argument
-                ///WaitAmount
-                ///Rsi is a Nonvolatile register
-                var watTime = frame.ThreadContext.Context_amd64.Rsi;
-                EnrichUnifiedStackFrame(frame, handle, pid);
+                if (_globalConfigs.OsVersion == WinVersions.Win_10)
+                {
+                    ///RCX - Volatile - First integer argument
+                    ///00007ff8`c74baa6b 488bf9          mov     rdi,rcx
+                    ///Rdi is a Nonvolatile register
+                    var handle = frame.ThreadContext.Context_amd64.Rdi;
+                    ///RDX - Volatile -Second integer argument
+                    ///Rsi is a Nonvolatile register
+                    var watTime = frame.ThreadContext.Context_amd64.Rsi;
+                    EnrichUnifiedStackFrame(frame, handle, pid);
+                }
+                else if (_globalConfigs.OsVersion == WinVersions.Win_8_1)
+                {
+                    ///RCX - Volatile - First integer argument
+                    ///00007ffd`b57310cb 488bf9          mov     rdi,rcx
+                    ///Rdi is a Nonvolatile register
+                    var handle = frame.ThreadContext.Context_amd64.Rdi;
+                    ///RDX - Volatile -Second integer argument
+                    ///Rsi is a Nonvolatile register
+                    var watTime = frame.ThreadContext.Context_amd64.Rsi;
+                    EnrichUnifiedStackFrame(frame, handle, pid);
+                }
             }
-        }
 
+        }
     }
-}
