@@ -33,8 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Findings", "Findings", "{CD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForSingleObject", "WaitForSingleObject", "{A8859F55-F699-4B8A-AC71-526284A7B94C}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt = ..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt
-		..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt
+		..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt = ..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_ConsoleOutput.txt
+		..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\..\..\..\temp\dumps\Testing\x64\WaitForSingleObjectTest\WaitForSingleObjectTest_UnManaged\Cpp_WaitForSingleObjectTest_WinDbgOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_ConsoleOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_ConsoleOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForSingleObject\Csharp_WaitForSingleObjectTest_WinDbgOutput.txt
 	EndProjectSection
@@ -59,6 +59,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForMultipleObjects", "W
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Cpp_WaitForMultipleObjects_WinDbgOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_ConsoleOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_ConsoleOutput.txt
 		..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_WinDbgOutput.txt = ..\WinHandlesQuerier-DumpTests\Findings\WaitForMultipleObjects\Csharp_WaitForMultipleObjects_WinDbgOutput.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Win10", "Win10", "{B91B8C20-BBF9-4FEF-A1F2-60B910D5E845}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows_Server_2012_R2", "Windows_Server_2012_R2", "{7B3DD673-0AA1-417E-8730-3715708133CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EnterCriticalSection", "EnterCriticalSection", "{5F7C3C0C-DA46-4530-899A-2100A903EDA1}"
+	ProjectSection(SolutionItems) = preProject
+		EnterCriticalSection_WinDbg_OutPut.txt = EnterCriticalSection_WinDbg_OutPut.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForMultipleObjects", "WaitForMultipleObjects", "{E5449539-D4C2-46CF-BB4D-7D73115E6693}"
+	ProjectSection(SolutionItems) = preProject
+		WaitForMultipleObjects_WinDbg_Output.txt = WaitForMultipleObjects_WinDbg_Output.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WaitForSingleObject", "WaitForSingleObject", "{967ED00A-D229-4460-93B7-BA89FD488128}"
+	ProjectSection(SolutionItems) = preProject
+		WaitForSingleObject_WinDbg_Output.txt = WaitForSingleObject_WinDbg_Output.txt
 	EndProjectSection
 EndProject
 Global
@@ -207,12 +226,17 @@ Global
 		{21529D91-3355-408B-89C0-DD202DBD7AFA} = {13D6E44A-C305-403F-89EA-0C90615DD52E}
 		{EDCC034A-4E88-4FE4-84C0-8415E60939F4} = {D7CFEA56-4066-45F4-BB87-9D8F8DC7DFE8}
 		{CD2A48E5-4426-4141-A6FD-BE735D32A0CA} = {78A8277C-7500-4EAC-BA69-03A48A9C8FED}
-		{A8859F55-F699-4B8A-AC71-526284A7B94C} = {CD2A48E5-4426-4141-A6FD-BE735D32A0CA}
+		{A8859F55-F699-4B8A-AC71-526284A7B94C} = {B91B8C20-BBF9-4FEF-A1F2-60B910D5E845}
 		{49D7EB30-D0FD-4A12-A035-7B44BDB23BF1} = {D7CFEA56-4066-45F4-BB87-9D8F8DC7DFE8}
 		{87702CA2-8CEF-4058-9205-DC7D51BB9F4E} = {D7CFEA56-4066-45F4-BB87-9D8F8DC7DFE8}
 		{4B5F5593-6F07-4869-A49D-E5AADA56D3C7} = {13D6E44A-C305-403F-89EA-0C90615DD52E}
 		{F09BCC4A-6AD7-487E-9661-A05398DA6950} = {13D6E44A-C305-403F-89EA-0C90615DD52E}
-		{AC05E9BB-D68F-43A6-BA9D-4EFADA037CCA} = {CD2A48E5-4426-4141-A6FD-BE735D32A0CA}
-		{751684BC-DDA1-4A0C-9E1F-34FDBA9C229A} = {CD2A48E5-4426-4141-A6FD-BE735D32A0CA}
+		{AC05E9BB-D68F-43A6-BA9D-4EFADA037CCA} = {B91B8C20-BBF9-4FEF-A1F2-60B910D5E845}
+		{751684BC-DDA1-4A0C-9E1F-34FDBA9C229A} = {B91B8C20-BBF9-4FEF-A1F2-60B910D5E845}
+		{B91B8C20-BBF9-4FEF-A1F2-60B910D5E845} = {CD2A48E5-4426-4141-A6FD-BE735D32A0CA}
+		{7B3DD673-0AA1-417E-8730-3715708133CA} = {CD2A48E5-4426-4141-A6FD-BE735D32A0CA}
+		{5F7C3C0C-DA46-4530-899A-2100A903EDA1} = {7B3DD673-0AA1-417E-8730-3715708133CA}
+		{E5449539-D4C2-46CF-BB4D-7D73115E6693} = {7B3DD673-0AA1-417E-8730-3715708133CA}
+		{967ED00A-D229-4460-93B7-BA89FD488128} = {7B3DD673-0AA1-417E-8730-3715708133CA}
 	EndGlobalSection
 EndGlobal
