@@ -1,0 +1,11 @@
+Test started
+Is64BitProcess : True
+
+PID : 11400
+WaitForSingleObject : handle 820, 0x334, waitTime: 1234567890, 0x499602D2
+
+
+
+
+
+
