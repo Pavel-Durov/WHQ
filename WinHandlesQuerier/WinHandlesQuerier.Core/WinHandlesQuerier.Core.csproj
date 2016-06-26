@@ -89,8 +89,11 @@
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
     <Compile Include="Handlers\UnmanagedBlockingObjectsHandler.cs" />
     <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Base\UnmanagedStackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x64_StackWalkerStrategy.cs" />
-    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\Unmanaged_x86_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\x64\FunctionParamsFetchStrategies\Base\FrameParmFetcher.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\x64\FunctionParamsFetchStrategies\StackFrameParmsFetchStrategy_Win_10.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\x64\FunctionParamsFetchStrategies\StackFrameParmsFetchStrategy_Win_8_1.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\x64\Unmanaged_x64_StackWalkerStrategy.cs" />
+    <Compile Include="Handlers\UnmanagedStackFrameWalker\Strategies\x86\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\ProcessAnalyzer.cs" />
     <Compile Include="Handlers\WctHandler.cs" />
     <Compile Include="Infra\Config.cs" />
@@ -121,6 +124,7 @@
       <Name>WinNativeApi</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
