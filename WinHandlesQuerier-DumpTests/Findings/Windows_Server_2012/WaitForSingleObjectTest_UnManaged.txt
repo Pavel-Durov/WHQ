@@ -1,0 +1,180 @@
+
+Microsoft (R) Windows Debugger Version 10.0.10586.567 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\ISO\Win-Q-Windows-Server-2012\EnterCriticalSectionTest_UnManaged\WaitForSingleObjectTest_UnManaged.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 8 Version 9200 UP Free x86 compatible
+Product: Server, suite: TerminalServer SingleUserTS
+Built by: 6.2.9200.16384 (win8_rtm.120725-1247)
+Machine Name:
+Debug session time: Mon Jun 27 17:07:01.000 2016 (UTC + 3:00)
+System Uptime: 0 days 0:53:00.586
+Process Uptime: 0 days 0:00:05.000
+..........................
+eax=00000000 ebx=00000000 ecx=00000000 edx=00000000 esi=0097f990 edi=00000054
+eip=77350da8 esp=0097f94c ebp=0097f9b4 iopl=0         nv up ei pl nz na po nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!NtWaitForSingleObject+0xc:
+77350da8 c20c00          ret     0Ch
+0:000> k
+ # ChildEBP RetAddr  
+00 0097f948 77011129 ntdll!NtWaitForSingleObject+0xc
+01 0097f9b4 770110b4 KERNELBASE!WaitForSingleObjectEx+0x8f
+*** WARNING: Unable to verify checksum for WaitForSingleObjectTest_UnManaged.exe
+02 0097f9c8 003410e6 KERNELBASE!WaitForSingleObject+0x12
+03 0097fb00 00341684 WaitForSingleObjectTest_UnManaged!main+0xe6 [c:\git\github\win-handles-querier\winhandlesquerier-dumptests\unmanaged\waitforsingleobjecttest_unmanaged\waitforsingleobjecttest_unmanaged.cpp @ 46]
+04 (Inline) -------- WaitForSingleObjectTest_UnManaged!invoke_main+0x1d [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 64]
+05 0097fb4c 758f8543 WaitForSingleObjectTest_UnManaged!__scrt_common_main_seh+0xff [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 255]
+06 0097fb58 7736ac69 kernel32!BaseThreadInitThunk+0xe
+07 0097fb9c 7736ac3c ntdll!__RtlUserThreadStart+0x72
+08 0097fbb4 00000000 ntdll!_RtlUserThreadStart+0x1b
+0:000> uf ntdll!NtWaitForSingleObject
+ntdll!NtWaitForSingleObject:
+77350d9c b802000d00      mov     eax,0D0002h
+77350da1 64ff15c0000000  call    dword ptr fs:[0C0h]
+77350da8 c20c00          ret     0Ch
+0:000> uf KERNELBASE!WaitForSingleObjectEx
+KERNELBASE!WaitForSingleObjectEx:
+770110bd 6a38            push    38h
+770110bf 6858110177      push    offset KERNELBASE! ?? ::FNODOBFM::`string'+0xc54 (77011158)
+770110c4 e88fffffff      call    KERNELBASE!_SEH_prolog4 (77011058)
+770110c9 c745b824000000  mov     dword ptr [ebp-48h],24h
+770110d0 c745bc01000000  mov     dword ptr [ebp-44h],1
+770110d7 6a07            push    7
+770110d9 59              pop     ecx
+770110da 33c0            xor     eax,eax
+770110dc 8d7dc0          lea     edi,[ebp-40h]
+770110df f3ab            rep stos dword ptr es:[edi]
+770110e1 8b5d10          mov     ebx,dword ptr [ebp+10h]
+770110e4 85db            test    ebx,ebx
+770110e6 0f85594f0200    jne     KERNELBASE!WaitForSingleObjectEx+0x2b (77036045)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x36:
+770110ec 8365e400        and     dword ptr [ebp-1Ch],0
+770110f0 8365fc00        and     dword ptr [ebp-4],0
+770110f4 8b7d08          mov     edi,dword ptr [ebp+8]
+770110f7 83fff4          cmp     edi,0FFFFFFF4h
+770110fa 0f8434ab0500    je      KERNELBASE!WaitForSingleObjectEx+0x6c (7706bc34)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x46:
+77011100 83fff5          cmp     edi,0FFFFFFF5h
+77011103 0f841aab0500    je      KERNELBASE!WaitForSingleObjectEx+0x5e (7706bc23)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x4b:
+77011109 83fff6          cmp     edi,0FFFFFFF6h
+7701110c 0f8400ab0500    je      KERNELBASE!WaitForSingleObjectEx+0x50 (7706bc12)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x78:
+77011112 8b450c          mov     eax,dword ptr [ebp+0Ch]
+77011115 8d75dc          lea     esi,[ebp-24h]
+77011118 e8e8feffff      call    KERNELBASE!BaseFormatTimeOut (77011005)
+7701111d 894508          mov     dword ptr [ebp+8],eax
+
+KERNELBASE!WaitForSingleObjectEx+0x86:
+77011120 50              push    eax
+77011121 53              push    ebx
+77011122 57              push    edi
+77011123 ff15cc800a77    call    dword ptr [KERNELBASE!_imp__NtWaitForSingleObject (770a80cc)]
+77011129 8bf0            mov     esi,eax
+7701112b 8975e4          mov     dword ptr [ebp-1Ch],esi
+7701112e 85f6            test    esi,esi
+77011130 0f880fab0500    js      KERNELBASE!WaitForSingleObjectEx+0x98 (7706bc45)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xba:
+77011136 85db            test    ebx,ebx
+77011138 0f85174f0200    jne     KERNELBASE!WaitForSingleObjectEx+0xbe (77036055)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xa4:
+7701113e c745fcfeffffff  mov     dword ptr [ebp-4],0FFFFFFFEh
+77011145 e805ffffff      call    KERNELBASE!WaitForSingleObjectEx+0xd1 (7701104f)
+7701114a 8bc6            mov     eax,esi
+7701114c e823000000      call    KERNELBASE!_SEH_epilog4 (77011174)
+77011151 c20c00          ret     0Ch
+
+KERNELBASE!WaitForSingleObjectEx+0x2b:
+77036045 33d2            xor     edx,edx
+77036047 8d4db8          lea     ecx,[ebp-48h]
+7703604a ff1518860a77    call    dword ptr [KERNELBASE!_imp_RtlActivateActivationContextUnsafeFast (770a8618)]
+77036050 e997b0fdff      jmp     KERNELBASE!WaitForSingleObjectEx+0x36 (770110ec)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xbe:
+77036055 81fe01010000    cmp     esi,101h
+7703605b 0f85ddb0fdff    jne     KERNELBASE!WaitForSingleObjectEx+0xa4 (7701113e)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xca:
+77036061 e9f05b0300      jmp     KERNELBASE!WaitForSingleObjectEx+0xc6 (7706bc56)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x50:
+7706bc12 64a130000000    mov     eax,dword ptr fs:[00000030h]
+7706bc18 8b4010          mov     eax,dword ptr [eax+10h]
+7706bc1b 8b7818          mov     edi,dword ptr [eax+18h]
+7706bc1e e9ef54faff      jmp     KERNELBASE!WaitForSingleObjectEx+0x78 (77011112)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x5e:
+7706bc23 64a130000000    mov     eax,dword ptr fs:[00000030h]
+7706bc29 8b4010          mov     eax,dword ptr [eax+10h]
+7706bc2c 8b781c          mov     edi,dword ptr [eax+1Ch]
+7706bc2f e9de54faff      jmp     KERNELBASE!WaitForSingleObjectEx+0x78 (77011112)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x6c:
+7706bc34 64a130000000    mov     eax,dword ptr fs:[00000030h]
+7706bc3a 8b4010          mov     eax,dword ptr [eax+10h]
+7706bc3d 8b7820          mov     edi,dword ptr [eax+20h]
+7706bc40 e9cd54faff      jmp     KERNELBASE!WaitForSingleObjectEx+0x78 (77011112)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x98:
+7706bc45 56              push    esi
+7706bc46 e87205fbff      call    KERNELBASE!BaseSetLastNTError (7701c1bd)
+7706bc4b 83ceff          or      esi,0FFFFFFFFh
+7706bc4e 8975e4          mov     dword ptr [ebp-1Ch],esi
+7706bc51 e9e854faff      jmp     KERNELBASE!WaitForSingleObjectEx+0xa4 (7701113e)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xc6:
+7706bc56 8b4508          mov     eax,dword ptr [ebp+8]
+7706bc59 e9c254faff      jmp     KERNELBASE!WaitForSingleObjectEx+0x86 (77011120)  Branch
+0:000> r
+eax=00000000 ebx=00000000 ecx=00000000 edx=00000000 esi=0097f990 edi=00000054
+eip=77350da8 esp=0097f94c ebp=0097f9b4 iopl=0         nv up ei pl nz na po nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!NtWaitForSingleObject+0xc:
+77350da8 c20c00          ret     0Ch
+0:000> uf kernel32!BaseThreadInitThunk+0xe
+kernel32!BaseThreadInitThunk:
+758f8535 8bff            mov     edi,edi
+758f8537 55              push    ebp
+758f8538 8bec            mov     ebp,esp
+758f853a 85c9            test    ecx,ecx
+758f853c 750c            jne     kernel32!BaseThreadInitThunk+0x15 (758f854a)  Branch
+
+kernel32!BaseThreadInitThunk+0x9:
+758f853e ff7508          push    dword ptr [ebp+8]
+758f8541 ffd2            call    edx
+758f8543 50              push    eax
+758f8544 ff15cc119575    call    dword ptr [kernel32!_imp__RtlExitUserThread (759511cc)]
+
+kernel32!BaseThreadInitThunk+0x15:
+758f854a f605d002fe7f10  test    byte ptr [SharedUserData+0x2d0 (7ffe02d0)],10h
+758f8551 7409            je      kernel32!BaseThreadInitThunk+0x27 (758f855c)  Branch
+
+kernel32!BaseThreadInitThunk+0x1e:
+758f8553 e894e7ffff      call    kernel32!BasepInitializeTermsrvFpns (758f6cec)
+758f8558 85c0            test    eax,eax
+758f855a 7802            js      kernel32!BaseThreadInitThunk+0x29 (758f855e)  Branch
+
+kernel32!BaseThreadInitThunk+0x27:
+758f855c 33c0            xor     eax,eax
+
+kernel32!BaseThreadInitThunk+0x29:
+758f855e 5d              pop     ebp
+758f855f c20400          ret     4
+0:000> r
+eax=00000000 ebx=00000000 ecx=00000000 edx=00000000 esi=0097f990 edi=00000054
+eip=77350da8 esp=0097f94c ebp=0097f9b4 iopl=0         nv up ei pl nz na po nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000202
+ntdll!NtWaitForSingleObject+0xc:
+77350da8 c20c00          ret     0Ch
