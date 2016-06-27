@@ -44,7 +44,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64
             //00007ffa`d7653a90 4489442444      mov     dword ptr [rsp+44h],r8d
             //
             //this one fetched from the stack.
-            var rspPtr = frame.StackPointer + 44 + (ulong)IntPtr.Size;
+            var rspPtr = frame.StackPointer + 68;
             byte[] buffer = new byte[IntPtr.Size];
             int read = 0;
             bool waitAllFlagParam = false;
