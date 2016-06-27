@@ -1,0 +1,203 @@
+
+Microsoft (R) Windows Debugger Version 10.0.10586.567 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\ISO\Win-Q-Windows-Server-2012\EnterCriticalSectionTest_UnManaged\WaitForMultipleObjectsTest_UnManaged.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 8 Version 9200 UP Free x86 compatible
+Product: Server, suite: TerminalServer SingleUserTS
+Built by: 6.2.9200.16384 (win8_rtm.120725-1247)
+Machine Name:
+Debug session time: Mon Jun 27 17:06:46.000 2016 (UTC + 3:00)
+System Uptime: 0 days 0:52:45.036
+Process Uptime: 0 days 0:00:07.000
+..........................
+eax=00000000 ebx=0034faa4 ecx=00000000 edx=00000000 esi=0034f8f4 edi=00000000
+eip=77351318 esp=0034f7cc ebp=0034f94c iopl=0         nv up ei pl nz na pe nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000206
+ntdll!NtWaitForMultipleObjects+0xc:
+77351318 c21400          ret     14h
+0:000> k
+ # ChildEBP RetAddr  
+00 0034f7c8 7701c752 ntdll!NtWaitForMultipleObjects+0xc
+01 0034f94c 758f6aeb KERNELBASE!WaitForMultipleObjectsEx+0x10b
+*** WARNING: Unable to verify checksum for WaitForMultipleObjectsTest_UnManaged.exe
+02 0034f968 010f1134 kernel32!WaitForMultipleObjects+0x19
+03 0034fab0 010f16d4 WaitForMultipleObjectsTest_UnManaged!main+0x134 [c:\git\github\win-handles-querier\winhandlesquerier-dumptests\unmanaged\waitformultipleobjectstest_unmanaged\waitformultipleobjectstest_unmanaged.cpp @ 37]
+04 (Inline) -------- WaitForMultipleObjectsTest_UnManaged!invoke_main+0x1d [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 64]
+05 0034fafc 758f8543 WaitForMultipleObjectsTest_UnManaged!__scrt_common_main_seh+0xff [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 255]
+06 0034fb08 7736ac69 kernel32!BaseThreadInitThunk+0xe
+07 0034fb4c 7736ac3c ntdll!__RtlUserThreadStart+0x72
+08 0034fb64 00000000 ntdll!_RtlUserThreadStart+0x1b
+0:000> uf KERNELBASE!WaitForMultipleObjectsEx
+KERNELBASE!WaitForMultipleObjectsEx+0xe8:
+7701c72f 8b4514          mov     eax,dword ptr [ebp+14h]
+7701c732 8d75a8          lea     esi,[ebp-58h]
+7701c735 e8cb48ffff      call    KERNELBASE!BaseFormatTimeOut (77011005)
+7701c73a 89450c          mov     dword ptr [ebp+0Ch],eax
+
+KERNELBASE!WaitForMultipleObjectsEx+0xf6:
+7701c73d 50              push    eax
+7701c73e 57              push    edi
+7701c73f 33c0            xor     eax,eax
+7701c741 394510          cmp     dword ptr [ebp+10h],eax
+7701c744 0f94c0          sete    al
+7701c747 50              push    eax
+7701c748 53              push    ebx
+7701c749 ff7508          push    dword ptr [ebp+8]
+7701c74c ff1520830a77    call    dword ptr [KERNELBASE!_imp__NtWaitForMultipleObjects (770a8320)]
+7701c752 8bf0            mov     esi,eax
+7701c754 8975dc          mov     dword ptr [ebp-24h],esi
+7701c757 85f6            test    esi,esi
+7701c759 7808            js      KERNELBASE!WaitForMultipleObjectsEx+0x5d (7701c763)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x118:
+7701c75b 85ff            test    edi,edi
+7701c75d 0f8565040000    jne     KERNELBASE!WaitForMultipleObjectsEx+0x120 (7701cbc8)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x5d:
+7701c763 c745fcfeffffff  mov     dword ptr [ebp-4],0FFFFFFFEh
+7701c76a e819000000      call    KERNELBASE!WaitForMultipleObjectsEx+0x137 (7701c788)
+7701c76f 85f6            test    esi,esi
+7701c771 0f8870040000    js      KERNELBASE!WaitForMultipleObjectsEx+0x145 (7701cbe7)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x71:
+7701c777 8bfe            mov     edi,esi
+
+KERNELBASE!WaitForMultipleObjectsEx+0x14e:
+7701c779 8bc7            mov     eax,edi
+7701c77b e8f449ffff      call    KERNELBASE!_SEH_epilog4 (77011174)
+7701c780 c21400          ret     14h
+
+KERNELBASE!WaitForMultipleObjectsEx:
+7701c796 6848010000      push    148h
+7701c79b 6808c80177      push    offset KERNELBASE! ?? ::FNODOBFM::`string'+0xc74 (7701c808)
+7701c7a0 e8b348ffff      call    KERNELBASE!_SEH_prolog4 (77011058)
+7701c7a5 c745b024000000  mov     dword ptr [ebp-50h],24h
+7701c7ac c745b401000000  mov     dword ptr [ebp-4Ch],1
+7701c7b3 6a07            push    7
+7701c7b5 59              pop     ecx
+7701c7b6 33c0            xor     eax,eax
+7701c7b8 8d7db8          lea     edi,[ebp-48h]
+7701c7bb f3ab            rep stos dword ptr es:[edi]
+7701c7bd 8b7d18          mov     edi,dword ptr [ebp+18h]
+7701c7c0 85ff            test    edi,edi
+7701c7c2 0f85e3030000    jne     KERNELBASE!WaitForMultipleObjectsEx+0x2e (7701cbab)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x39:
+7701c7c8 64a130000000    mov     eax,dword ptr fs:[00000030h]
+7701c7ce 8945e4          mov     dword ptr [ebp-1Ch],eax
+7701c7d1 8b5d0c          mov     ebx,dword ptr [ebp+0Ch]
+7701c7d4 33c9            xor     ecx,ecx
+7701c7d6 894ddc          mov     dword ptr [ebp-24h],ecx
+7701c7d9 894dfc          mov     dword ptr [ebp-4],ecx
+7701c7dc 8b5508          mov     edx,dword ptr [ebp+8]
+7701c7df 83fa40          cmp     edx,40h
+7701c7e2 0f8781f40400    ja      KERNELBASE!WaitForMultipleObjectsEx+0x55 (7706bc69)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x78:
+7701c7e8 8bf1            mov     esi,ecx
+
+KERNELBASE!WaitForMultipleObjectsEx+0x7a:
+7701c7ea 8975d8          mov     dword ptr [ebp-28h],esi
+7701c7ed 3bf2            cmp     esi,edx
+7701c7ef 0f833affffff    jae     KERNELBASE!WaitForMultipleObjectsEx+0xe8 (7701c72f)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x81:
+7701c7f5 8b04b3          mov     eax,dword ptr [ebx+esi*4]
+7701c7f8 89450c          mov     dword ptr [ebp+0Ch],eax
+7701c7fb 83f8f4          cmp     eax,0FFFFFFF4h
+7701c7fe 0f8372f40400    jae     KERNELBASE!WaitForMultipleObjectsEx+0x8c (7706bc76)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xe5:
+7701c804 46              inc     esi
+7701c805 ebe3            jmp     KERNELBASE!WaitForMultipleObjectsEx+0x7a (7701c7ea)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x2e:
+7701cbab 33d2            xor     edx,edx
+7701cbad 8d4db0          lea     ecx,[ebp-50h]
+7701cbb0 ff1518860a77    call    dword ptr [KERNELBASE!_imp_RtlActivateActivationContextUnsafeFast (770a8618)]
+7701cbb6 e90dfcffff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x39 (7701c7c8)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x120:
+7701cbc8 81fe01010000    cmp     esi,101h
+7701cbce 0f858ffbffff    jne     KERNELBASE!WaitForMultipleObjectsEx+0x5d (7701c763)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x12c:
+7701cbd4 e9fff00400      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x12c (7706bcd8)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x145:
+7701cbe7 83cfff          or      edi,0FFFFFFFFh
+7701cbea 56              push    esi
+7701cbeb e8cdf5ffff      call    KERNELBASE!BaseSetLastNTError (7701c1bd)
+7701cbf0 e984fbffff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x14e (7701c779)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x55:
+7706bc69 be0d0000c0      mov     esi,0C000000Dh
+7706bc6e 8975dc          mov     dword ptr [ebp-24h],esi
+7706bc71 e9ed0afbff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0x5d (7701c763)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x8c:
+7706bc76 83f8f6          cmp     eax,0FFFFFFF6h
+7706bc79 0f87850bfbff    ja      KERNELBASE!WaitForMultipleObjectsEx+0xe5 (7701c804)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x91:
+7706bc7f 84c9            test    cl,cl
+7706bc81 752a            jne     KERNELBASE!WaitForMultipleObjectsEx+0xbf (7706bcad)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x95:
+7706bc83 8bc2            mov     eax,edx
+7706bc85 c1e002          shl     eax,2
+7706bc88 50              push    eax
+7706bc89 53              push    ebx
+7706bc8a 8d85a8feffff    lea     eax,[ebp-158h]
+7706bc90 50              push    eax
+7706bc91 e85605fbff      call    KERNELBASE!memcpy (7701c1ec)
+7706bc96 83c40c          add     esp,0Ch
+7706bc99 8d9da8feffff    lea     ebx,[ebp-158h]
+7706bc9f 895dd4          mov     dword ptr [ebp-2Ch],ebx
+7706bca2 b101            mov     cl,1
+7706bca4 884de3          mov     byte ptr [ebp-1Dh],cl
+7706bca7 8b450c          mov     eax,dword ptr [ebp+0Ch]
+7706bcaa 8b5508          mov     edx,dword ptr [ebp+8]
+
+KERNELBASE!WaitForMultipleObjectsEx+0xbf:
+7706bcad 83f8f6          cmp     eax,0FFFFFFF6h
+7706bcb0 750b            jne     KERNELBASE!WaitForMultipleObjectsEx+0xcf (7706bcbd)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xc4:
+7706bcb2 8b45e4          mov     eax,dword ptr [ebp-1Ch]
+7706bcb5 8b4010          mov     eax,dword ptr [eax+10h]
+7706bcb8 8b4018          mov     eax,dword ptr [eax+18h]
+7706bcbb eb13            jmp     KERNELBASE!WaitForMultipleObjectsEx+0xe2 (7706bcd0)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xcf:
+7706bcbd 83f8f5          cmp     eax,0FFFFFFF5h
+7706bcc0 8b45e4          mov     eax,dword ptr [ebp-1Ch]
+7706bcc3 8b4010          mov     eax,dword ptr [eax+10h]
+7706bcc6 7505            jne     KERNELBASE!WaitForMultipleObjectsEx+0xdf (7706bccd)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xda:
+7706bcc8 8b401c          mov     eax,dword ptr [eax+1Ch]
+7706bccb eb03            jmp     KERNELBASE!WaitForMultipleObjectsEx+0xe2 (7706bcd0)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0xdf:
+7706bccd 8b4020          mov     eax,dword ptr [eax+20h]
+
+KERNELBASE!WaitForMultipleObjectsEx+0xe2:
+7706bcd0 8904b3          mov     dword ptr [ebx+esi*4],eax
+7706bcd3 e92c0bfbff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0xe5 (7701c804)  Branch
+
+KERNELBASE!WaitForMultipleObjectsEx+0x12c:
+7706bcd8 8b450c          mov     eax,dword ptr [ebp+0Ch]
+7706bcdb e95d0afbff      jmp     KERNELBASE!WaitForMultipleObjectsEx+0xf6 (7701c73d)  Branch
+0:000> r
+eax=00000000 ebx=0034faa4 ecx=00000000 edx=00000000 esi=0034f8f4 edi=00000000
+eip=77351318 esp=0034f7cc ebp=0034f94c iopl=0         nv up ei pl nz na pe nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000206
+ntdll!NtWaitForMultipleObjects+0xc:
+77351318 c21400          ret     14h
