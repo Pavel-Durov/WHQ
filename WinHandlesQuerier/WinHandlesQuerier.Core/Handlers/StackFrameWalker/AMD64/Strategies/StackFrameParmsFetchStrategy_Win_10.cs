@@ -2,7 +2,7 @@
 using System;
 using WinHandlesQuerier.Core.Model.Unified;
 
-namespace Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64.FunctionParamsFetchStrategies
+namespace Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64
 {
 
     class StackFrameParmsFetchStrategy_Win_10 : StackFrameParmsFetchStrategy
