@@ -21,11 +21,22 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         public Unmanaged_x64_StackWalkerStrategy()
         {
             _globalConfigs = Config.GetInstance();
-            SetStrategy();
-
         }
 
         StackFrameParmsFetchStrategy _unmanagedStackFrameParmFetcher;
+
+        public StackFrameParmsFetchStrategy Strategy
+        {
+            get
+            {
+                if (_unmanagedStackFrameParmFetcher == null)
+                {
+                    SetStrategy();
+                }
+                return _unmanagedStackFrameParmFetcher;
+            }
+        }
+
         Config _globalConfigs;
 
         private void SetStrategy()
@@ -66,7 +77,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         {
             UnifiedBlockingObject result = null;
 
-            var paramz = _unmanagedStackFrameParmFetcher.GetenterCriticalSectionParam(frame);
+            var paramz = Strategy.GetenterCriticalSectionParam(frame);
             result = new UnifiedBlockingObject(paramz.First, UnifiedBlockingType.CriticalSectionObject);
 
             return result;
@@ -78,7 +89,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         /// </summary>
         protected override void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            var paramz = _unmanagedStackFrameParmFetcher.GetenterCriticalSectionParam(frame);
+            var paramz = Strategy.GetenterCriticalSectionParam(frame);
             EnrichUnifiedStackFrame(frame, paramz.First, pid);
         }
 
@@ -88,7 +99,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         /// </summary>
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            var paramz = _unmanagedStackFrameParmFetcher.GetWaitForMultipleObjectsParams(frame, runtime);
+            var paramz = Strategy.GetWaitForMultipleObjectsParams(frame, runtime);
             EnrichUnifiedStackFrame(frame, runtime, pid, paramz.First, paramz.Second);
         }
 
@@ -98,7 +109,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
         /// </summary>
         protected override void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            var paramz = _unmanagedStackFrameParmFetcher.GetWaitForSingleObjectParams(frame);
+            var paramz = Strategy.GetWaitForSingleObjectParams(frame);
             EnrichUnifiedStackFrame(frame, paramz.First, pid);
         }
     }
