@@ -86,6 +86,8 @@
     <Compile Include="Handlers\SafeMemoryMappedViewStreamHandler.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\Base\StackFrameParmsFetchStrategy.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_10.cs" />
+    <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_7.cs" />
+    <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8_1.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Unmanaged_x64_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\StackFrameWalker\Base\UnmanagedStackWalkerStrategy.cs" />
