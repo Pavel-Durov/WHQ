@@ -103,6 +103,7 @@
     <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
     <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
     <Compile Include="Model\MiniDump\MiniDumpModule.cs" />
+    <Compile Include="Model\ProcessAnalysisResult.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedThreadContext.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedUnManagedThread.cs" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.Diagnostics.Runtime;
+﻿using Assignments.Core.Model;
+using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Consumer.ProcessStrategies
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
 
-        public override List<UnifiedThread> Run()
+        public override ProcessAnalysisResult Run()
         {
             using (DataTarget target = DataTarget.LoadCrashDump(_filePath))
             {

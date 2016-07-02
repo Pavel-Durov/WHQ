@@ -1,4 +1,5 @@
 ﻿using Assignments.Core.Infra;
+using Assignments.Core.Model;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace Consumer.ProcessStrategies
 
         }
 
-        public override List<UnifiedThread> Run()
+        public override ProcessAnalysisResult Run()
         {
-            List<UnifiedThread> result = null;
+            ProcessAnalysisResult result = null;
             if (_pid == Constants.INVALID_PID)
             {
                 Console.WriteLine("--- Assignment_4 C# project ----");
@@ -44,7 +45,7 @@ namespace Consumer.ProcessStrategies
             return result;
         }
 
-        private static List<UnifiedThread> DoAnaytics(DataTarget target, uint pid)
+        private static ProcessAnalysisResult DoAnaytics(DataTarget target, uint pid)
         {
             var clrVer = target.ClrVersions[0];
 

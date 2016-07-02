@@ -3,21 +3,24 @@ using System.Text;
 using WinHandlesQuerier.Core.Extentions;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
+using Assignments.Core.Model;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
     public class PrintHandler
     {
-        public static void Print(List<UnifiedThread> unifiedThreadCollection, bool log = false)
+        public static void Print(ProcessAnalysisResult analysis, bool log = false)
         {
-            foreach (var unifiedThread in unifiedThreadCollection)
+            foreach (var unifiedThread in analysis.Threads)
             {
-                PrintToLog(GetData(unifiedThread));
-                PrintToConsole(GetData(unifiedThread));
+                var print = GetData(unifiedThread);
+                PrintToLog(print);
+                PrintToConsole(print);
             }
 
-            PrintToLog(GetSummary(unifiedThreadCollection));
-            PrintToConsole(GetSummary(unifiedThreadCollection));
+            var sammary = GetSummary(analysis);
+            PrintToLog(sammary);
+            PrintToConsole(sammary);
         }
 
         private static StringBuilder GetData(UnifiedThread threadInfo)
@@ -35,14 +38,14 @@ namespace WinHandlesQuerier.Core.Handlers
             return sb;
         }
 
-        private static StringBuilder GetSummary(List<UnifiedThread> collection)
+        private static StringBuilder GetSummary(ProcessAnalysisResult analysis)
         {
             StringBuilder sb = new StringBuilder();
 
             Dictionary<string, int> temp = new Dictionary<string, int>();
 
             sb.AppendLine(":: SUMMARY ::");
-            foreach (var item in collection)
+            foreach (var item in analysis.Threads)
             {
                 if (item.BlockingObjects == null)
                     continue;
@@ -66,6 +69,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 sb.AppendLine($"{item.Key} : {item.Value}");
             }
 
+            sb.AppendLine($"Elapsed Time: {analysis.ElapsedMilliseconds}");
             return sb;
         }
 

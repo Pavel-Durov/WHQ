@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assignments.Core.Model;
+using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 
 namespace Consumer.ProcessStrategies
@@ -23,6 +24,6 @@ namespace Consumer.ProcessStrategies
         protected uint _pid;
         protected string _filePath;
 
-        public abstract List<UnifiedThread> Run();
+        public abstract ProcessAnalysisResult Run();
     }
 }
