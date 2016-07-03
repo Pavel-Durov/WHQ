@@ -1,7 +1,7 @@
 ﻿using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
 
-namespace Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64
+namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 {
     internal abstract class StackFrameParmsFetchStrategy
     {

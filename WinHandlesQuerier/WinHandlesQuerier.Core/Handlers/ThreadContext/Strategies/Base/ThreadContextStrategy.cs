@@ -4,7 +4,7 @@ using System;
 using WinHandlesQuerier.Core.msos;
 using WinNativeApi;
 
-namespace Assignments.Core.Handlers.ThreadContext.Strategies
+namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
 {
     internal abstract class ThreadContextStrategy
     {

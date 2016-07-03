@@ -1,11 +1,10 @@
-﻿using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
+﻿using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
-using Assignments.Core.Infra;
-using System;
-using Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64;
+using WinHandlesQuerier.Core.Infra;
+using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64;
 
-namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
+namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     /// <summary>
     /// This class is responsible for fetching function parameters.
@@ -48,8 +47,7 @@ namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
                 case WinVersions.Win_8:
                     break;
                 case WinVersions.Win_10: _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_10(); break;
-                case WinVersions.Win_7:
-                    break;
+                case WinVersions.Win_7: _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_7();  break;
                 case WinVersions.Win_Vista:
                     break;
                 case WinVersions.Win_XP:

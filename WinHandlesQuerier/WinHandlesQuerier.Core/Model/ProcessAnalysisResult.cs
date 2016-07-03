@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 
-namespace Assignments.Core.Model
+namespace WinHandlesQuerier.Core.Model
 {
     public class ProcessAnalysisResult
     {

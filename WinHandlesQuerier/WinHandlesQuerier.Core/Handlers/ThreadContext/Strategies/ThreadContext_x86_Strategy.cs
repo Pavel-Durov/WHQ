@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using WinNativeApi;
 using WinNativeApi.WinNT;
 
-namespace Assignments.Core.Handlers.ThreadContext.Strategies
+namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
 {
     class ThreadContext_x86_Strategy : ThreadContextStrategy
     {

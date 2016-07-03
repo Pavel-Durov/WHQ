@@ -7,9 +7,9 @@ using WinHandlesQuerier.Core.Model.Unified;
 using System;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 using WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies;
-using Assignments.Core.Infra;
+using WinHandlesQuerier.Core.Infra;
 using System.Diagnostics;
-using Assignments.Core.Model;
+using WinHandlesQuerier.Core.Model;
 
 namespace WinHandlesQuerier.Core.Handlers
 {

@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Infra;
+﻿using WinHandlesQuerier.Core.Infra;
 using CommandLine;
 using CommandLine.Text;
 

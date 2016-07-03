@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WinNativeApi.WinNT;
-using Assignments.Core.Model;
+using WinHandlesQuerier.Core.Model;
 
 namespace WinHandlesQuerier.Core.Model.Unified
 {

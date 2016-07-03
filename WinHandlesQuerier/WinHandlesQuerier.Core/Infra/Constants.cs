@@ -1,4 +1,4 @@
-﻿namespace Assignments.Core.Infra
+﻿namespace WinHandlesQuerier.Core.Infra
 {
     public class Constants
     {

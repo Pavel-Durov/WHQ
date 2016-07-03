@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WinHandlesQuerier.Core.msos;
 using WinNativeApi.WinNT;
 
-namespace Assignments.Core.Model
+namespace WinHandlesQuerier.Core.Model
 {
     internal class UnifiedThreadContext
     {

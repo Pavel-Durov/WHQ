@@ -2,7 +2,7 @@
 
 using System;
 using Consumer.CmdParams;
-using Assignments.Core.Infra;
+using WinHandlesQuerier.Core.Infra;
 using WinHandlesQuerier.Core.Handlers;
 using Consumer.ProcessStrategies;
 using Microsoft.Win32;

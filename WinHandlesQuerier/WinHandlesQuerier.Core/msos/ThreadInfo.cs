@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Model;
+﻿using WinHandlesQuerier.Core.Model;
 using Microsoft.Diagnostics.Runtime;
 using WinNativeApi.WinNT;
 

@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Handlers;
+﻿using WinHandlesQuerier.Core.Handlers;
 using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Handlers.MiniDump;
 using WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies;
 
-namespace Assignments.Core.Infra
+namespace WinHandlesQuerier.Core.Infra
 {
     public enum WinVersions
     {

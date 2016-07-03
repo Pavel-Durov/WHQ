@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace Assignments.Core.Handlers
+namespace WinHandlesQuerier.Core.Handlers
 {
     internal class MachineOsVersionHandler
     {

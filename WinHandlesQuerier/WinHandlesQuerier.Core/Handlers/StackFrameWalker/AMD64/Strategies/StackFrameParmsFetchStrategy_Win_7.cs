@@ -1,5 +1,4 @@
-﻿using Assignments.Core.Handlers.UnmanagedStackFrameWalker.Strategies.x64;
-using Microsoft.Diagnostics.Runtime;
+﻿using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Model.Unified;
 
-namespace Assignments.Core.Handlers.StackFrameWalker.AMD64.Strategies
+namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 {
     class StackFrameParmsFetchStrategy_Win_7 : StackFrameParmsFetchStrategy
     {

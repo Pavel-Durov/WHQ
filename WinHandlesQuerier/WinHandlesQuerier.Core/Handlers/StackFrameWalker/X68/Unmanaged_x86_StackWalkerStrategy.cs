@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
+﻿using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using WinBase;
 using WinHandlesQuerier.Core.Exceptions;
 
-namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies
+namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
 {
     /// <summary>
     /// This class is responsible for fetching function parameters.

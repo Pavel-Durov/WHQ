@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.Unified;
-using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
+using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using WinHandlesQuerier.Core.Model.WCT;
 using WinHandlesQuerier.Core.msos;
 using WinHandlesQuerier.Core.Model.MiniDump;
 
-namespace Assignments.Core.Handlers
+namespace WinHandlesQuerier.Core.Handlers
 {
     internal class UnmanagedBlockingObjectsHandler
     {

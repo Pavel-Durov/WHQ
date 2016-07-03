@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Model;
+﻿using WinHandlesQuerier.Core.Model;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 

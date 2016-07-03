@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Microsoft.Diagnostics.Runtime.Interop;
-using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
-using Assignments.Core.Handlers.UnmanagedStackFrame.Strategies;
+using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
+using WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies;
 using WinNativeApi;
 using System.Runtime.InteropServices;
 using WinNativeApi.WinNT;
-using Assignments.Core;
-using Assignments.Core.Handlers.ThreadContext.Strategies;
-using Assignments.Core.Handlers;
+using WinHandlesQuerier.Core;
+using WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies;
+using WinHandlesQuerier.Core.Handlers;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {

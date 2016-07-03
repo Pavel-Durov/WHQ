@@ -1,4 +1,4 @@
-﻿using Assignments.Core.Infra;
+﻿using WinHandlesQuerier.Core.Infra;
 using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
@@ -9,7 +9,7 @@ using WinHandlesQuerier.Core.Handlers;
 using WinHandlesQuerier.Core.Model.Unified;
 using WinHandlesQuerier.Core.msos;
 
-namespace Assignments.Core.Handlers.UnmanagedStackFrame.Strategies.Base
+namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 {
     internal abstract class UnmanagedStackWalkerStrategy
     {

@@ -3,7 +3,7 @@ using System.Text;
 using WinHandlesQuerier.Core.Extentions;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
-using Assignments.Core.Model;
+using WinHandlesQuerier.Core.Model;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
