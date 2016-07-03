@@ -6,6 +6,10 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 {
     internal class StackFrameParmsFetchStrategy_Win_8 : StackFrameParmsFetchStrategy
     {
+        public StackFrameParmsFetchStrategy_Win_8(ClrRuntime runtime) : base(runtime)
+        {
+        }
+
         //RCX, RDX, R8, and R9
 
         internal override Params GetenterCriticalSectionParam(UnifiedStackFrame frame)
@@ -18,7 +22,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             return result;
         }
 
-        internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame, ClrRuntime runtime)
+        internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame)
         {
             Params result = new Params();
             //RCX, RDX, R8, and R9
@@ -50,7 +54,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             byte[] buffer = new byte[IntPtr.Size];
             int read = 0;
             bool waitAllFlagParam = false;
-            if (runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
+            if (_runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
             {
                 waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
             }

@@ -17,13 +17,14 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
     /// </summary>
     internal class Unmanaged_x64_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
-        public Unmanaged_x64_StackWalkerStrategy()
+        public Unmanaged_x64_StackWalkerStrategy(ClrRuntime runtime)
         {
             _globalConfigs = Config.GetInstance();
+            _runtime = runtime;
         }
 
         StackFrameParmsFetchStrategy _unmanagedStackFrameParmFetcher;
-
+        ClrRuntime _runtime;
         public StackFrameParmsFetchStrategy Strategy
         {
             get
@@ -43,22 +44,17 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
             switch (_globalConfigs.OsVersion)
             {
 
-                case WinVersions.Win_8_1: _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_8_1(); break;
+                case WinVersions.Win_8_1:
+                    _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_8_1(_runtime);
+                    break;
                 case WinVersions.Win_8:
+                    _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_8(_runtime);
                     break;
-                case WinVersions.Win_10: _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_10(); break;
-                case WinVersions.Win_7: _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_7();  break;
-                case WinVersions.Win_Vista:
+                case WinVersions.Win_10:
+                    _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_10(_runtime);
                     break;
-                case WinVersions.Win_XP:
-                    break;
-                case WinVersions.Win_XP_Pro_x64:
-                    break;
-                case WinVersions.Win_Me:
-                    break;
-                case WinVersions.Win_2000:
-                    break;
-                case WinVersions.Win_98:
+                case WinVersions.Win_7:
+                    _unmanagedStackFrameParmFetcher = new StackFrameParmsFetchStrategy_Win_7(_runtime);
                     break;
                 default:
                     break;
@@ -97,7 +93,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
         /// </summary>
         protected override void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            var paramz = Strategy.GetWaitForMultipleObjectsParams(frame, runtime);
+            var paramz = Strategy.GetWaitForMultipleObjectsParams(frame);
             EnrichUnifiedStackFrame(frame, runtime, pid, paramz.First, paramz.Second);
         }
 

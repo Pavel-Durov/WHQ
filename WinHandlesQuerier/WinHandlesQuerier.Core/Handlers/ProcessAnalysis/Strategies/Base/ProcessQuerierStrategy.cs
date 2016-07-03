@@ -28,7 +28,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 
             if (dataReader.GetArchitecture() == Architecture.Amd64)//Environment.Is64BitProcess
             {
-                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy();
+                _unmanagedStackWalkerStrategy = new Unmanaged_x64_StackWalkerStrategy(_runtime);
                 _threadContextStrategy = new ThreadContext_x64_Strategy();
             }
             else
