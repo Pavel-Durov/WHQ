@@ -1,0 +1,193 @@
+
+Microsoft (R) Windows Debugger Version 10.0.10586.567 AMD64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\ISO\WIN_07\dumps\EnterCriticalSectionTest_UnManaged.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 7 Version 7601 (Service Pack 1) UP Free x64
+Product: WinNt, suite: SingleUserTS
+Machine Name:
+Debug session time: Sun Jul  3 10:58:39.000 2016 (UTC + 3:00)
+System Uptime: 0 days 1:26:55.443
+Process Uptime: 0 days 0:00:21.000
+.............................
+ntdll!ZwWaitForSingleObject+0xa:
+00000000`7702135a c3              ret
+0:000> k
+ # Child-SP          RetAddr           Call Site
+00 00000000`0020f5c8 000007fe`fd2410ac ntdll!ZwWaitForSingleObject+0xa
+01 00000000`0020f5d0 000007fe`f7ed1ecf KERNELBASE!WaitForSingleObjectEx+0x79
+*** WARNING: Unable to verify checksum for EnterCriticalSectionTest_UnManaged.exe
+02 00000000`0020f670 00000001`3fa112b6 msvcp140!_Thrd_join+0x1f [f:\dd\vctools\crt\crtw32\stdcpp\thr\cthread.c @ 50]
+03 (Inline Function) --------`-------- EnterCriticalSectionTest_UnManaged!std::thread::join+0x5d [c:\program files (x86)\microsoft visual studio 14.0\vc\include\thread @ 194]
+04 00000000`0020f6a0 00000001`3fa11d10 EnterCriticalSectionTest_UnManaged!main+0x126 [c:\git\github\win-handles-querier\winhandlesquerier-dumptests\unmanaged\entercriticalsectiontest_unmanaged\entercriticalsectiontest_unmanaged.cpp @ 34]
+05 (Inline Function) --------`-------- EnterCriticalSectionTest_UnManaged!invoke_main+0x22 [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 64]
+06 00000000`0020f830 00000000`76dc652d EnterCriticalSectionTest_UnManaged!__scrt_common_main_seh+0x124 [f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl @ 255]
+07 00000000`0020f870 00000000`76ffc521 kernel32!BaseThreadInitThunk+0xd
+08 00000000`0020f8a0 00000000`00000000 ntdll!RtlUserThreadStart+0x1d
+0:000> uf /c KERNELBASE!WaitForSingleObjectEx
+KERNELBASE!WaitForSingleObjectEx (000007fe`fd241010)
+  KERNELBASE!WaitForSingleObjectEx+0x73 (000007fe`fd2410a6):
+    call to ntdll!ZwWaitForSingleObject (00000000`77021350)
+  KERNELBASE!WaitForSingleObjectEx+0x15f (000007fe`fd24258d):
+    call to ntdll!RtlActivateActivationContextUnsafeFast (00000000`77023140)
+  KERNELBASE!WaitForSingleObjectEx+0x16f (000007fe`fd2425ad):
+    call to ntdll!RtlDeactivateActivationContextUnsafeFast (00000000`77023050)
+  KERNELBASE!WaitForSingleObjectEx+0x132 (000007fe`fd25d46b):
+    call to KERNELBASE!BaseSetLastNTError (000007fe`fd2413b0)
+0:000> uf KERNELBASE!WaitForSingleObjectEx
+KERNELBASE!WaitForSingleObjectEx:
+000007fe`fd241010 4c8bdc          mov     r11,rsp
+000007fe`fd241013 49895b08        mov     qword ptr [r11+8],rbx
+000007fe`fd241017 45894318        mov     dword ptr [r11+18h],r8d
+000007fe`fd24101b 56              push    rsi
+000007fe`fd24101c 57              push    rdi
+000007fe`fd24101d 4154            push    r12
+000007fe`fd24101f 4881ec80000000  sub     rsp,80h
+000007fe`fd241026 418bd8          mov     ebx,r8d
+000007fe`fd241029 8bf2            mov     esi,edx
+000007fe`fd24102b 488bf9          mov     rdi,rcx
+000007fe`fd24102e 49c7439848000000 mov     qword ptr [r11-68h],48h
+000007fe`fd241036 c744243801000000 mov     dword ptr [rsp+38h],1
+000007fe`fd24103e 33c0            xor     eax,eax
+000007fe`fd241040 498943a8        mov     qword ptr [r11-58h],rax
+000007fe`fd241044 498943b0        mov     qword ptr [r11-50h],rax
+000007fe`fd241048 498943b8        mov     qword ptr [r11-48h],rax
+000007fe`fd24104c 498943c0        mov     qword ptr [r11-40h],rax
+000007fe`fd241050 498943c8        mov     qword ptr [r11-38h],rax
+000007fe`fd241054 498943d0        mov     qword ptr [r11-30h],rax
+000007fe`fd241058 498943d8        mov     qword ptr [r11-28h],rax
+000007fe`fd24105c 4585c0          test    r8d,r8d
+000007fe`fd24105f 0f8521150000    jne     KERNELBASE!WaitForSingleObjectEx+0x158 (000007fe`fd242586)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x55:
+000007fe`fd241065 4889bc24b8000000 mov     qword ptr [rsp+0B8h],rdi
+000007fe`fd24106d 83fff4          cmp     edi,0FFFFFFF4h
+000007fe`fd241070 0f837ac30100    jae     KERNELBASE!WaitForSingleObjectEx+0xbb (000007fe`fd25d3f0)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x62:
+000007fe`fd241076 83feff          cmp     esi,0FFFFFFFFh
+000007fe`fd241079 0f841e030000    je      KERNELBASE!WaitForSingleObjectEx+0x67 (000007fe`fd24139d)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x90:
+000007fe`fd24107f 488bc6          mov     rax,rsi
+000007fe`fd241082 4869c010270000  imul    rax,rax,2710h
+000007fe`fd241089 4889442428      mov     qword ptr [rsp+28h],rax
+000007fe`fd24108e 48f7d8          neg     rax
+000007fe`fd241091 4889442428      mov     qword ptr [rsp+28h],rax
+000007fe`fd241096 4c8d642428      lea     r12,[rsp+28h]
+000007fe`fd24109b eb00            jmp     KERNELBASE!WaitForSingleObjectEx+0x6a (000007fe`fd24109d)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x6a:
+000007fe`fd24109d 4d8bc4          mov     r8,r12
+000007fe`fd2410a0 0fb6d3          movzx   edx,bl
+000007fe`fd2410a3 488bcf          mov     rcx,rdi
+000007fe`fd2410a6 ff1554900400    call    qword ptr [KERNELBASE!_imp_NtWaitForSingleObject (000007fe`fd28a100)]
+000007fe`fd2410ac 8bf0            mov     esi,eax
+000007fe`fd2410ae 89442420        mov     dword ptr [rsp+20h],eax
+000007fe`fd2410b2 85c0            test    eax,eax
+000007fe`fd2410b4 0f88afc30100    js      KERNELBASE!WaitForSingleObjectEx+0x130 (000007fe`fd25d469)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x87:
+000007fe`fd2410ba 85db            test    ebx,ebx
+000007fe`fd2410bc 0f85d6140000    jne     KERNELBASE!WaitForSingleObjectEx+0xae (000007fe`fd242598)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x8b:
+000007fe`fd2410c2 eb00            jmp     KERNELBASE!WaitForSingleObjectEx+0x13e (000007fe`fd2410c4)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x13e:
+000007fe`fd2410c4 85db            test    ebx,ebx
+000007fe`fd2410c6 0f85dc140000    jne     KERNELBASE!WaitForSingleObjectEx+0x16a (000007fe`fd2425a8)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x142:
+000007fe`fd2410cc 8bc6            mov     eax,esi
+000007fe`fd2410ce 488b9c24a0000000 mov     rbx,qword ptr [rsp+0A0h]
+000007fe`fd2410d6 4881c480000000  add     rsp,80h
+000007fe`fd2410dd 415c            pop     r12
+000007fe`fd2410df 5f              pop     rdi
+000007fe`fd2410e0 5e              pop     rsi
+000007fe`fd2410e1 c3              ret
+
+KERNELBASE!WaitForSingleObjectEx+0x67:
+000007fe`fd24139d 4533e4          xor     r12d,r12d
+000007fe`fd2413a0 e9f8fcffff      jmp     KERNELBASE!WaitForSingleObjectEx+0x6a (000007fe`fd24109d)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x158:
+000007fe`fd242586 33d2            xor     edx,edx
+000007fe`fd242588 488d4c2430      lea     rcx,[rsp+30h]
+000007fe`fd24258d ff151d7b0400    call    qword ptr [KERNELBASE!_imp_RtlActivateActivationContextUnsafeFast (000007fe`fd28a0b0)]
+000007fe`fd242593 e9cdeaffff      jmp     KERNELBASE!WaitForSingleObjectEx+0x55 (000007fe`fd241065)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xae:
+000007fe`fd242598 3d01010000      cmp     eax,101h
+000007fe`fd24259d 0f8521ebffff    jne     KERNELBASE!WaitForSingleObjectEx+0x13e (000007fe`fd2410c4)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xb9:
+000007fe`fd2425a3 e943ae0100      jmp     KERNELBASE!WaitForSingleObjectEx+0xb9 (000007fe`fd25d3eb)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x16a:
+000007fe`fd2425a8 488d4c2430      lea     rcx,[rsp+30h]
+000007fe`fd2425ad ff150d7b0400    call    qword ptr [KERNELBASE!_imp_RtlDeactivateActivationContextUnsafeFast (000007fe`fd28a0c0)]
+000007fe`fd2425b3 90              nop
+000007fe`fd2425b4 e913ebffff      jmp     KERNELBASE!WaitForSingleObjectEx+0x142 (000007fe`fd2410cc)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xb9:
+000007fe`fd25d3eb e9ad3cfeff      jmp     KERNELBASE!WaitForSingleObjectEx+0x6a (000007fe`fd24109d)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xbb:
+000007fe`fd25d3f0 83fff4          cmp     edi,0FFFFFFF4h
+000007fe`fd25d3f3 7452            je      KERNELBASE!WaitForSingleObjectEx+0x10e (000007fe`fd25d447)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xc0:
+000007fe`fd25d3f5 83fff5          cmp     edi,0FFFFFFF5h
+000007fe`fd25d3f8 742b            je      KERNELBASE!WaitForSingleObjectEx+0xec (000007fe`fd25d425)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xc5:
+000007fe`fd25d3fa 83fff6          cmp     edi,0FFFFFFF6h
+000007fe`fd25d3fd 0f85733cfeff    jne     KERNELBASE!WaitForSingleObjectEx+0x62 (000007fe`fd241076)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xca:
+000007fe`fd25d403 65488b042530000000 mov   rax,qword ptr gs:[30h]
+000007fe`fd25d40c 488b4060        mov     rax,qword ptr [rax+60h]
+000007fe`fd25d410 488b4820        mov     rcx,qword ptr [rax+20h]
+000007fe`fd25d414 488b7920        mov     rdi,qword ptr [rcx+20h]
+000007fe`fd25d418 4889bc24b8000000 mov     qword ptr [rsp+0B8h],rdi
+000007fe`fd25d420 e9513cfeff      jmp     KERNELBASE!WaitForSingleObjectEx+0x62 (000007fe`fd241076)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0xec:
+000007fe`fd25d425 65488b042530000000 mov   rax,qword ptr gs:[30h]
+000007fe`fd25d42e 488b4060        mov     rax,qword ptr [rax+60h]
+000007fe`fd25d432 488b4820        mov     rcx,qword ptr [rax+20h]
+000007fe`fd25d436 488b7928        mov     rdi,qword ptr [rcx+28h]
+000007fe`fd25d43a 4889bc24b8000000 mov     qword ptr [rsp+0B8h],rdi
+000007fe`fd25d442 e92f3cfeff      jmp     KERNELBASE!WaitForSingleObjectEx+0x62 (000007fe`fd241076)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x10e:
+000007fe`fd25d447 65488b042530000000 mov   rax,qword ptr gs:[30h]
+000007fe`fd25d450 488b4060        mov     rax,qword ptr [rax+60h]
+000007fe`fd25d454 488b4820        mov     rcx,qword ptr [rax+20h]
+000007fe`fd25d458 488b7930        mov     rdi,qword ptr [rcx+30h]
+000007fe`fd25d45c 4889bc24b8000000 mov     qword ptr [rsp+0B8h],rdi
+000007fe`fd25d464 e90d3cfeff      jmp     KERNELBASE!WaitForSingleObjectEx+0x62 (000007fe`fd241076)  Branch
+
+KERNELBASE!WaitForSingleObjectEx+0x130:
+000007fe`fd25d469 8bc8            mov     ecx,eax
+000007fe`fd25d46b e8403ffeff      call    KERNELBASE!BaseSetLastNTError (000007fe`fd2413b0)
+000007fe`fd25d470 83ceff          or      esi,0FFFFFFFFh
+000007fe`fd25d473 89742420        mov     dword ptr [rsp+20h],esi
+000007fe`fd25d477 e9483cfeff      jmp     KERNELBASE!WaitForSingleObjectEx+0x13e (000007fe`fd2410c4)  Branch
+0:000> r
+rax=0000000400110001 rbx=0000000000000000 rcx=0000000000000000
+rdx=00000000000009d4 rsi=00000000ffffffff rdi=0000000000000034
+rip=000000007702135a rsp=000000000020f5c8 rbp=0000000000000000
+ r8=000000040011002f  r9=00000005000c0030 r10=0000000000000006
+r11=000000000000001b r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+ntdll!ZwWaitForSingleObject+0xa:
+00000000`7702135a c3              ret
