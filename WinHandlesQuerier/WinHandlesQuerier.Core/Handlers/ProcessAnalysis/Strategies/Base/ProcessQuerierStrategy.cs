@@ -13,6 +13,7 @@ using WinNativeApi.WinNT;
 using WinHandlesQuerier.Core;
 using WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies;
 using WinHandlesQuerier.Core.Handlers;
+using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -70,7 +71,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(unmanagedStack);
         }
 
-        public abstract List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
+        public abstract Task<List<UnifiedBlockingObject>> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime);
 
 
 

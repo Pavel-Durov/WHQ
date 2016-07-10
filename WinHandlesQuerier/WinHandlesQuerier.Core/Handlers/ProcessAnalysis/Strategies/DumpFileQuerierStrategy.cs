@@ -5,6 +5,7 @@ using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using WinHandlesQuerier.Core.Handlers.MiniDump;
+using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -19,7 +20,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         MiniDump.MiniDumpHandler _miniDump;
 
 
-        public MiniDumpSystemInfo SystemInfo => _miniDump.GetSystemInfo();
+        public MiniDumpSystemInfo SystemInfo => _miniDump.GetSystemInfo().Result;
 
         public override CPUArchitecture CPUArchitechture
         {
@@ -27,7 +28,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             {
                 CPUArchitecture architechture;
 
-                var systemInfo = _miniDump.GetSystemInfo();
+                var systemInfo = SystemInfo;
 
                 if (systemInfo.ProcessorArchitecture == DbgHelp.MiniDumpProcessorArchitecture.PROCESSOR_ARCHITECTURE_INTEL)
                 {
@@ -45,9 +46,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
-        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
+        public override async Task<List<UnifiedBlockingObject>> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            var handles = _miniDump.GetHandles();
+            var handles = await _miniDump.GetHandles();
             return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(thread, unmanagedStack, runtime, handles);
         }
 

@@ -1,6 +1,7 @@
 ﻿using WinHandlesQuerier.Core.Model;
 using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
+using System.Threading.Tasks;
 
 namespace Consumer.ProcessStrategies
 {
@@ -24,6 +25,6 @@ namespace Consumer.ProcessStrategies
         protected uint _pid;
         protected string _filePath;
 
-        public abstract ProcessAnalysisResult Run();
+        public abstract Task<ProcessAnalysisResult> Run();
     }
 }

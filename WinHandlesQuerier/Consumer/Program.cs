@@ -37,7 +37,7 @@ namespace Consumer
             }
 #endif
 
-            var result = _processStrategy.Run();
+            var result = _processStrategy.Run().Result;
             PrintHandler.Print(result, true);
 
             Console.ReadKey();

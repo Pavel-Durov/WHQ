@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using DbgHelp;
+using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -43,38 +44,43 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
 
-        public static unsafe string ReadString(Int32 rva, SafeMemoryMappedViewHandle safeHandle)
+        public static async Task<string> ReadString(Int32 rva, SafeMemoryMappedViewHandle safeHandle)
         {
-            return RunSafe<string>(() =>
+            return await RunSafe<string>(() =>
             {
-                byte* baseOfView = null;
+                unsafe
+                {
+                    byte* baseOfView = null;
 
-                safeHandle.AcquirePointer(ref baseOfView);
+                    safeHandle.AcquirePointer(ref baseOfView);
 
-                IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
-                int len = Marshal.ReadInt32(positionToReadFrom) / 2;
-                positionToReadFrom += 4;
+                    IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
+                    int len = Marshal.ReadInt32(positionToReadFrom) / 2;
+                    positionToReadFrom += 4;
 
-                // Read and marshal the string
-                return Marshal.PtrToStringUni(positionToReadFrom, len);
+                    // Read and marshal the string
+                    return Marshal.PtrToStringUni(positionToReadFrom, len);
+                }
             }, safeHandle);
         }
 
-        public static unsafe string ReadString(int rva, uint length, SafeMemoryMappedViewHandle safeHandle)
+        public static async Task<string> ReadString(int rva, uint length, SafeMemoryMappedViewHandle safeHandle)
         {
-            return RunSafe<string>(() =>
+            return await RunSafe<string>(() =>
             {
-                byte* baseOfView = null;
-                safeHandle.AcquirePointer(ref baseOfView);
-                IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
-                positionToReadFrom += (int)length;
+                unsafe
+                {
+                    byte* baseOfView = null;
+                    safeHandle.AcquirePointer(ref baseOfView);
+                    IntPtr positionToReadFrom = new IntPtr(baseOfView + rva);
+                    positionToReadFrom += (int)length;
 
-                return Marshal.PtrToStringUni(positionToReadFrom);
-
+                    return Marshal.PtrToStringUni(positionToReadFrom);
+                }
             }, safeHandle);
         }
 
-        public static unsafe T[] ReadArray<T>(IntPtr absoluteAddress,
+        public static unsafe Task<T[]> ReadArray<T>(IntPtr absoluteAddress,
             int count, SafeMemoryMappedViewHandle safeHandle) where T : struct
         {
             return RunSafe<T>(() =>
@@ -90,14 +96,17 @@ namespace WinHandlesQuerier.Core.Handlers
             }, safeHandle, count);
         }
 
-        public static unsafe T ReadStruct<T>(Int32 rva, IntPtr streamPtr, SafeMemoryMappedViewHandle safeHandle) where T : struct
+        public static async Task<T> ReadStruct<T>(Int32 rva, IntPtr streamPtr, SafeMemoryMappedViewHandle safeHandle) where T : struct
         {
-            return RunSafe<T>(() =>
+            return await RunSafe<T>(() =>
             {
-                byte* baseOfView = null;
-                safeHandle.AcquirePointer(ref baseOfView);
-                ulong offset = (ulong)streamPtr - (ulong)baseOfView;
-                return safeHandle.Read<T>(offset);
+                unsafe
+                {
+                    byte* baseOfView = null;
+                    safeHandle.AcquirePointer(ref baseOfView);
+                    ulong offset = (ulong)streamPtr - (ulong)baseOfView;
+                    return safeHandle.Read<T>(offset);
+                }
 
             }, safeHandle);
         }
@@ -108,45 +117,54 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
 
-        public static T RunSafe<T>(Func<T> func, SafeMemoryMappedViewHandle safeHandle)
+        public static async Task<T> RunSafe<T>(Func<T> func, SafeMemoryMappedViewHandle safeHandle)
         {
-            T result = default(T);
-            try
+            return await Task<T>.Run(() =>
             {
-                result = func();
-            }
-            finally
-            {
-                safeHandle.ReleasePointer();
-            }
-            return result;
+                T result = default(T);
+                try
+                {
+                    result = func();
+                }
+                finally
+                {
+                    safeHandle.ReleasePointer();
+                }
+                return result;
+            });
         }
 
-       
-        public static T[] RunSafe<T>(Func<T[]> function, SafeMemoryMappedViewHandle safeHandle, int count) where T : struct
+
+        public static async Task<T[]> RunSafe<T>(Func<T[]> function, SafeMemoryMappedViewHandle safeHandle, int count) where T : struct
         {
-            T[] result = new T[count];
-            try
+            return await Task<T[]>.Run(() =>
             {
-                result = function();
-            }
-            finally
-            {
-                safeHandle.ReleasePointer();
-            }
-            return result;
+                T[] result = new T[count];
+                try
+                {
+                    result = function();
+                }
+                finally
+                {
+                    safeHandle.ReleasePointer();
+                }
+                return result;
+            });
         }
 
-        public static void RunSafe(Action action, SafeMemoryMappedViewHandle safeHandle)
+        public static async Task RunSafe(Action action, SafeMemoryMappedViewHandle safeHandle)
         {
-            try
+            await Task.Run(() =>
             {
-                action();
-            }
-            finally
-            {
-                safeHandle.ReleasePointer();
-            }
+                try
+                {
+                    action();
+                }
+                finally
+                {
+                    safeHandle.ReleasePointer();
+                }
+            });
         }
     }
 }

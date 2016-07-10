@@ -18,7 +18,7 @@ namespace Consumer.ProcessStrategies
 
         }
 
-        public override ProcessAnalysisResult Run()
+        public override async Task<ProcessAnalysisResult> Run()
         {
             ProcessAnalysisResult result = null;
             if (_pid == Constants.INVALID_PID)
@@ -37,15 +37,13 @@ namespace Consumer.ProcessStrategies
                 }
 
                 Console.WriteLine("Attached To Process Successfully");
-                result = DoAnaytics(target, _pid);
-
+                result = await DoAnaytics(target, _pid);
             }
-
 
             return result;
         }
 
-        private static ProcessAnalysisResult DoAnaytics(DataTarget target, uint pid)
+        private static async Task<ProcessAnalysisResult> DoAnaytics(DataTarget target, uint pid)
         {
             var clrVer = target.ClrVersions[0];
 
@@ -53,7 +51,7 @@ namespace Consumer.ProcessStrategies
             var runtime = clrVer.CreateRuntime();
             ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, pid);
 
-            return handler.Handle();
+            return await handler.Handle();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Consumer.ProcessStrategies
         const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
 
-        public override ProcessAnalysisResult Run()
+        public override async Task<ProcessAnalysisResult> Run()
         {
             using (DataTarget target = DataTarget.LoadCrashDump(_filePath))
             {
@@ -33,7 +33,7 @@ namespace Consumer.ProcessStrategies
 
                 ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath);
 
-                return handler.Handle();
+                return await handler.Handle();
             }
         }
     }

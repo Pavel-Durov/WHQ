@@ -10,6 +10,7 @@ using WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies;
 using WinHandlesQuerier.Core.Infra;
 using System.Diagnostics;
 using WinHandlesQuerier.Core.Model;
+using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -61,7 +62,7 @@ namespace WinHandlesQuerier.Core.Handlers
         #endregion
 
 
-        public ProcessAnalysisResult Handle()
+        public async Task<ProcessAnalysisResult> Handle()
         {
             _operationTime.Start();
 
@@ -82,7 +83,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 }
                 else
                 {
-                    result.Add(HandleUnManagedThread(specific_info));
+                    result.Add(await HandleUnManagedThread(specific_info));
                 }
             }
 
@@ -97,12 +98,12 @@ namespace WinHandlesQuerier.Core.Handlers
 
         #region Thread Method
 
-        private UnifiedUnManagedThread HandleUnManagedThread(ThreadInfo specific_info)
+        private async Task<UnifiedUnManagedThread> HandleUnManagedThread(ThreadInfo specific_info)
         {
             UnifiedUnManagedThread result = null;
             var unmanagedStack = GetNativeStackTrace(specific_info);
 
-            var blockingObjects = _processQuerierStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
+            var blockingObjects = await _processQuerierStrategy.GetUnmanagedBlockingObjects(specific_info, unmanagedStack, _runtime);
 
             result = new UnifiedUnManagedThread(specific_info, unmanagedStack, blockingObjects);
 

@@ -5,6 +5,7 @@ using Microsoft.Diagnostics.Runtime;
 using WinHandlesQuerier.Core.Model.WCT;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
+using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
@@ -36,10 +37,13 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             }
         }
 
-        public override List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
+        public override async Task<List<UnifiedBlockingObject>> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
-            ThreadWCTInfo wct_threadInfo = _wctApi.GetBlockingObjects(thread.OSThreadId);
-            return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(wct_threadInfo, unmanagedStack);
+            return await Task<List<UnifiedBlockingObject>>.Run(() =>
+            {
+                ThreadWCTInfo wct_threadInfo = _wctApi.GetBlockingObjects(thread.OSThreadId);
+                return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(wct_threadInfo, unmanagedStack);
+            });
         }
     }
 }
