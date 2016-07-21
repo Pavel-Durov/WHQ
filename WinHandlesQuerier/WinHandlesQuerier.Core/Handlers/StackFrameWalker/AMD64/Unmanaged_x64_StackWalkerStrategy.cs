@@ -71,7 +71,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
         {
             UnifiedBlockingObject result = null;
 
-            var paramz = Strategy.GetenterCriticalSectionParam(frame);
+            var paramz = Strategy.GetEnterCriticalSectionParam(frame);
             result = new UnifiedBlockingObject(paramz.First, UnifiedBlockingType.CriticalSectionObject);
 
             return result;
@@ -83,7 +83,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrame.Strategies
         /// </summary>
         protected override void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
-            var paramz = Strategy.GetenterCriticalSectionParam(frame);
+            var paramz = Strategy.GetEnterCriticalSectionParam(frame);
             EnrichUnifiedStackFrame(frame, paramz.First, pid);
         }
 

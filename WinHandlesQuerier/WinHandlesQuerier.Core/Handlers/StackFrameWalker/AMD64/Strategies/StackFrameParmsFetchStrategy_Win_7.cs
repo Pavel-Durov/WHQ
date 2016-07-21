@@ -1,9 +1,5 @@
 ﻿using Microsoft.Diagnostics.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Model.Unified;
 
 namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
@@ -12,21 +8,29 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
     {
         public StackFrameParmsFetchStrategy_Win_7(ClrRuntime runtime) : base(runtime)
         {
+            throw new NotImplementedException();
         }
 
-        //RCX, RDX, R8, and R9
-        internal override Params GetenterCriticalSectionParam(UnifiedStackFrame frame)
-        {
-            Params result = new Params();
-            //000007fd`949b106b 488bf9 mov     rdi,rcx
-            //Rdi is Nonvolatile register
-            //result.First = frame.ThreadContext.Context_amd64.Rdi;
+        /* WaitForSingleObject
+        * 
+        * 1st: RCX (handle) 
+        * 000007fe`fd24102b 488bf9          mov     rdi,rcx
+        * 2nd - RDX (Timeout)
+        * 000007fe`fd241029 8bf2            mov     esi,edx
+        */
 
-            return result;
-        }
+        /* EnterCriticalSection 
+        * 
+        * 1st: RCX (CRITICAL_SECTION ptr) 
+        * 00007ffd`b57310cb 488bf9          mov     rdi,rcx
+        */
+
 
         internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame)
         {
+            throw new NotImplementedException();
+
+
             Params result = new Params();
             //RCX, RDX, R8, and R9
 
@@ -46,18 +50,6 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 
             //R9
             //waittime
-            return result;
-        }
-
-        internal override Params GetWaitForSingleObjectParams(UnifiedStackFrame frame)
-        {
-            Params result = new Params();
-            //000007fe`fd24102b 488bf9 mov     rdi,rcx
-            result.First = frame.ThreadContext.Context_amd64.Rdi;
-          
-            ///Rsi is a Nonvolatile register
-            //result.Second = frame.ThreadContext.Context_amd64.Rsi;
-
             return result;
         }
     }

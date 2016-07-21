@@ -8,30 +8,27 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
     {
         public StackFrameParmsFetchStrategy_Win_8(ClrRuntime runtime) : base(runtime)
         {
+
         }
 
-        //RCX, RDX, R8, and R9
+        /* WaitForSingleObject
+        * 
+        * 1st: RCX (handle) 
+        * 000007fe`fd24102b 488bf9          mov     rdi,rcx
+        * 2nd - RDX (Timeout)
+        * 000007fe`fd241029 8bf2            mov     esi,edx
+        */
 
-        internal override Params GetenterCriticalSectionParam(UnifiedStackFrame frame)
-        {
-            Params result = new Params();
-            //000007fd`949b106b 488bf9 mov     rdi,rcx
-            //Rdi is Nonvolatile register
-            result.First = frame.ThreadContext.Context_amd64.Rdi;
-
-            return result;
-        }
+        /* EnterCriticalSection 
+        * 
+        * 1st: RCX (CRITICAL_SECTION ptr) 
+        * 00007ffd`b57310cb 488bf9          mov     rdi,rcx
+        */
 
         internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame)
         {
             Params result = new Params();
             //RCX, RDX, R8, and R9
-
-            //RDX
-            //00007ffd`b57312e2 4c8bea          mov     r13,rdx
-            var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
-            result.Second = hArrayPtr;
-
 
             //RCX
             //00007ffd`b57312e5 8bd9            mov     ebx,ecx
@@ -41,10 +38,16 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             {
                 throw new ArgumentOutOfRangeException($"Cannot await for more then : {Kernel32.Const.MAXIMUM_WAIT_OBJECTS}, given value :{handlesCount}");
             }
+
             result.First = handlesCount;
 
-            //R8
+            //RDX
+            //00007ffd`b57312e2 4c8bea          mov     r13,rdx
+            var hArrayPtr = frame.ThreadContext.Context_amd64.R13;
+            result.Second = hArrayPtr;
 
+
+            //R8
             //3rd: WaitAll (BOOLEAN)
             ///R8 - Volatile - Third integer argument
             //
@@ -60,22 +63,11 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             }
 
             result.Third = waitAllFlagParam ? (ulong)1 : (ulong)0;
-
+            
             //R9
             ////00007ffd`b57312df 458bf1          mov     r14d,r9d
             var waitTime = frame.ThreadContext.Context_amd64.R14;
             result.Fourth = waitTime;
-
-            return result;
-        }
-
-        internal override Params GetWaitForSingleObjectParams(UnifiedStackFrame frame)
-        {
-            Params result = new Params();
-
-            //000007fd`949b106b 488bf9 mov     rdi,rcx
-            //Rdi is Nonvolatile register
-            result.First = frame.ThreadContext.Context_amd64.Rdi;
 
             return result;
         }

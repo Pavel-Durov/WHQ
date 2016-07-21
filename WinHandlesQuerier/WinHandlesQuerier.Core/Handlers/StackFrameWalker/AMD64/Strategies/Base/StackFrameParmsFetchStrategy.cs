@@ -4,6 +4,10 @@ using WinHandlesQuerier.Core.Model.Unified;
 
 namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 {
+    /// <summary>
+    /// x64 Registers Names
+    /// https://msdn.microsoft.com/en-us/library/ff561499.aspx
+    /// </summary>
     internal abstract class StackFrameParmsFetchStrategy
     {
         public StackFrameParmsFetchStrategy(ClrRuntime runtime)
@@ -14,8 +18,23 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
         protected ClrRuntime _runtime;
 
         internal abstract Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame);
-        internal abstract Params GetWaitForSingleObjectParams(UnifiedStackFrame frame);
-        internal abstract Params GetenterCriticalSectionParam(UnifiedStackFrame frame);
+        
+        internal virtual Params GetWaitForSingleObjectParams(UnifiedStackFrame frame)
+        {
+            Params result = new Params();
+
+            result.First = frame.ThreadContext.Context_amd64.Rdi;
+            result.Second = frame.ThreadContext.Context_amd64.Rsi;
+
+            return result;
+        }
+
+        internal virtual Params GetEnterCriticalSectionParam(UnifiedStackFrame frame)
+        {
+            Params result = new Params();
+            result.First = frame.ThreadContext.Context_amd64.Rdi;
+            return result;
+        }
 
         internal long ReadLong(ulong rspPtr)
         {
@@ -28,6 +47,20 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
                 result = BitConverter.ToInt64(buffer, 0);
             }
             return result;
+        }
+
+        internal ulong ReadBoolean(ulong stackPointer)
+        {
+            byte[] buffer = new byte[IntPtr.Size];
+            int read = 0;
+
+            bool waitAllFlagParam = false;
+            if (_runtime.ReadMemory(stackPointer, buffer, buffer.Length, out read))
+            {
+                waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
+            }
+
+            return waitAllFlagParam ? (ulong)1 : (ulong)0;
         }
     }
 
