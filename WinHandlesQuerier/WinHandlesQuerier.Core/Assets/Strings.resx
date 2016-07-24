@@ -135,6 +135,9 @@
   <data name="Hadle" xml:space="preserve">
     <value>Hadle</value>
   </data>
+  <data name="Is64BitProcess" xml:space="preserve">
+    <value>Is 64 bit process (AMD64)</value>
+  </data>
   <data name="IsManagedThread" xml:space="preserve">
     <value>Is managed thread</value>
   </data>
