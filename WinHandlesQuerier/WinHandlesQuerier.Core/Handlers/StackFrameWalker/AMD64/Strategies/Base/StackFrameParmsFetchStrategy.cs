@@ -8,6 +8,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
     /// x64 Registers Names
     /// https://msdn.microsoft.com/en-us/library/ff561499.aspx
     /// </summary>
+    
     internal abstract class StackFrameParmsFetchStrategy
     {
         public StackFrameParmsFetchStrategy(ClrRuntime runtime)

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assignments.Core.Assets;
 
 namespace WinHandlesQuerier.Core.Extentions
 {
@@ -15,15 +16,15 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this UnifiedThread thread)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendWithNewLine("-----------------------------------------");
-            sb.AppendWithNewLine("Thread Info");
-            sb.AppendWithNewLine($"OSThreadId : {thread.OSThreadId}");
-            sb.AppendWithNewLine($"IsManagedThread: {thread.IsManagedThread }");
+            sb.AppendWithNewLine(Strings.CMD_LineSeperator);
+            sb.AppendWithNewLine(Strings.Thread_Info);
+            sb.AppendWithNewLine($"{Strings.OS_ThreadId}: {thread.OSThreadId}");
+            sb.AppendWithNewLine($"{Strings.IsManagedThread}: {thread.IsManagedThread}");
             if (!String.IsNullOrEmpty(thread.Detail))
             {
-                sb.AppendWithNewLine($"Detail: {thread.Detail}");
+                sb.AppendWithNewLine($"{Strings.Details}: {thread.Detail}");
             }
-            sb.AppendWithNewLine($"EngineThreadId: {thread.EngineThreadId}");
+            sb.AppendWithNewLine($"{Strings.EngineThreadId}: {thread.EngineThreadId}");
 
             return sb.ToString();
         }
@@ -33,13 +34,13 @@ namespace WinHandlesQuerier.Core.Extentions
         public static string AsString(this List<UnifiedBlockingObject> blockingObjects, char prefix)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendWithNewLine($"{Environment.NewLine}BLOCKING OBJECTS");
+            sb.AppendWithNewLine($"{Environment.NewLine}{Strings.BlockingObjects}");
 
             var itemPrefix = $"{prefix}{prefix}";
 
             for (int i = 0; i < blockingObjects.Count; i++)
             {
-                sb.AppendWithNewLine($"{Environment.NewLine}{prefix}blockingObject: {i}");
+                sb.AppendWithNewLine($"{Environment.NewLine}{prefix}{Strings.BlockingObjects}: {i}");
                 var loopObj = blockingObjects[i];
                 sb.Append(loopObj.AsString(itemPrefix));
             }
@@ -52,17 +53,17 @@ namespace WinHandlesQuerier.Core.Extentions
             StringBuilder sb = new StringBuilder();
             if (blockingObject.Handle != 0)
             {
-                sb.AppendWithNewLine(String.Format("{0}Hadle : 0x{1:x}", prefix, blockingObject.Handle));
+                sb.AppendWithNewLine($"{prefix}{Strings.Hadle} : 0x{blockingObject.Handle.ToString("x")}");
             }
-            sb.AppendWithNewLine($"{prefix}Source : {blockingObject.Origin}");
-            sb.AppendWithNewLine($"{prefix}ManagedObjectAddress : {blockingObject.ManagedObjectAddress}");
+            sb.AppendWithNewLine($"{prefix}{Strings.Source} : {blockingObject.Origin}");
+            sb.AppendWithNewLine($"{prefix}{Strings.ManagedObjectAddress} : {blockingObject.ManagedObjectAddress}");
             if (!String.IsNullOrEmpty(blockingObject.KernelObjectName))
             {
-                sb.AppendWithNewLine($"{prefix}KernelObjectName: {blockingObject.KernelObjectName}");
+                sb.AppendWithNewLine($"{prefix}{Strings.KernelObjectName}: {blockingObject.KernelObjectName}");
             }
 
-            sb.AppendWithNewLine($"{prefix}KernelObjectTypeName: {blockingObject.KernelObjectTypeName}");
-            sb.AppendWithNewLine($"{prefix}WaitReason: {blockingObject.WaitReason}");
+            sb.AppendWithNewLine($"{prefix}{Strings.KernelObjectTypeName}: {blockingObject.KernelObjectTypeName}");
+            sb.AppendWithNewLine($"{prefix}{Strings.WaitReason}: {blockingObject.WaitReason}");
 
             return sb.ToString();
         }
@@ -76,7 +77,7 @@ namespace WinHandlesQuerier.Core.Extentions
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendWithNewLine($"{Environment.NewLine}STACK TRACE{Environment.NewLine}");
+            sb.AppendWithNewLine($"{Environment.NewLine}{Strings.StackTrace}{Environment.NewLine}");
             foreach (var frame in list)
             {
                 sb.AppendWithNewLine(frame.AsString(prefix));
@@ -91,7 +92,7 @@ namespace WinHandlesQuerier.Core.Extentions
 
             if (frame.Type == UnifiedStackFrameType.Special)
             {
-                result.Append(String.Format("{0}{1,-10}", prefix, "Special"));
+                result.Append(String.Format("{0}{1,-10}", prefix, Strings.Special));
                 return result.ToString();
             }
             if (String.IsNullOrEmpty(frame.SourceFileName))
@@ -155,7 +156,7 @@ namespace WinHandlesQuerier.Core.Extentions
                 if (index != 0)
                     sb.Append(",");
 
-                sb.Append($"param [{index}]={String.Format("0x{0:x}", item.Id)}");
+                sb.Append($"{Strings.Parameter} [{index}]={String.Format("0x{0:x}", item.Id)}");
 
                 index++;
             }
