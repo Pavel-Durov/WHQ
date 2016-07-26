@@ -37,15 +37,15 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             return result;
         }
 
-        internal long ReadLong(ulong rspPtr)
+        internal ulong ReadULong(ulong rspPtr)
         {
-            long result = 0;
+            ulong result = 0;
             byte[] buffer = new byte[IntPtr.Size];
             int read = 0;
 
             if (_runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
             {
-                result = BitConverter.ToInt64(buffer, 0);
+                result = BitConverter.ToUInt64(buffer, 0);
             }
             return result;
         }
