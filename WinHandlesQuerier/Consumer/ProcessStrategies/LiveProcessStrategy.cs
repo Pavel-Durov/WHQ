@@ -2,14 +2,11 @@
 using WinHandlesQuerier.Core.Model;
 using Microsoft.Diagnostics.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Handlers;
-using WinHandlesQuerier.Core.Model.Unified.Thread;
+using WinHandlesQuerier.Handlers;
 
-namespace Consumer.ProcessStrategies
+namespace WinHandlesQuerier.ProcessStrategies
 {
     internal class LiveProcessStrategy : ProcessStrategy
     {
@@ -28,18 +25,24 @@ namespace Consumer.ProcessStrategies
 
                 _pid = uint.Parse(Console.ReadLine());
             }
-
-            using (DataTarget target = DataTarget.AttachToProcess((int)_pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
+            try
             {
-                if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
+                using (DataTarget target = DataTarget.AttachToProcess((int)_pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
                 {
-                    throw new InvalidOperationException($"Unexpected architecture. Process runs as x64");
+                    if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
+                    {
+                        throw new InvalidOperationException($"Unexpected architecture. Process runs as x64");
+                    }
+
+                    Console.WriteLine("Attached To Process Successfully");
+                    result = await DoAnaytics(target, _pid);
                 }
-
-                Console.WriteLine("Attached To Process Successfully");
-                result = await DoAnaytics(target, _pid);
             }
-
+            catch (ClrDiagnosticsException e)
+            {
+                PrintHandler.PrintToConsole(e.Message);
+            }
+          
             return result;
         }
 

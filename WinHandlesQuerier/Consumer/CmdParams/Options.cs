@@ -4,7 +4,7 @@ using CommandLine.Text;
 using System.Text;
 using WinHandlesQuerier.Core.Extentions;
 
-namespace Consumer.CmdParams
+namespace WinHandlesQuerier.CmdParams
 {
     public class Options
     {
@@ -25,10 +25,14 @@ namespace Consumer.CmdParams
         {
             StringBuilder sb = new StringBuilder();
 
+            
             sb.AppendWithNewLine($"-h       - List of Command Line parameters");
-            sb.AppendWithNewLine($"-p       - Enter Live process pid.");
-            sb.AppendWithNewLine($"-d       - Input dump file absolute path.");
+            
+            sb.AppendWithNewLine($"-p       - Connect to a Live Process");
+            sb.AppendWithNewLine("Usage: -p [PID]");
 
+            sb.AppendWithNewLine($"-d       - Load Dump file");
+            sb.AppendWithNewLine("Usage: -d [FILE]");
             return sb.ToString();
         }
     }

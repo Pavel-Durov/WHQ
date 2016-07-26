@@ -84,7 +84,6 @@
     <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\NtQueryHandler.cs" />
-    <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\Base\ProcessQuerierStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessQuerierStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\DumpFileQuerierStrategy.cs" />

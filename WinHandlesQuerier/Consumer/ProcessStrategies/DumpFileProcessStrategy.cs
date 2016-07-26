@@ -1,14 +1,10 @@
 ﻿using WinHandlesQuerier.Core.Model;
 using Microsoft.Diagnostics.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WinHandlesQuerier.Core.Handlers;
-using WinHandlesQuerier.Core.Model.Unified.Thread;
 
-namespace Consumer.ProcessStrategies
+namespace WinHandlesQuerier.ProcessStrategies
 {
     internal class DumpFileProcessStrategy : ProcessStrategy
     {

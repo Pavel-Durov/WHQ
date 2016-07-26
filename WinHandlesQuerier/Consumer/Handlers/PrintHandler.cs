@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 using WinHandlesQuerier.Core.Model;
 
-namespace WinHandlesQuerier.Core.Handlers
+namespace WinHandlesQuerier.Handlers
 {
     public class PrintHandler
     {
@@ -78,9 +78,19 @@ namespace WinHandlesQuerier.Core.Handlers
             LogHandler.Log(sb.ToString());
         }
 
+        private static void PrintToLog(string str)
+        {
+            LogHandler.Log(str.ToString());
+        }
+
         public static void PrintToConsole(StringBuilder sb)
         {
             Console.WriteLine(sb);
+        }
+
+        public static void PrintToConsole(string str)
+        {
+            Console.WriteLine(str);
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿//#define LIVE_PID_DEBUG
 
 using System;
-using Consumer.CmdParams;
+using WinHandlesQuerier.CmdParams;
 using WinHandlesQuerier.Core.Infra;
 using WinHandlesQuerier.Core.Handlers;
-using Consumer.ProcessStrategies;
+using WinHandlesQuerier.ProcessStrategies;
 using Microsoft.Win32;
 using CommandLine;
+using WinHandlesQuerier.Handlers;
 
-namespace Consumer
+namespace WinHandlesQuerier
 {
     class Program
     {
@@ -27,7 +28,7 @@ namespace Consumer
                     HandleProcess(args, options);
                 }
             }
-            
+
             Console.ReadKey();
         }
 
@@ -51,7 +52,10 @@ namespace Consumer
             }
 
             var result = _processStrategy.Run().Result;
-            PrintHandler.Print(result, true);
+            if (result != null)
+            {
+                PrintHandler.Print(result, true);
+            }
 #endif
         }
 

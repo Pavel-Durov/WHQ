@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{CBD5EF88-8D63-4440-8D9F-9F21D2535609}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier", "Consumer\WinHandlesQuerier.csproj", "{CBD5EF88-8D63-4440-8D9F-9F21D2535609}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier.Core", "WinHandlesQuerier.Core\WinHandlesQuerier.Core.csproj", "{F31C3F13-5C5E-4512-B3C7-A16F8FA6518B}"
 EndProject

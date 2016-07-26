@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.Unified.Thread;
 using System.Threading.Tasks;
 
-namespace Consumer.ProcessStrategies
+namespace WinHandlesQuerier.ProcessStrategies
 {
     abstract class ProcessStrategy
     {

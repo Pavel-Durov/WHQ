@@ -7,8 +7,8 @@
     <ProjectGuid>{CBD5EF88-8D63-4440-8D9F-9F21D2535609}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Consumer</RootNamespace>
-    <AssemblyName>Consumer</AssemblyName>
+    <RootNamespace>WinHandlesQuerier</RootNamespace>
+    <AssemblyName>WinHandlesQuerier</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -88,6 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmdParams\Options.cs" />
+    <Compile Include="Handlers\LogHandler.cs" />
+    <Compile Include="Handlers\PrintHandler.cs" />
     <Compile Include="ProcessStrategies\Base\ProcessStrategy.cs" />
     <Compile Include="ProcessStrategies\DumpFileProcessStrategy.cs" />
     <Compile Include="ProcessStrategies\LiveProcessStrategy.cs" />
@@ -111,7 +113,6 @@
       <Name>WinNativeApi</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
