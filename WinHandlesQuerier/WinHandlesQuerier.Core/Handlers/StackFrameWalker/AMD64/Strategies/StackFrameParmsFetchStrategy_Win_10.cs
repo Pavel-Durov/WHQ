@@ -29,7 +29,7 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
         internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame)
         {
             Params result = new Params();
-            //1st: RCX (Wait Objexcts count) 
+            //1st: RCX (Wait Objects count) 
             //00007ffd`b57312e5 8bd9            mov     ebx,ecx
             result.First = frame.ThreadContext.Context_amd64.Rbx;
 

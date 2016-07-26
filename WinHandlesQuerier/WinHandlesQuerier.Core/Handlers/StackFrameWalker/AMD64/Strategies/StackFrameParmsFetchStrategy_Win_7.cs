@@ -29,27 +29,27 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
         internal override Params GetWaitForMultipleObjectsParams(UnifiedStackFrame frame)
         {
             throw new NotImplementedException();
+            //RCX, RDX, R8, and R9
 
 
             Params result = new Params();
-            //RCX, RDX, R8, and R9
-
-            //throw new NotImplementedException("This Stretegy is under construction...");
-
-            // RDX
-            //000007fe`fd2414a2 488bda mov     rbx,rdx
-            //RBX - Nonvolatile Must be preserved by callee
-            //var hArrayPtr = frame.ThreadContext.Context_amd64.Rbx;
-            //result.Second = hArrayPtr;
-
-            //R8
-            //000007fe`fd24149f 458bf0          mov     r14d,r8d
-            //R14 - NonvolatileMust be preserved by callee
-            result.Third = frame.ThreadContext.Context_amd64.R14;
+            
+            //1st: RCX (Wait Objects count) 
+            //000007fe`fd24155a 48894c2408      mov     qword ptr [rsp+8],rcx
 
 
-            //R9
-            //waittime
+            //2nd - RDX (Array ptr)
+
+
+            //3rd - R8: WaitAll (BOOLEAN)
+            //Overiden By:
+            //000007fe`fd241570 4c8bc1 mov     r8,rcx
+
+            //4th - R9: Timeout (DWORD) 
+            //Overiden By:
+            //kernel32!WaitForMultipleObjects + 0x98:
+            //00000000`76dc1208 458bcc mov     r9d,r12d
+
             return result;
         }
     }

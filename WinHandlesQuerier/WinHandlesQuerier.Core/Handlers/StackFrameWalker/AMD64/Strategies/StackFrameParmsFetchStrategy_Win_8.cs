@@ -47,23 +47,12 @@ namespace WinHandlesQuerier.Core.Handlers.UnmanagedStackFrameWalker.AMD64
             result.Second = hArrayPtr;
 
 
-            //R8
-            //3rd: WaitAll (BOOLEAN)
-            ///R8 - Volatile - Third integer argument
-            //
-            //000007fd`949b132a 4489442418      mov     dword ptr [rsp+18h],r8d
-
+            //3rd - R8: WaitAll (BOOLEAN)
+            //00007ffd`b57312ca 4489442418      mov dword ptr[rsp + 18h],r8d
             var rspPtr = frame.StackPointer + 24;
-            byte[] buffer = new byte[IntPtr.Size];
-            int read = 0;
-            bool waitAllFlagParam = false;
-            if (_runtime.ReadMemory(rspPtr, buffer, buffer.Length, out read))
-            {
-                waitAllFlagParam = BitConverter.ToBoolean(buffer, 0);
-            }
+            result.Third = base.ReadBoolean(rspPtr);
 
-            result.Third = waitAllFlagParam ? (ulong)1 : (ulong)0;
-            
+
             //R9
             ////00007ffd`b57312df 458bf1          mov     r14d,r9d
             var waitTime = frame.ThreadContext.Context_amd64.R14;
