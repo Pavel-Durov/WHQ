@@ -8,12 +8,14 @@ using WinHandlesQuerier.Handlers;
 
 namespace WinHandlesQuerier.ProcessStrategies
 {
-    internal class LiveProcessStrategy : ProcessStrategy
+    public class LiveProcessStrategy : ProcessStrategy
     {
         public LiveProcessStrategy(uint pid) : base(pid)
         {
 
         }
+
+        public uint PID => _pid;
 
         public override async Task<ProcessAnalysisResult> Run()
         {
@@ -35,7 +37,12 @@ namespace WinHandlesQuerier.ProcessStrategies
                     }
 
                     Console.WriteLine("Attached To Process Successfully");
-                    result = await DoAnaytics(target, _pid);
+                    var clrVer = target.ClrVersions[0];
+
+                    var runtime = clrVer.CreateRuntime();
+                    ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _pid);
+
+                    result =  await handler.Handle();
                 }
             }
             catch (ClrDiagnosticsException e)
@@ -44,17 +51,6 @@ namespace WinHandlesQuerier.ProcessStrategies
             }
           
             return result;
-        }
-
-        private static async Task<ProcessAnalysisResult> DoAnaytics(DataTarget target, uint pid)
-        {
-            var clrVer = target.ClrVersions[0];
-
-            //Live process handler
-            var runtime = clrVer.CreateRuntime();
-            ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, pid);
-
-            return await handler.Handle();
         }
     }
 }

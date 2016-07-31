@@ -1,11 +1,9 @@
 ﻿using WinHandlesQuerier.Core.Model;
-using System.Collections.Generic;
-using WinHandlesQuerier.Core.Model.Unified.Thread;
 using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.ProcessStrategies
 {
-    abstract class ProcessStrategy
+    public abstract class ProcessStrategy
     {
         private ProcessStrategy()
         {

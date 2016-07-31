@@ -6,15 +6,15 @@ using WinHandlesQuerier.Core.Handlers;
 
 namespace WinHandlesQuerier.ProcessStrategies
 {
-    internal class DumpFileProcessStrategy : ProcessStrategy
+    public class DumpFileProcessStrategy : ProcessStrategy
     {
         public DumpFileProcessStrategy(string filePath) : base(filePath)
         {
 
         }
         const int PID_NOT_FOUND = -1;
-        const int ATTACH_TO_PPROCESS_TIMEOUT = 999999;
 
+        public string FilePath => _filePath;
 
         public override async Task<ProcessAnalysisResult> Run()
         {
