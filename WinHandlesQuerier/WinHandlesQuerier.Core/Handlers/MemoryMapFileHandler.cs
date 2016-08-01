@@ -10,12 +10,6 @@ namespace WinHandlesQuerier.Core.Handlers
 {
     public class MemoryMapFileHandler
     {
-        /// <summary>
-        /// MAp
-        /// </summary>
-        /// <param name="fileStream"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
         public static SafeMemoryMappedViewHandle MapFile(FileStream fileStream, string fileName)
         {
             MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(fileStream, Path.GetFileName(fileName), 0, MemoryMappedFileAccess.Read, null, HandleInheritability.None, false);
@@ -36,6 +30,7 @@ namespace WinHandlesQuerier.Core.Handlers
             }
 
             mappedFileView.Initialize((ulong)memoryInfo.RegionSize);
+
 
             return mappedFileView;
         }
