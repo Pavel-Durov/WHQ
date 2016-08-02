@@ -11,6 +11,7 @@ using WinHandlesQuerier.Core.Infra;
 using System.Diagnostics;
 using WinHandlesQuerier.Core.Model;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
@@ -21,7 +22,7 @@ namespace WinHandlesQuerier.Core.Handlers
         /// </summary>
         public ProcessAnalyzer(DataTarget dataTarget, ClrRuntime runtime, uint pid) : this(dataTarget, runtime)
         {
-            PID = pid;
+            _pid = pid;
             _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
             _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
         }
@@ -49,15 +50,14 @@ namespace WinHandlesQuerier.Core.Handlers
 
         private readonly ProcessQuerierStrategy _processQuerierStrategy;
         private readonly Config _globalConfig;
+        private readonly Stopwatch _operationTime = new Stopwatch();
 
         private readonly IDebugClient _debugClient;
         private readonly IDataReader _dataReader;
         private readonly ClrRuntime _runtime;
+        private readonly uint _pid;
+
         private bool _isDisposed;
-
-        public uint PID { get; private set; }
-
-        Stopwatch _operationTime = new Stopwatch();
 
         #endregion
 
@@ -73,18 +73,7 @@ namespace WinHandlesQuerier.Core.Handlers
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
-                ThreadInfo specific_info = GetThreadInfo(threadIdx);
-
-                _processQuerierStrategy.GetThreadContext(specific_info);
-
-                if (specific_info.IsManagedThread)
-                {
-                    result.Add(HandleManagedThread(specific_info));
-                }
-                else
-                {
-                    result.Add(await HandleUnManagedThread(specific_info));
-                }
+                result.Add(await GetUnifiedThread(threadIdx));
             }
 
             _operationTime.Stop();
@@ -94,6 +83,32 @@ namespace WinHandlesQuerier.Core.Handlers
                 ElapsedMilliseconds = _operationTime.ElapsedMilliseconds,
                 Threads = result
             };
+        }
+
+        private async Task<UnifiedThread> GetUnifiedThread(uint threadIdx)
+        {
+            UnifiedThread result = null;
+
+            ThreadInfo specific_info = GetThreadInfo(threadIdx);
+            _processQuerierStrategy.SetThreadContext(specific_info);
+
+            try
+            {
+                if (specific_info.IsManagedThread)
+                {
+                    result = HandleManagedThread(specific_info);
+                }
+                else
+                {
+                    result = await HandleUnManagedThread(specific_info);
+                }
+            }
+            catch (Exception e)
+            {
+                LogHandler.Log(e.ToString(), LOG_LEVELS.INFO);
+            }
+
+            return result;
         }
 
         #region Thread Method
@@ -120,15 +135,7 @@ namespace WinHandlesQuerier.Core.Handlers
                 var managedStack = GetManagedStackTrace(clr_thread, specific_info);
                 List<UnifiedStackFrame> unmanagedStack = null;
 
-                try
-                {
-                    unmanagedStack = GetNativeStackTrace(specific_info);
-                }
-                catch (Exception e)
-                {
-                    LogHandler.Log(e.ToString(), LOG_LEVELS.INFO);
-                }
-
+                unmanagedStack = GetNativeStackTrace(specific_info);
 
                 var blockingObjs = _processQuerierStrategy.GetManagedBlockingObjects(clr_thread, unmanagedStack, _runtime);
 
@@ -170,12 +177,13 @@ namespace WinHandlesQuerier.Core.Handlers
         {
             Util.VerifyHr(((IDebugSystemObjects)_debugClient).SetCurrentThreadId(info.EngineThreadId));
 
-            DEBUG_STACK_FRAME[] stackFrames = new DEBUG_STACK_FRAME[200];
+            DEBUG_STACK_FRAME[] stackFrames = new DEBUG_STACK_FRAME[400];
             uint framesFilled;
-            Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0, stackFrames, stackFrames.Length, out framesFilled));
 
+            Util.VerifyHr(((IDebugControl)_debugClient).GetStackTrace(0, 0, 0,
+                            stackFrames, Marshal.SizeOf<DEBUG_STACK_FRAME>(), out framesFilled));
 
-            var stackTrace = _processQuerierStrategy.ConvertToUnified(stackFrames.Take((int)framesFilled), _runtime, info, PID);
+            var stackTrace = _processQuerierStrategy.ConvertToUnified(stackFrames.Take((int)framesFilled), _runtime, info, _pid);
             return stackTrace;
         }
 

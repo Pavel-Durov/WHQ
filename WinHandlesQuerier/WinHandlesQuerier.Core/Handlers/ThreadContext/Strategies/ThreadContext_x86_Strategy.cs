@@ -15,7 +15,7 @@ namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
 
         }
 
-        public override bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader)
+        public override bool SetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader)
         {
             bool result = false;
             var plat = dataReader.GetArchitecture();
