@@ -152,8 +152,11 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
                         do
                         {
-                            pObjectInfo = ObjectInformationHandler.DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
-                            if (pObjectInfo.NextInfoRva == 0) break;
+                            pObjectInfo = ObjectInformationHandler
+                                .DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
+
+                            if (pObjectInfo.NextInfoRva == 0)
+                                break;
                         }
                         while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
                     }
@@ -272,7 +275,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         {
             if (!_isDispsed)
             {
-                _safeMemoryMappedViewHandle.ReleasePointer();
+                //_safeMemoryMappedViewHandle.ReleasePointer();
                 _isDispsed = true;
             }
         }

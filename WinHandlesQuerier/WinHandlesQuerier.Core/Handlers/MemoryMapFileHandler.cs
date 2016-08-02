@@ -18,7 +18,7 @@ namespace WinHandlesQuerier.Core.Handlers
             SafeMemoryMappedViewHandle mappedFileView = Functions.MapViewOfFile(mappedFile.SafeMemoryMappedFileHandle, FileMapAccess.FileMapRead, 0, 0, IntPtr.Zero);
 
             MEMORY_BASIC_INFORMATION memoryInfo = default(MEMORY_BASIC_INFORMATION);
-
+            
             if (Functions.VirtualQuery(mappedFileView, ref memoryInfo, (IntPtr)Marshal.SizeOf(memoryInfo)) == IntPtr.Zero)
             {
                 Debug.WriteLine($"error:  {Marshal.GetLastWin32Error()}");
