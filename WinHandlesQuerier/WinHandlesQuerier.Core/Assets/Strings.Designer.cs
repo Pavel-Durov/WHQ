@@ -214,6 +214,15 @@ namespace Assignments.Core.Assets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected architecture..
+        /// </summary>
+        internal static string UnexpectedArchitecture {
+            get {
+                return ResourceManager.GetString("UnexpectedArchitecture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wait reason.
         /// </summary>
         internal static string WaitReason {

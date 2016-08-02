@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace WinHandlesQuerier.Core.Handlers
 {
-    public class ProcessAnalyzer
+    public class ProcessAnalyzer : IDisposable
     {
         /// <summary>
         /// Used for live process analysis
@@ -42,18 +42,18 @@ namespace WinHandlesQuerier.Core.Handlers
             _dataReader = dataTarget.DataReader;
             _runtime = runtime;
             _globalConfig = Config.GetInstance();
+            _isDisposed = false;
         }
 
         #region Members
 
-        ProcessQuerierStrategy _processQuerierStrategy;
-        Config _globalConfig;
+        private readonly ProcessQuerierStrategy _processQuerierStrategy;
+        private readonly Config _globalConfig;
 
-        IDebugClient _debugClient;
-        IDataReader _dataReader;
-        private ClrRuntime _runtime;
-        private DataTarget dataTarget;
-        private ClrRuntime runtime;
+        private readonly IDebugClient _debugClient;
+        private readonly IDataReader _dataReader;
+        private readonly ClrRuntime _runtime;
+        private bool _isDisposed;
 
         public uint PID { get; private set; }
 
@@ -180,6 +180,14 @@ namespace WinHandlesQuerier.Core.Handlers
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            if (!_isDisposed)
+            {
+                _processQuerierStrategy.Dispose();
+            }
+        }
     }
 }
 

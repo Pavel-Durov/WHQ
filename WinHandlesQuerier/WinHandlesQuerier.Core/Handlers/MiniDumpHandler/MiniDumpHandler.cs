@@ -14,21 +14,32 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
     /// <summary>
     /// This class extracts data from dump file uisng native windows api DbgHelp.h function. 
     /// </summary>
-    public class MiniDumpHandler
+    public class MiniDumpHandler : IDisposable
     {
-        const string DUMPS_DIR = "Dums";
+        private const string DUMPS_DIR = "Dumps";
 
         #region Members
 
-        private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
-        SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
+        private SafeMemoryMappedViewHandle _safeMemoryMappedViewHandle;
         private IntPtr _baseOfView;
+        private bool _isDispsed;
 
         #endregion
 
-        public MiniDumpHandler(uint pid) { Init(pid); }
+        public MiniDumpHandler(uint pid) : this()
+        {
+            Init(pid);
+        }
 
-        public MiniDumpHandler(string dumpFileName) { Init(dumpFileName); }
+        public MiniDumpHandler(string dumpFileName)
+        {
+            Init(dumpFileName);
+        }
+
+        public MiniDumpHandler()
+        {
+            _isDispsed = false;
+        }
 
         /// <summary>
         /// Initialization of SafeMemoryMappedViewHandle by the filePath 
@@ -81,9 +92,9 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             IntPtr streamPointer;
             uint streamSize;
 
-            var readStrem = SafeMemoryMappedViewStreamHandler.ReadStream(MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out _baseOfView);
+            var readStream = SafeMemoryMappedViewStreamHandler.ReadStream(MINIDUMP_STREAM_TYPE.HandleDataStream, out handleData, out streamPointer, out streamSize, _safeMemoryMappedViewHandle, out _baseOfView);
 
-            if (!readStrem)
+            if (!readStream)
             {
                 Debug.WriteLine($"Can't read stream ! ");
             }
@@ -177,24 +188,21 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// Fetches System Info from the mapped dump file (using MINIDUMP_SYSTEM_INFO struct)
         /// </summary>
         /// <returns>System Info</returns>
-        public async Task<MiniDumpSystemInfo> GetSystemInfo()
+        public MiniDumpSystemInfo GetSystemInfo()
         {
-            return await Task<MiniDumpSystemInfo>.Run(() =>
+            MiniDumpSystemInfo result = null;
+            MINIDUMP_SYSTEM_INFO systemInfo;
+            IntPtr streamPointer;
+            uint streamSize;
+
+            bool readResult = SafeMemoryMappedViewStreamHandler.ReadStream<MINIDUMP_SYSTEM_INFO>(MINIDUMP_STREAM_TYPE.SystemInfoStream, out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle);
+
+            if (readResult)
             {
-                MiniDumpSystemInfo result = null;
-                MINIDUMP_SYSTEM_INFO systemInfo;
-                IntPtr streamPointer;
-                uint streamSize;
+                result = new MiniDumpSystemInfo(systemInfo);
+            }
 
-                bool readResult = SafeMemoryMappedViewStreamHandler.ReadStream<MINIDUMP_SYSTEM_INFO>(MINIDUMP_STREAM_TYPE.SystemInfoStream, out systemInfo, out streamPointer, out streamSize, _safeMemoryMappedViewHandle);
-
-                if (readResult)
-                {
-                    result = new MiniDumpSystemInfo(systemInfo);
-                }
-
-                return result;
-            });
+            return result;
         }
 
         /// <summary>
@@ -257,6 +265,15 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             if (!dirInfo.Exists)
             {
                 dirInfo.Create();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!_isDispsed)
+            {
+                _safeMemoryMappedViewHandle.ReleasePointer();
+                _isDispsed = true;
             }
         }
     }

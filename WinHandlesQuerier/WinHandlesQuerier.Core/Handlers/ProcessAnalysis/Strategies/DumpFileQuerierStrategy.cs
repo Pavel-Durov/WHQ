@@ -6,21 +6,33 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using WinHandlesQuerier.Core.Handlers.MiniDump;
 using System.Threading.Tasks;
+using Assignments.Core.Assets;
 
 namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
 {
     internal class DumpFileQuerierStrategy : ProcessQuerierStrategy
     {
-        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader) 
+        public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader)
             : base(debugClient, dataReader, runtime)
         {
             _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
         }
 
-        MiniDump.MiniDumpHandler _miniDump;
+        private MiniDump.MiniDumpHandler _miniDump;
 
+        private MiniDumpSystemInfo _systemInfo;
 
-        public MiniDumpSystemInfo SystemInfo => _miniDump.GetSystemInfo().Result;
+        public MiniDumpSystemInfo SystemInfo
+        {
+            get
+            {
+                if (_systemInfo == null)
+                {
+                    _systemInfo = _miniDump.GetSystemInfo();
+                }
+                return _systemInfo;
+            }
+        }
 
         public override CPUArchitecture CPUArchitechture
         {
@@ -40,7 +52,7 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
                 }
                 else
                 {
-                    throw new InvalidOperationException("Unexpected architecture.");
+                    throw new InvalidOperationException(Strings.UnexpectedArchitecture);
                 }
                 return architechture;
             }
@@ -52,6 +64,13 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(thread, unmanagedStack, runtime, handles);
         }
 
-
+        public override void Dispose()
+        {
+            if (!_isDispsed)
+            {
+                _miniDump.Dispose();
+                _isDispsed = true;
+            }
+        }
     }
 }

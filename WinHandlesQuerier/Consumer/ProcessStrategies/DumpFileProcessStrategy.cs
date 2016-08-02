@@ -12,8 +12,7 @@ namespace WinHandlesQuerier.ProcessStrategies
         {
 
         }
-        const int PID_NOT_FOUND = -1;
-
+       
         public string FilePath => _filePath;
 
         public override async Task<ProcessAnalysisResult> Run()
@@ -27,9 +26,10 @@ namespace WinHandlesQuerier.ProcessStrategies
 
                 ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
-                ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath);
-
-                return await handler.Handle();
+                using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath))
+                {
+                    return await handler.Handle();
+                }
             }
         }
     }

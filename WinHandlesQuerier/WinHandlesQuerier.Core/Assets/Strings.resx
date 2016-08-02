@@ -168,6 +168,9 @@
   <data name="Thread_Info" xml:space="preserve">
     <value>Thread Info</value>
   </data>
+  <data name="UnexpectedArchitecture" xml:space="preserve">
+    <value>Unexpected architecture.</value>
+  </data>
   <data name="WaitReason" xml:space="preserve">
     <value>Wait reason</value>
   </data>

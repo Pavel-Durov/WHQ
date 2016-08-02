@@ -45,5 +45,10 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
                 return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(wct_threadInfo, unmanagedStack);
             });
         }
+
+        public override void Dispose()
+        {
+            //WctHandler is stateless, nothing to dispose here
+        }
     }
 }

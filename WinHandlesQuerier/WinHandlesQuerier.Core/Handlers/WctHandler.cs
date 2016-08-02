@@ -52,7 +52,6 @@ namespace WinHandlesQuerier.Core.Handlers
             return result;
         }
 
-        
         private ThreadWCTInfo HandleGetThreadWaitChainRsult(uint threadId, int Count, WAITCHAIN_NODE_INFO[] NodeInfoArray, int isCycle)
         {
             ThreadWCTInfo result = new ThreadWCTInfo(isCycle == 1, threadId);
@@ -63,7 +62,6 @@ namespace WinHandlesQuerier.Core.Handlers
 
             return result;
         }
-
 
         private void HandleWctRequestError()
         {

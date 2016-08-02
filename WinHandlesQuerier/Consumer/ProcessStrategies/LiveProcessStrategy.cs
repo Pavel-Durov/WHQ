@@ -40,9 +40,11 @@ namespace WinHandlesQuerier.ProcessStrategies
                     var clrVer = target.ClrVersions[0];
 
                     var runtime = clrVer.CreateRuntime();
-                    ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _pid);
 
-                    result =  await handler.Handle();
+                    using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _pid))
+                    {
+                        result = await handler.Handle();
+                    }
                 }
             }
             catch (ClrDiagnosticsException e)

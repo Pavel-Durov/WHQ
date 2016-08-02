@@ -246,3 +246,4 @@ Assignments/Assignments.VC.opendb
 *.app
 WinHandlesQuerier/WinHandlesQuerier.VC.db
 WinHandlesQuerier/WinHandlesQuerier/Logs/*.txt
+WinHandlesQuerier/Consumer/Logs/*

@@ -5,11 +5,6 @@ namespace WinHandlesQuerier.ProcessStrategies
 {
     public abstract class ProcessStrategy
     {
-        private ProcessStrategy()
-        {
-
-        }
-
         public ProcessStrategy(uint pid)
         {
             _pid = pid;
