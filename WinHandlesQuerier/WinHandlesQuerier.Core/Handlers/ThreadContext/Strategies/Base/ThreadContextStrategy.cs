@@ -23,7 +23,7 @@ namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
 
         public uint ContextSize { get; protected set; }
 
-        public abstract bool GetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader);
+        public abstract bool SetThreadContext(ThreadInfo threadInfo, IDebugAdvanced debugClient, IDataReader dataReader);
 
         protected uint SetCurrentThreadId(uint engineThreadId, IDebugAdvanced debugClient)
         {

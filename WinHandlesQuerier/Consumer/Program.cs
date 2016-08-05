@@ -1,4 +1,4 @@
-﻿//#define LIVE_PID_DEBUG
+﻿#define LIVE_PID_DEBUG
 
 using System;
 using WinHandlesQuerier.CmdParams;
@@ -35,12 +35,12 @@ namespace WinHandlesQuerier
         private static void HandleProcess(string[] args, Options options)
         {
             Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
+            ProcessStrategy _processStrategy = null;
 
 #if LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
             _processStrategy = new LiveProcessStrategy((uint)pid);
 #else
-            ProcessStrategy _processStrategy = null;
 
             if (options.DumpFile != null)
             {
@@ -50,13 +50,13 @@ namespace WinHandlesQuerier
             {
                 _processStrategy = new LiveProcessStrategy((uint)options.LivePid);
             }
-
+#endif
             var result = _processStrategy.Run().Result;
             if (result != null)
             {
                 PrintHandler.Print(result, true);
             }
-#endif
+
         }
 
         private static void PrintOptions(Options options)

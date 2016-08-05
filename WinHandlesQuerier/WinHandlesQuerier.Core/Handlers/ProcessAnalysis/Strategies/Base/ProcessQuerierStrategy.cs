@@ -59,9 +59,9 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             return _unmanagedBlockingObjectsHandler.GetManagedBlockingObjects(thread, unmanagedStack, runtime);
         }
 
-        public void GetThreadContext(ThreadInfo specific_info)
+        public void SetThreadContext(ThreadInfo specific_info)
         {
-            _threadContextStrategy.GetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
+            _threadContextStrategy.SetThreadContext(specific_info, (IDebugAdvanced)_debugClient, _dataReader);
         }
 
         public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSectionBlockingObjects(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)

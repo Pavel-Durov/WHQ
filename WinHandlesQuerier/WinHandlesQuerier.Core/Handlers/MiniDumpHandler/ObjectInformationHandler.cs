@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using WinHandlesQuerier.Core.Model.MiniDump;
 using DbgHelp;
 using Structs;
