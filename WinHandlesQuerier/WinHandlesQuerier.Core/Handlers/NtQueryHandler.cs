@@ -21,7 +21,7 @@ namespace WinHandlesQuerier.Core.Handlers
             if (DuplicateHandle(handle, pid, out handleDuplicate))
             {
                 int length;
-                
+
                 NtStatus stat = Functions.NtQueryObject(handleDuplicate,
                     OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
 
@@ -30,6 +30,8 @@ namespace WinHandlesQuerier.Core.Handlers
                     IntPtr pointer = default(IntPtr);
                     try
                     {
+                        pointer = Marshal.AllocHGlobal((int)length);
+
                         NtStatus status = Functions.NtQueryObject(handleDuplicate,
                            OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
 
@@ -64,7 +66,7 @@ namespace WinHandlesQuerier.Core.Handlers
 
             IntPtr duplicatedHandle = default(IntPtr);
 
-            if (!DuplicateHandle(handle, pid, out duplicatedHandle))
+            if (DuplicateHandle(handle, pid, out duplicatedHandle))
             {
                 int length;
 
@@ -76,6 +78,8 @@ namespace WinHandlesQuerier.Core.Handlers
                     IntPtr pointer = default(IntPtr);
                     try
                     {
+                        pointer = Marshal.AllocHGlobal((int)length);
+
                         NtStatus status = Functions.NtQueryObject(duplicatedHandle,
                                OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
 
