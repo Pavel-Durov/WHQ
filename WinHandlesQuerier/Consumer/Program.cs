@@ -1,4 +1,4 @@
-﻿#define LIVE_PID_DEBUG
+﻿//#define LIVE_PID_DEBUG
 
 using System;
 using WinHandlesQuerier.CmdParams;
@@ -8,6 +8,7 @@ using WinHandlesQuerier.ProcessStrategies;
 using Microsoft.Win32;
 using CommandLine;
 using WinHandlesQuerier.Handlers;
+using System.Collections.Generic;
 
 namespace WinHandlesQuerier
 {
@@ -15,54 +16,54 @@ namespace WinHandlesQuerier
     {
         static void Main(string[] args)
         {
-            var options = new Options();
-
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
-            {
-                if (options.Help)
-                {
-                    PrintOptions(options);
-                }
-                else
-                {
-                    HandleProcess(args, options);
-                }
-            }
-
-            Console.ReadKey();
-        }
-
-        private static void HandleProcess(string[] args, Options options)
-        {
             Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
-            ProcessStrategy _processStrategy = null;
 
+            ProcessStrategy processStrategy = null;
 #if LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
-            _processStrategy = new LiveProcessStrategy((uint)pid);
+            processStrategy = new LiveProcessStrategy((uint)pid);
 #else
 
-            if (options.DumpFile != null)
-            {
-                _processStrategy = new DumpFileProcessStrategy(options.DumpFile);
-            }
-            else if (options.LivePid != Constants.INVALID_PID)
-            {
-                _processStrategy = new LiveProcessStrategy((uint)options.LivePid);
-            }
+            processStrategy = (ProcessStrategy)Parser.Default.ParseArguments<Options.DumpVerb, Options.LiveVerb>(args)
+               .MapResult(
+                  (Options.DumpVerb opts) => DumpFileOptions(opts),
+                  (Options.LiveVerb opts) => LiveProcessOptions(opts),
+                  errs => 1);
 #endif
-            var result = _processStrategy.Run().Result;
+           
+
+            var result = processStrategy.Run().Result;
+
             if (result != null)
             {
                 PrintHandler.Print(result, true);
             }
 
+            Console.ReadKey();
         }
 
-        private static void PrintOptions(Options options)
+        private static object LiveProcessOptions(Options.LiveVerb options)
         {
-            Console.WriteLine(options.ToString());
+            ProcessStrategy result = null;
+
+            if (options.LivePid != Constants.INVALID_PID)
+            {
+                result = new LiveProcessStrategy((uint)options.LivePid);
+            }
+
+            return result;
         }
 
+        private static object DumpFileOptions(Options.DumpVerb options)
+        {
+            ProcessStrategy result = null;
+
+            if (options.DumpFile != null)
+            {
+                result = new DumpFileProcessStrategy(options.DumpFile);
+            }
+
+            return result;
+        }
     }
 }

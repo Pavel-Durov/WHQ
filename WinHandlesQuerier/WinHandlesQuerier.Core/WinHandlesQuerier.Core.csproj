@@ -94,7 +94,7 @@
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8_1.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Unmanaged_x64_StackWalkerStrategy.cs" />
-    <Compile Include="Handlers\StackFrameWalker\Base\UnmanagedStackWalkerStrategy.cs" />
+    <Compile Include="Handlers\StackFrameWalker\UnmanagedStackWalkerStrategy.cs" />
     <Compile Include="Handlers\StackFrameWalker\X68\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />

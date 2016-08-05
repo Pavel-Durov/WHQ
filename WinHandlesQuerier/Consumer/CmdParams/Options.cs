@@ -1,39 +1,57 @@
 ﻿using WinHandlesQuerier.Core.Infra;
 using CommandLine;
+
 using CommandLine.Text;
 using System.Text;
 using WinHandlesQuerier.Core.Extentions;
+using System;
 
 namespace WinHandlesQuerier.CmdParams
 {
-    public class Options
+    public class Options 
     {
-        [Option('d', "Dump", HelpText = "Input dump file absolute path.")]
-        public string DumpFile { get; set; }
-
-        [Option('p', "Live", HelpText = "Enter Live process pid.")]
-        public int LivePid { get; set; }
-
-        [Option('h', "Help", HelpText = "List of Command Line parameters")]
-        public bool Help { get; set; } = false;
-
-
-        [ParserState]
-        public IParserState LastParserState { get; set; }
-
-        public override string ToString()
+        [Verb("dump", HelpText = "Get handles data of a process using dump file as source.")]
+        public class DumpVerb
         {
-            StringBuilder sb = new StringBuilder();
 
-            
-            sb.AppendWithNewLine($"-h       - List of Command Line parameters");
-            
-            sb.AppendWithNewLine($"-p       - Connect to a Live Process");
-            sb.AppendWithNewLine("Usage: -p [PID]");
+            [Option('p', "Path", HelpText = "Get handles data of a process using dump file as source.")]
+            public string DumpFile { get; set; }
 
-            sb.AppendWithNewLine($"-d       - Load Dump file");
-            sb.AppendWithNewLine("Usage: -d [FILE]");
-            return sb.ToString();
+            //[Option('f', "force", SetName = "mode-f",
+            //    HelpText = "Allow adding otherwise ignored files.")]
+            //public bool Force { get; set; }
+
+            [Value(0)]
+            public string FileName { get; set; }
         }
+
+        [Verb("live", HelpText = "Get handles data of a live process.")]
+        public class LiveVerb
+        {
+
+            [Option('p', "Live", HelpText = "Get handles data of a lve process.")]
+            public int LivePid { get; set; }
+
+
+            //[Option('f', "force", SetName = "mode-f",
+            //    HelpText = "Allow adding otherwise ignored files.")]
+            //public bool Force { get; set; }
+
+            [Value(0)]
+            public string FileName { get; set; }
+        }
+
+        //[Option('d', "Dump", HelpText = "Get handles data of a process using dump file as source.")]
+        //public string DumpFile { get; set; }
+
+        //[Option('p', "Live", HelpText = "Get handles data of a lve process.")]
+        //public int LivePid { get; set; }
+
+        //[HelpOption]
+        //public string GetUsage()
+        //{
+        //    return HelpText.AutoBuild(this,
+        //      (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+        //}
     }
 }

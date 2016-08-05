@@ -19,6 +19,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerierTests", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier.CoreTests", "WinHandlesQuerier.CoreTests\WinHandlesQuerier.CoreTests.csproj", "{C9032C6B-678B-4E5D-A44E-E05CC6C66D42}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Snippets", "Snippets", "{37BF9CD5-1E1E-4F59-BF5F-3E3DA2B04736}"
+	ProjectSection(SolutionItems) = preProject
+		Consumer\LICENSE = Consumer\LICENSE
+		Consumer\README.md = Consumer\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
