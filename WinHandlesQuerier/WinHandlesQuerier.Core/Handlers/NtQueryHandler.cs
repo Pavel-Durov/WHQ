@@ -21,24 +21,32 @@ namespace WinHandlesQuerier.Core.Handlers
             if (DuplicateHandle(handle, pid, out handleDuplicate))
             {
                 int length;
-
+                
                 NtStatus stat = Functions.NtQueryObject(handleDuplicate,
                     OBJECT_INFORMATION_CLASS.ObjectTypeInformation, IntPtr.Zero, 0, out length);
 
-                if (stat == NtStatus.InvalidHandle)
-                    return null;
-
-                ExecuteSafe(length, (pointer) =>
+                if (stat != NtStatus.InvalidHandle)
                 {
-                    NtStatus status = Functions.NtQueryObject(handleDuplicate,
-                        OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
-
-                    if (status == NtStatus.Success)
+                    IntPtr pointer = default(IntPtr);
+                    try
                     {
-                        var res = Marshal.PtrToStructure<PUBLIC_OBJECT_TYPE_INFORMATION>(pointer);
-                        result = res.TypeName.ToString();
+                        NtStatus status = Functions.NtQueryObject(handleDuplicate,
+                           OBJECT_INFORMATION_CLASS.ObjectTypeInformation, pointer, length, out length);
+
+                        if (status == NtStatus.Success)
+                        {
+                            var res = Marshal.PtrToStructure<PUBLIC_OBJECT_TYPE_INFORMATION>(pointer);
+                            result = res.TypeName.ToString();
+                        }
                     }
-                });
+                    finally
+                    {
+                        if (pointer != default(IntPtr))
+                        {
+                            Marshal.FreeHGlobal(pointer);
+                        }
+                    }
+                }
             }
 
             return result;
@@ -65,54 +73,48 @@ namespace WinHandlesQuerier.Core.Handlers
 
                 if (stat != NtStatus.InvalidHandle)
                 {
-                    ExecuteSafe(length, (pointer) =>
+                    IntPtr pointer = default(IntPtr);
+                    try
                     {
                         NtStatus status = Functions.NtQueryObject(duplicatedHandle,
-                            OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
+                               OBJECT_INFORMATION_CLASS.ObjectNameInformation, pointer, length, out length);
 
                         if (status == NtStatus.Success)
                         {
                             var res = Marshal.PtrToStructure<OBJECT_NAME_INFORMATION>(pointer);
                             result = res.Name.ToString();
                         }
-                    });
+                    }
+                    finally
+                    {
+                        if (pointer != default(IntPtr))
+                        {
+                            Marshal.FreeHGlobal(pointer);
+                        }
+                    }
                 }
             }
 
             return result;
         }
 
-        private static bool DuplicateHandle(IntPtr handle, uint pid, out IntPtr duplicatedHandle)
+        /// <summary>
+        /// Perform handle duplication
+        /// </summary>
+        /// <param name="handle">Handle which needed to be duplicated</param>
+        /// <param name="pid">Process PID (handle owner)</param>
+        /// <param name="result">Duplicated Handle</param>
+        /// <returns></returns>
+        private static bool DuplicateHandle(IntPtr handle, uint pid, out IntPtr result)
         {
-            bool result = true;
+            result = default(IntPtr);
 
             var processHandle = Kernel32.Functions.OpenProcess(Kernel32.ProcessAccessFlags.All, true, pid);
 
             var process = Kernel32.Functions.GetCurrentProcess();
             var options = Kernel32.DuplicateOptions.DUPLICATE_SAME_ACCESS;
 
-            result = Kernel32.Functions.DuplicateHandle(processHandle, handle, process, out duplicatedHandle, 0, false, options);
-
-            if (!result)
-            {
-                duplicatedHandle = default(IntPtr);
-            }
-
-            return result;
-        }
-
-        private static void ExecuteSafe(int length, Action<IntPtr> func)
-        {
-            IntPtr ptr = default(IntPtr);
-            try
-            {
-                ptr = Marshal.AllocHGlobal(length);
-                func(ptr);
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(ptr);
-            }
+            return Kernel32.Functions.DuplicateHandle(processHandle, handle, process, out result, 0, false, options);
         }
     }
 }
