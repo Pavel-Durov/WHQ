@@ -24,11 +24,7 @@ namespace WinHandlesQuerier.ProcessStrategies
             {
                 using (DataTarget target = DataTarget.AttachToProcess((int)_pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
                 {
-                    if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
-                    {
-                        SetError("Unexpected architecture. Process runs as x64");
-                    }
-                    else
+                    if (IsSuitableBitness(target))
                     {
                         Console.WriteLine("Attached To Process Successfully");
 
@@ -47,7 +43,6 @@ namespace WinHandlesQuerier.ProcessStrategies
             {
                 SetError(ex.Message);
             }
-
 
             return result;
         }

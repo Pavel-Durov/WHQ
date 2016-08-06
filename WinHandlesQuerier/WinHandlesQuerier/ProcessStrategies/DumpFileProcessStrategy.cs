@@ -20,22 +20,14 @@ namespace WinHandlesQuerier.ProcessStrategies
         {
             ProcessAnalysisResult result = null;
 
-            if (!File.Exists(_filePath))
-            {
-                result = SetError("File Not Found");
-            }
-            else
+            if (File.Exists(_filePath))
             {
                 try
                 {
                     using (DataTarget target = DataTarget.LoadCrashDump(_filePath))
                     {
-                        if (Environment.Is64BitProcess && target.Architecture != Architecture.Amd64)
-                        {
-                            SetError("Unexpected architecture. Process runs as x64");
-                        }
-                        else
-                        {
+                        if (IsSuitableBitness(target))
+                        { 
                             ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
                             using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath))
@@ -49,6 +41,10 @@ namespace WinHandlesQuerier.ProcessStrategies
                 {
                     result = SetError(ex.Message);
                 }
+            }
+            else
+            {
+                result = SetError("File Not Found");
             }
 
             return result;

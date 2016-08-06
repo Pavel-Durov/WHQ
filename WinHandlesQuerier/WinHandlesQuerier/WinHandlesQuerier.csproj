@@ -101,9 +101,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="app.manifest" />
-    <None Include="LICENSE" />
     <None Include="packages.config" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WinHandlesQuerier.Core\WinHandlesQuerier.Core.csproj">

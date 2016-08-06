@@ -73,7 +73,11 @@ namespace WinHandlesQuerier.Core.Handlers
 
             for (uint threadIdx = 0; threadIdx < _numThreads; ++threadIdx)
             {
-                result.Add(await GetUnifiedThread(threadIdx));
+                var thread = await GetUnifiedThread(threadIdx);
+                if (thread != null)
+                {
+                    result.Add(thread);
+                }
             }
 
             _operationTime.Stop();
