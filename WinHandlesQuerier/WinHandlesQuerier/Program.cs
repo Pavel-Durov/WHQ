@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using CommandLine;
 using WinHandlesQuerier.Handlers;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace WinHandlesQuerier
 {
@@ -16,33 +17,39 @@ namespace WinHandlesQuerier
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
-
             ProcessStrategy processStrategy = null;
 #if LIVE_PID_DEBUG
             var pid = (int)Registry.CurrentUser.GetValue("my-ruthles-pid-key");
             processStrategy = new LiveProcessStrategy((uint)pid);
 #else
 
-            processStrategy = (ProcessStrategy)Parser.Default.ParseArguments<Options.DumpVerb, Options.LiveVerb>(args)
-               .MapResult(
-                  (Options.DumpVerb opts) => DumpFileOptions(opts),
-                  (Options.LiveVerb opts) => LiveProcessOptions(opts),
-                  errs => 1);
+            var parseResult = Parser.Default.ParseArguments<Options.DumpVerb, Options.LiveVerb>(args);
+
+            processStrategy = parseResult.MapResult<Options.DumpVerb, Options.LiveVerb, ProcessStrategy>(
+                  (Options.DumpVerb opts) => DumpFileSource(opts),
+                  (Options.LiveVerb opts) => LiveProcessSource(opts),
+                  (IEnumerable<Error> opts) => null);
 #endif
-           
-
-            var result = processStrategy.Run().Result;
-
-            if (result != null)
+            if (processStrategy != null)
             {
-                PrintHandler.Print(result, true);
+                var result = processStrategy.Run().Result;
+
+                if (result.Error == null)
+                {
+                    Console.WriteLine($"Is64BitProcess : {Environment.Is64BitProcess}");
+
+                    PrintHandler.Print(result, true);
+                }
+                else
+                {
+                    Console.WriteLine(result.Error.Description);
+                }
             }
 
             Console.ReadKey();
         }
 
-        private static object LiveProcessOptions(Options.LiveVerb options)
+        private static ProcessStrategy LiveProcessSource(Options.LiveVerb options)
         {
             ProcessStrategy result = null;
 
@@ -54,11 +61,11 @@ namespace WinHandlesQuerier
             return result;
         }
 
-        private static object DumpFileOptions(Options.DumpVerb options)
+        private static ProcessStrategy DumpFileSource(Options.DumpVerb options)
         {
             ProcessStrategy result = null;
 
-            if (options.DumpFile != null)
+            if (!String.IsNullOrEmpty(options.DumpFile))
             {
                 result = new DumpFileProcessStrategy(options.DumpFile);
             }

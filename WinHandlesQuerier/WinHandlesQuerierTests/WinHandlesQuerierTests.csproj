@@ -56,13 +56,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Consumer\WinHandlesQuerier.csproj">
-      <Project>{CBD5EF88-8D63-4440-8D9F-9F21D2535609}</Project>
-      <Name>WinHandlesQuerier</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WinHandlesQuerier.Core\WinHandlesQuerier.Core.csproj">
       <Project>{f31c3f13-5c5e-4512-b3c7-a16f8fa6518b}</Project>
       <Name>WinHandlesQuerier.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WinHandlesQuerier\WinHandlesQuerier.csproj">
+      <Project>{CBD5EF88-8D63-4440-8D9F-9F21D2535609}</Project>
+      <Name>WinHandlesQuerier</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

@@ -19,5 +19,13 @@ namespace WinHandlesQuerier.ProcessStrategies
         protected string _filePath;
 
         public abstract Task<ProcessAnalysisResult> Run();
+
+        protected ProcessAnalysisResult SetError(string message)
+        {
+            return new ProcessAnalysisResult()
+            {
+                Error = new ProcessAnalysisResultError() { Description = message }
+            };
+        }
     }
 }

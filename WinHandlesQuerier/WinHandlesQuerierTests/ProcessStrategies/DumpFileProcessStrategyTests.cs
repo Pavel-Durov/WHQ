@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WinHandlesQuerier.Core.Handlers;
+using WinHandlesQuerier.ProcessStrategies;
 
 namespace WinHandlesQuerier.ProcessStrategies.Tests
 {
