@@ -100,10 +100,9 @@ namespace Kernel32
 
 
         [DllImport("kernel32.dll")]
-        public static extern IntPtr CreateMutex(IntPtr lpMutexAttributes, bool bInitialOwner,
-  string lpName);
+        public static extern IntPtr CreateMutex(IntPtr lpMutexAttributes, bool bInitialOwner, string lpName);
 
-
+    
         [StructLayout(LayoutKind.Sequential)]
         public struct SECURITY_ATTRIBUTES
         {
@@ -113,12 +112,10 @@ namespace Kernel32
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern void InitializeCriticalSection(out CRITICAL_SECTION
-    lpCriticalSection);
+        public static extern void InitializeCriticalSection(out CRITICAL_SECTION lpCriticalSection);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern void EnterCriticalSection(ref CRITICAL_SECTION
-   lpCriticalSection);
+        public static extern void EnterCriticalSection(ref CRITICAL_SECTION lpCriticalSection);
 
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -126,8 +123,7 @@ namespace Kernel32
            lpCriticalSection);
 
         [DllImport("kernel32.dll")]
-        public static extern bool TryEnterCriticalSection(ref CRITICAL_SECTION
-   lpCriticalSection);
+        public static extern bool TryEnterCriticalSection(ref CRITICAL_SECTION lpCriticalSection);
         /// <summary>
         /// This value can be returned by CreateMutex() and is found in
         /// C++ in the error.h header file.

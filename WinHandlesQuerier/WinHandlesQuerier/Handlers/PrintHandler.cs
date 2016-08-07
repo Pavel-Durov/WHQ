@@ -9,6 +9,18 @@ namespace WinHandlesQuerier.Handlers
 {
     public class PrintHandler
     {
+        public enum PrintOptions
+        {
+            None = 0,
+            BlockingObjects = 2,
+            StackTrace = 4,
+            HandlesSummary = 8,
+            Threads = 16,
+            All = BlockingObjects | StackTrace | HandlesSummary | Threads,
+        }
+
+        public static PrintOptions Options { get; set; }
+
         public static void Print(ProcessAnalysisResult analysis, bool log = false)
         {
             foreach (var unifiedThread in analysis.Threads)
@@ -18,24 +30,42 @@ namespace WinHandlesQuerier.Handlers
                 PrintToConsole(print);
             }
 
-            var sammary = GetSummary(analysis);
-            PrintToLog(sammary);
-            PrintToConsole(sammary);
+            if (IsSet(Options, PrintOptions.HandlesSummary))
+            {
+                var sammary = GetSummary(analysis);
+                PrintToLog(sammary);
+                PrintToConsole(sammary);
+            }
         }
 
         private static StringBuilder GetData(UnifiedThread threadInfo)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(threadInfo.AsString());
 
-            if (threadInfo.BlockingObjects?.Count > 0)
+            if (IsSet(Options, PrintOptions.Threads))
             {
-                sb.Append(threadInfo.BlockingObjects.AsString('\t'));
+                sb.Append(threadInfo.AsString());
             }
 
-            sb.Append(threadInfo.StackTrace.AsString('\t'));
+            if (IsSet(Options, PrintOptions.BlockingObjects))
+            {
+                if (threadInfo.BlockingObjects?.Count > 0)
+                {
+                    sb.Append(threadInfo.BlockingObjects.AsString('\t'));
+                }
+            }
+
+            if (IsSet(Options, PrintOptions.StackTrace))
+            {
+                sb.Append(threadInfo.StackTrace.AsString('\t'));
+            }
 
             return sb;
+        }
+
+        public static bool IsSet(PrintOptions value, PrintOptions flag)
+        {
+            return (value & flag) == flag;
         }
 
         private static StringBuilder GetSummary(ProcessAnalysisResult analysis)
