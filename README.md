@@ -1,8 +1,8 @@
-I've created this repository, so I could keep track of my steps as I dive in to Windows process diagnostic libraries.
- 
-This Project uses various technologies for extracting handles data from a given context.
+
+This Project uses various technologies for extracting handles data from a given context (.Net applications).
 It uses ClrMd, WCT, MiniDump and other Windows APIs at its core.
-You can use this project with live Process and with generated Dump file.
+
+There is two possible sources : live process, dump file
 
 For live process you'll need to pass the PID as the Command-Line parameter by this convention:
 	
@@ -39,3 +39,4 @@ Dump File:
 
 	Supported OS:
 		Windows 10 (10.*), Windows 8 (6.3), Windows 8.1 (6.3), Windows 7
+
