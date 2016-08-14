@@ -19,8 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier.CoreTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Snippets", "Snippets", "{37BF9CD5-1E1E-4F59-BF5F-3E3DA2B04736}"
 	ProjectSection(SolutionItems) = preProject
-		Consumer\LICENSE = Consumer\LICENSE
-		Consumer\README.md = Consumer\README.md
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinHandlesQuerier", "WinHandlesQuerier\WinHandlesQuerier.csproj", "{CBD5EF88-8D63-4440-8D9F-9F21D2535609}"

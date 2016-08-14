@@ -7,7 +7,7 @@ namespace WinHandlesQuerier.Handlers
     public class LogHandler
     {
         public const string FILE_NAME = "log";
-        public const string DIR_NAME = "./../../../Logs";
+        public const string DIR_NAME = "Logs";
         private static string _fullPath;
         static object _creationSync = new object();
 

@@ -47,7 +47,6 @@ namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
                         gch.Free();
                     }
                 }
-
             }
 
             return result;

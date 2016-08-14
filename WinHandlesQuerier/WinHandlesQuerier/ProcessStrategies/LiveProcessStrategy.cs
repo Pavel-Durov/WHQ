@@ -41,7 +41,7 @@ namespace WinHandlesQuerier.ProcessStrategies
             }
             catch (ClrDiagnosticsException ex)
             {
-                SetError(ex.Message);
+                result = SetError(ex.Message);
             }
 
             return result;
