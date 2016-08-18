@@ -135,8 +135,16 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// <returns></returns>
         private async Task<MiniDumpHandle> GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
-            string objectName = await GetMiniDumpString(handle.ObjectNameRva, streamPointer);
-            string typeName = await GetMiniDumpString(handle.TypeNameRva, streamPointer);
+            string objectName, typeName;
+            typeName = objectName = null;
+            if (handle.ObjectNameRva != 0)
+            {
+                objectName = await GetMiniDumpString(handle.ObjectNameRva, streamPointer);
+            }
+            if (handle.TypeNameRva != 0)
+            {
+                typeName = await GetMiniDumpString(handle.TypeNameRva, streamPointer);
+            }
 
             var result = new MiniDumpHandle(handle, objectName, typeName);
 
