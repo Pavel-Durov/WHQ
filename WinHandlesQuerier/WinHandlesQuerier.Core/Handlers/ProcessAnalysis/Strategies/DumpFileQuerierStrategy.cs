@@ -4,6 +4,7 @@ using WinHandlesQuerier.Core.msos;
 using Microsoft.Diagnostics.Runtime;
 using Microsoft.Diagnostics.Runtime.Interop;
 using System;
+using System.Linq;
 using WinHandlesQuerier.Core.Handlers.MiniDump;
 using System.Threading.Tasks;
 using Assignments.Core.Assets;
@@ -61,7 +62,23 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         public override async Task<List<UnifiedBlockingObject>> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
         {
             var handles = await _miniDump.GetHandles();
-            return _unmanagedBlockingObjectsHandler.GetUnmanagedBlockingObjects(thread, unmanagedStack, runtime, handles);
+
+
+            var miniDumpHandles = handles.Where(handle => thread.IsManagedThread ?
+            thread.ManagedThread.ManagedThreadId == handle.OwnerThreadId : handle.OwnerThreadId == thread.OSThreadId);
+
+            List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
+
+            result.AddRange(GetUnmanagedBlockingObjects(unmanagedStack));
+
+            foreach (var item in miniDumpHandles)
+            {
+                result.Add(new UnifiedBlockingObject(item));
+            }
+            //TODO:
+           // _unmanagedStackWalkerStrategy.CheckForCriticalSections(result, unmanagedStack, _runtime);
+
+            return result;
         }
 
         public override void Dispose()
