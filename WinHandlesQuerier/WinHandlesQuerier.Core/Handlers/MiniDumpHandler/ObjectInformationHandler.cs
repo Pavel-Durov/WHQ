@@ -107,7 +107,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             handle.Type = MiniDumpHandleType.MUTEX1;
 
             var additional_info = Marshal.PtrToStructure<MUTEX_ADDITIONAL_INFO_1>(address);
-            
+
             handle.MutexUnknown = new MutexUnknownFields()
             {
                 Field1 = additional_info.Unknown1,
@@ -118,7 +118,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         private static void SetMiniThreadInformation1(MiniDumpHandle handle, IntPtr address)
         {
             handle.Type = MiniDumpHandleType.THREAD;
-            
+
             var additional_info = Marshal.PtrToStructure<THREAD_ADDITIONAL_INFO>(address);
             handle.OwnerProcessId = additional_info.ProcessId;
             handle.OwnerThreadId = additional_info.ThreadId;

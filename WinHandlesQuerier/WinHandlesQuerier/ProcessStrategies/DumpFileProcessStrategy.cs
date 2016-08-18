@@ -26,8 +26,10 @@ namespace WinHandlesQuerier.ProcessStrategies
                 {
                     using (DataTarget target = DataTarget.LoadCrashDump(_filePath))
                     {
-                        if (IsSuitableBitness(target))
-                        { 
+                        if (CheckTargetBitness(target))
+                        {
+                            Console.WriteLine("Dump file loaded successfully.");
+
                             ClrRuntime runtime = target.ClrVersions[0].CreateRuntime();
 
                             using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, _filePath))

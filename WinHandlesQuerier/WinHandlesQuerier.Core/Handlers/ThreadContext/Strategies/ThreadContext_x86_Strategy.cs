@@ -20,7 +20,7 @@ namespace WinHandlesQuerier.Core.Handlers.ThreadContext.Strategies
             bool result = false;
             var plat = dataReader.GetArchitecture();
 
-            if (plat != Architecture.Amd64)
+            if (plat != Architecture.X86)
             {
                 throw new InvalidOperationException("Unexpected architecture.");
             }

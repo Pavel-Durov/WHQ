@@ -8,7 +8,7 @@ namespace WinHandlesQuerier.ProcessStrategies
 {
     public abstract class ProcessStrategy
     {
-        public ProcessStrategy(uint pid)
+        public ProcessStrategy(int pid)
         {
             _pid = pid;
         }
@@ -18,7 +18,7 @@ namespace WinHandlesQuerier.ProcessStrategies
             _filePath = filePath;
         }
 
-        protected uint _pid;
+        protected int _pid;
         protected string _filePath;
 
         public CommonVerb Options { get; internal set; }
@@ -33,7 +33,7 @@ namespace WinHandlesQuerier.ProcessStrategies
             };
         }
 
-        internal bool IsSuitableBitness(DataTarget target)
+        internal bool CheckTargetBitness(DataTarget target)
         {
             bool resut = true;
 
