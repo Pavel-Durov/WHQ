@@ -19,7 +19,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// <param name="address">calculate rva address</param>
         /// <param name="baseOfView">base of mapped minidump file</param>
         /// <returns>Information structure or default value if no info detected</returns>
-        public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, MiniDumpHandle handle, IntPtr address, IntPtr baseOfView)
+        public static unsafe MINIDUMP_HANDLE_OBJECT_INFORMATION DealWithHandleInfo(MINIDUMP_HANDLE_OBJECT_INFORMATION pObjectInfo, DumpHandle handle, IntPtr address, IntPtr baseOfView)
         {
             switch (pObjectInfo.InfoType)
             {
@@ -59,52 +59,52 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         #region Actions
 
-        private static void SetMiniHandleObjectInformationTypeMax(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniHandleObjectInformationTypeMax(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.TYPE_MAX;
+            handle.Type = DumpHandleType.TYPE_MAX;
         }
 
-        private static void SetMiniSectionInformation1(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniSectionInformation1(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.SECTION;
+            handle.Type = DumpHandleType.SECTION;
         }
 
-        private static void SetMiniEventInformation1(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniEventInformation1(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.EVENT;
+            handle.Type = DumpHandleType.EVENT;
         }
 
-        private static void SetMiniHandleObjectInformationNone(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniHandleObjectInformationNone(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.NONE;
+            handle.Type = DumpHandleType.NONE;
         }
 
-        private static unsafe void SetMiniProcessInformation2(MiniDumpHandle handle, IntPtr address)
+        private static unsafe void SetMiniProcessInformation2(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.PROCESS2;
+            handle.Type = DumpHandleType.PROCESS2;
 
             var additional_info = Marshal.PtrToStructure<PROCESS_ADDITIONAL_INFO_2>(address);
             handle.OwnerProcessId = additional_info.ProcessId;
             handle.OwnerThreadId = 0;
         }
 
-        private static void SetMiniProcessInformation1(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniProcessInformation1(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.PROCESS1;
+            handle.Type = DumpHandleType.PROCESS1;
         }
 
-        private static void SetMiniMutantInformation2(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniMutantInformation2(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.MUTEX2;
+            handle.Type = DumpHandleType.MUTEX2;
 
             var additional_info = Marshal.PtrToStructure<MUTEX_ADDITIONAL_INFO_2>(address);
             handle.OwnerProcessId = additional_info.OwnerProcessId;
             handle.OwnerThreadId = additional_info.OwnerThreadId;
         }
 
-        private static void SetMiniMutantInformation1(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniMutantInformation1(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.MUTEX1;
+            handle.Type = DumpHandleType.MUTEX1;
 
             var additional_info = Marshal.PtrToStructure<MUTEX_ADDITIONAL_INFO_1>(address);
 
@@ -115,9 +115,9 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
             };
         }
 
-        private static void SetMiniThreadInformation1(MiniDumpHandle handle, IntPtr address)
+        private static void SetMiniThreadInformation1(DumpHandle handle, IntPtr address)
         {
-            handle.Type = MiniDumpHandleType.THREAD;
+            handle.Type = DumpHandleType.THREAD;
 
             var additional_info = Marshal.PtrToStructure<THREAD_ADDITIONAL_INFO>(address);
             handle.OwnerProcessId = additional_info.ProcessId;

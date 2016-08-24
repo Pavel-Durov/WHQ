@@ -4,9 +4,9 @@ using DbgHelp;
 
 namespace WinHandlesQuerier.Core.Model.MiniDump
 {
-    public class MiniDumpModule
+    public class DumpModule
     {
-        public MiniDumpModule(MINIDUMP_MODULE module, string pathAndFileName)
+        public DumpModule(MINIDUMP_MODULE module, string pathAndFileName)
         {
             BaseOfImage = module.BaseOfImage;
             SizeOfImage = module.SizeOfImage;

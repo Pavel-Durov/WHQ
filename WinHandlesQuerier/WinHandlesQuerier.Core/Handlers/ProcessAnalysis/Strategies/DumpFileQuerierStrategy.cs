@@ -16,10 +16,10 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
         public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader)
             : base(debugClient, dataReader, runtime)
         {
-            _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
+            _miniDump = new MiniDump.DumpHandler(dumpFilePath);
         }
 
-        private MiniDump.MiniDumpHandler _miniDump;
+        private MiniDump.DumpHandler _miniDump;
 
         private MiniDumpSystemInfo _systemInfo;
 
@@ -64,14 +64,14 @@ namespace WinHandlesQuerier.Core.Handlers.StackAnalysis.Strategies
             var handles = await _miniDump.GetHandles();
 
 
-            var miniDumpHandles = handles.Where(handle => thread.IsManagedThread ?
+            var DumpHandles = handles.Where(handle => thread.IsManagedThread ?
             thread.ManagedThread.ManagedThreadId == handle.OwnerThreadId : handle.OwnerThreadId == thread.OSThreadId);
 
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
 
             result.AddRange(GetUnmanagedBlockingObjects(unmanagedStack));
 
-            foreach (var item in miniDumpHandles)
+            foreach (var item in DumpHandles)
             {
                 result.Add(new UnifiedBlockingObject(item));
             }

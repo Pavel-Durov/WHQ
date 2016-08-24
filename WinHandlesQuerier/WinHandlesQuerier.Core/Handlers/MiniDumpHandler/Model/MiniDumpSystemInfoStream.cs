@@ -1,4 +1,4 @@
-﻿using WinHandlesQuerier.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu;
+﻿using WinHandlesQuerier.Core.Handlers.DumpHandler.SystemInfo.Cpu;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;

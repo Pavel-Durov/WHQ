@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using DbgHelp;
 
-namespace WinHandlesQuerier.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu
+namespace WinHandlesQuerier.Core.Handlers.DumpHandler.SystemInfo.Cpu
 {
     public class X86CpuInfo
     {

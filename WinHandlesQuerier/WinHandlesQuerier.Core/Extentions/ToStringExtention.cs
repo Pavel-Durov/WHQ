@@ -63,7 +63,7 @@ namespace WinHandlesQuerier.Core.Extentions
             }
 
             sb.AppendWithNewLine($"{prefix}{Strings.KernelObjectTypeName}: {blockingObject.KernelObjectTypeName}");
-            sb.AppendWithNewLine($"{prefix}{Strings.WaitReason}: {blockingObject.WaitReason}");
+            sb.AppendWithNewLine($"{prefix}{Strings.WaitReason}: {blockingObject.Reason}");
 
             return sb.ToString();
         }

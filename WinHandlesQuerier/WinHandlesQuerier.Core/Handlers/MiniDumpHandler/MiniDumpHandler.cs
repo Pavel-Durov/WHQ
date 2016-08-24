@@ -14,7 +14,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
     /// <summary>
     /// This class extracts data from dump file uisng native windows api DbgHelp.h function. 
     /// </summary>
-    public class MiniDumpHandler : IDisposable
+    public class DumpHandler : IDisposable
     {
         private const string DUMPS_DIR = "Dumps";
 
@@ -26,17 +26,17 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
         #endregion
 
-        public MiniDumpHandler(uint pid) : this()
+        public DumpHandler(uint pid) : this()
         {
             Init(pid);
         }
 
-        public MiniDumpHandler(string dumpFileName)
+        public DumpHandler(string dumpFileName)
         {
             Init(dumpFileName);
         }
 
-        public MiniDumpHandler()
+        public DumpHandler()
         {
             _isDispsed = false;
         }
@@ -84,9 +84,9 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// Reads handles informations from previously inited SafeMemoryMappedViewHandle
         /// </summary>
         /// <returns>List of handles</returns>
-        public async Task<List<MiniDumpHandle>> GetHandles()
+        public async Task<List<DumpHandle>> GetHandles()
         {
-            List<MiniDumpHandle> result = new List<MiniDumpHandle>();
+            List<DumpHandle> result = new List<DumpHandle>();
 
             MINIDUMP_HANDLE_DATA_STREAM handleData;
             IntPtr streamPointer;
@@ -108,7 +108,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
                 foreach (var handle in handles)
                 {
-                    result.Add(new MiniDumpHandle(handle));
+                    result.Add(new DumpHandle(handle));
                 }
             }
             else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(MINIDUMP_HANDLE_DESCRIPTOR_2)))
@@ -117,7 +117,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
 
                 foreach (var handle in handles)
                 {
-                    MiniDumpHandle temp = await GetHandleData(handle, streamPointer);
+                    DumpHandle temp = await GetHandleData(handle, streamPointer);
 
                     result.Add(temp);
                 }
@@ -133,7 +133,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// <param name="handle">minidump struct descriptor</param>
         /// <param name="streamPointer">stream pointer</param>
         /// <returns></returns>
-        private async Task<MiniDumpHandle> GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
+        private async Task<DumpHandle> GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
             string objectName, typeName;
             typeName = objectName = null;
@@ -146,7 +146,7 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
                 typeName = await GetMiniDumpString(handle.TypeNameRva, streamPointer);
             }
 
-            var result = new MiniDumpHandle(handle, objectName, typeName);
+            var result = new DumpHandle(handle, objectName, typeName);
 
             if (handle.HandleCount > 0)
             {
@@ -163,8 +163,6 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
                             pObjectInfo = ObjectInformationHandler
                                 .DealWithHandleInfo(pObjectInfo, result, address, _baseOfView);
 
-                            if (pObjectInfo.NextInfoRva == 0)
-                                break;
                         }
                         while (pObjectInfo.NextInfoRva != 0 && pObjectInfo.SizeOfInfo != 0);
                     }
@@ -220,12 +218,12 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
         /// fetches module list from the mapped dump file
         /// </summary>
         /// <returns></returns>
-        public async Task<List<MiniDumpModule>> GetModuleList()
+        public async Task<List<DumpModule>> GetModuleList()
         {
             MINIDUMP_MODULE_LIST moduleList;
             IntPtr streamPointer;
             uint streamSize;
-            List<MiniDumpModule> result = null;
+            List<DumpModule> result = null;
 
             if (SafeMemoryMappedViewStreamHandler.ReadStream<MINIDUMP_MODULE_LIST>(MINIDUMP_STREAM_TYPE.ModuleListStream, out moduleList, out streamPointer, out streamSize, _safeMemoryMappedViewHandle))
             {
@@ -233,12 +231,12 @@ namespace WinHandlesQuerier.Core.Handlers.MiniDump
                 var offset = streamPointer + 4;
                 var modules = await SafeMemoryMappedViewStreamHandler.ReadArray<MINIDUMP_MODULE>(offset, (int)moduleList.NumberOfModules, _safeMemoryMappedViewHandle);
 
-                result = new List<MiniDumpModule>();
+                result = new List<DumpModule>();
 
                 foreach (var module in modules)
                 {
                     var name = await SafeMemoryMappedViewStreamHandler.ReadString(module.ModuleNameRva, _safeMemoryMappedViewHandle);
-                    result.Add(new MiniDumpModule(module, name));
+                    result.Add(new DumpModule(module, name));
                 }
             }
             else

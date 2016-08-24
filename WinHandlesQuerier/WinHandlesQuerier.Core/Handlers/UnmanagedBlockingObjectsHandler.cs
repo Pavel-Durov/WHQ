@@ -69,14 +69,14 @@ namespace WinHandlesQuerier.Core.Handlers
             return result;
         }
 
-        internal List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<MiniDumpHandle> miniDumpHandles)
+        internal List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<DumpHandle> DumpHandles)
         {
 
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
 
             result.AddRange(GetUnmanagedBlockingObjects(unmanagedStack));
 
-            foreach (var item in miniDumpHandles)
+            foreach (var item in DumpHandles)
             {
                 result.Add(new UnifiedBlockingObject(item));
             }

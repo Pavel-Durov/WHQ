@@ -4,7 +4,7 @@ using System.IO;
 namespace WinHandlesQuerier.Core.Handlers.MiniDump.Tests
 {
     [TestClass()]
-    public class MiniDumpHandlerTests
+    public class DumpHandlerTests
     {
         [TestMethod()]
         public void InitTest()

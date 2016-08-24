@@ -1,6 +1,6 @@
 ﻿using DbgHelp;
 
-namespace WinHandlesQuerier.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu
+namespace WinHandlesQuerier.Core.Handlers.DumpHandler.SystemInfo.Cpu
 {
     public class NonX86CpuInfo
     {
