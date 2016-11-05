@@ -244,6 +244,6 @@ Assignments/Assignments.VC.opendb
 *.exe
 *.out
 *.app
-WinHandlesQuerier/WinHandlesQuerier.VC.db
-WinHandlesQuerier/WinHandlesQuerier/Logs/*.txt
-WinHandlesQuerier/Consumer/Logs/*
+WHQ/WHQ.VC.db
+WHQ/WHQ/Logs/*.txt
+WHQ/Consumer/Logs/*
