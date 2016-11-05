@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WHQ.Core.Handlers;
 using WHQ.ProcessStrategies;
 
 namespace WHQ.ProcessStrategies.Tests

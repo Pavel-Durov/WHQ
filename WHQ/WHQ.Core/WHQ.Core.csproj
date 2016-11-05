@@ -7,8 +7,8 @@
     <ProjectGuid>{F31C3F13-5C5E-4512-B3C7-A16F8FA6518B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Assignments.Core</RootNamespace>
-    <AssemblyName>Assignments.Core</AssemblyName>
+    <RootNamespace>WHQ.Core</RootNamespace>
+    <AssemblyName>WHQ.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

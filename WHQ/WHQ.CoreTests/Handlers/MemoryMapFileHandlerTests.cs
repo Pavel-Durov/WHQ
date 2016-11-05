@@ -6,6 +6,7 @@ using Kernel32;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 using DbgHelp;
+using WHQ.Core.Handlers;
 
 namespace WHQ.Core.Handlers.Tests
 {

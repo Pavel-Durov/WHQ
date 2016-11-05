@@ -6,7 +6,7 @@ using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using WHQ.Core.Handlers.MiniDump;
 using System.Threading.Tasks;
-using Assignments.Core.Assets;
+using WHQ.Core.Assets;
 
 namespace WHQ.Core.Handlers.StackAnalysis.Strategies
 {

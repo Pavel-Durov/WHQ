@@ -56,7 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WHQTests.Core\WHQ.Core.csproj">
+    <ProjectReference Include="..\WHQ.Core\WHQ.Core.csproj">
       <Project>{F31C3F13-5C5E-4512-B3C7-A16F8FA6518B}</Project>
       <Name>WHQ.Core</Name>
     </ProjectReference>
