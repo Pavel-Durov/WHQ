@@ -15,10 +15,10 @@ namespace WHQ.Core.Handlers.StackAnalysis.Strategies
         public DumpFileQuerierStrategy(string dumpFilePath, ClrRuntime runtime, IDebugClient debugClient, IDataReader dataReader)
             : base(debugClient, dataReader, runtime)
         {
-            _miniDump = new MiniDump.MiniDumpHandler(dumpFilePath);
+            _miniDump = new MiniDump.DumpHandler(dumpFilePath);
         }
 
-        private MiniDump.MiniDumpHandler _miniDump;
+        private MiniDump.DumpHandler _miniDump;
 
         private MiniDumpSystemInfo _systemInfo;
 

@@ -69,7 +69,7 @@ namespace WHQ.Core.Handlers
             return result;
         }
 
-        internal List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<DumpHandle> DumpHandles)
+        internal List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<MiniDumpHandle> DumpHandles)
         {
 
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();

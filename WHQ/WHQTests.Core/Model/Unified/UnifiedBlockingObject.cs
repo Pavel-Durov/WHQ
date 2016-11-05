@@ -47,7 +47,7 @@ namespace WHQ.Core.Model.Unified
             Type = UnifiedBlockingType.WaitChainInfoObject;
         }
 
-        internal UnifiedBlockingObject(DumpHandle handle)
+        internal UnifiedBlockingObject(MiniDumpHandle handle)
             : this(OriginSource.MiniDump)
         {
             KernelObjectName = handle.ObjectName;
@@ -167,20 +167,20 @@ namespace WHQ.Core.Model.Unified
             return result;
         }
 
-        UnifiedBlockingReason ConvertToUnified(DumpHandleType type)
+        UnifiedBlockingReason ConvertToUnified(MiniDumpHandleType type)
         {
             UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
 
             switch (type)
             {
-                case DumpHandleType.NONE: result = UnifiedBlockingReason.None; break;
-                case DumpHandleType.THREAD: result = UnifiedBlockingReason.Thread; break;
-                case DumpHandleType.MUTEX1: result = UnifiedBlockingReason.Mutex; break;
-                case DumpHandleType.MUTEX2: result = UnifiedBlockingReason.Mutex; break;
-                case DumpHandleType.PROCESS1: result = UnifiedBlockingReason.ProcessWait; break;
-                case DumpHandleType.PROCESS2: result = UnifiedBlockingReason.ProcessWait; break;
-                case DumpHandleType.EVENT: result = UnifiedBlockingReason.ThreadWait; break;
-                case DumpHandleType.SECTION: result = UnifiedBlockingReason.MemorySection; break;
+                case MiniDumpHandleType.NONE: result = UnifiedBlockingReason.None; break;
+                case MiniDumpHandleType.THREAD: result = UnifiedBlockingReason.Thread; break;
+                case MiniDumpHandleType.MUTEX1: result = UnifiedBlockingReason.Mutex; break;
+                case MiniDumpHandleType.MUTEX2: result = UnifiedBlockingReason.Mutex; break;
+                case MiniDumpHandleType.PROCESS1: result = UnifiedBlockingReason.ProcessWait; break;
+                case MiniDumpHandleType.PROCESS2: result = UnifiedBlockingReason.ProcessWait; break;
+                case MiniDumpHandleType.EVENT: result = UnifiedBlockingReason.ThreadWait; break;
+                case MiniDumpHandleType.SECTION: result = UnifiedBlockingReason.MemorySection; break;
             }
 
             return result;

@@ -81,8 +81,8 @@
     <Compile Include="Handlers\MiniDumpHandler\Model\MiniDumpSystemInfoStream.cs" />
     <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\NonX86CpuInfo.cs" />
     <Compile Include="Handlers\MiniDumpHandler\Model\SystemInfo\Cpu\X86CpuInfo.cs" />
-    <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\MiniDumpHandler\ObjectInformationHandler.cs" />
+    <Compile Include="Handlers\MiniDumpHandler\MiniDumpHandler.cs" />
     <Compile Include="Handlers\NtQueryHandler.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\Base\ProcessQuerierStrategy.cs" />
     <Compile Include="Handlers\ProcessAnalysis\Strategies\LiveProcessQuerierStrategy.cs" />
@@ -94,8 +94,8 @@
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Strategies\StackFrameParmsFetchStrategy_Win_8_1.cs" />
     <Compile Include="Handlers\StackFrameWalker\AMD64\Unmanaged_x64_StackWalkerStrategy.cs" />
-    <Compile Include="Handlers\StackFrameWalker\X86\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\StackFrameWalker\UnmanagedStackWalkerStrategy.cs" />
+    <Compile Include="Handlers\StackFrameWalker\X86\Unmanaged_x86_StackWalkerStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x64_Strategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\Base\ThreadContextStrategy.cs" />
     <Compile Include="Handlers\ThreadContext\Strategies\ThreadContext_x86_Strategy.cs" />
@@ -104,9 +104,9 @@
     <Compile Include="Handlers\WctHandler.cs" />
     <Compile Include="Infra\Config.cs" />
     <Compile Include="Infra\Constants.cs" />
-    <Compile Include="Model\MiniDump\DumpHandle.cs" />
-    <Compile Include="Model\MiniDump\DumpHandleInfo.cs" />
-    <Compile Include="Model\MiniDump\DumpModule.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpHandle.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpHandleInfo.cs" />
+    <Compile Include="Model\MiniDump\MiniDumpModule.cs" />
     <Compile Include="Model\ProcessAnalysisResult.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedThreadContext.cs" />
     <Compile Include="Model\Unified\Thread\UnifiedManagedThread.cs" />

@@ -84,9 +84,9 @@ namespace WHQ.Core.Handlers.MiniDump
         /// Reads handles informations from previously inited SafeMemoryMappedViewHandle
         /// </summary>
         /// <returns>List of handles</returns>
-        public async Task<List<DumpHandle>> GetHandles()
+        public async Task<List<MiniDumpHandle>> GetHandles()
         {
-            List<DumpHandle> result = new List<DumpHandle>();
+            List<MiniDumpHandle> result = new List<MiniDumpHandle>();
 
             MINIDUMP_HANDLE_DATA_STREAM handleData;
             IntPtr streamPointer;
@@ -108,7 +108,7 @@ namespace WHQ.Core.Handlers.MiniDump
 
                 foreach (var handle in handles)
                 {
-                    result.Add(new DumpHandle(handle));
+                    result.Add(new MiniDumpHandle (handle));
                 }
             }
             else if (handleData.SizeOfDescriptor == Marshal.SizeOf(typeof(MINIDUMP_HANDLE_DESCRIPTOR_2)))
@@ -117,7 +117,7 @@ namespace WHQ.Core.Handlers.MiniDump
 
                 foreach (var handle in handles)
                 {
-                    DumpHandle temp = await GetHandleData(handle, streamPointer);
+                    MiniDumpHandle  temp = await GetHandleData(handle, streamPointer);
 
                     result.Add(temp);
                 }
@@ -133,7 +133,7 @@ namespace WHQ.Core.Handlers.MiniDump
         /// <param name="handle">minidump struct descriptor</param>
         /// <param name="streamPointer">stream pointer</param>
         /// <returns></returns>
-        private async Task<DumpHandle> GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
+        private async Task<MiniDumpHandle > GetHandleData(MINIDUMP_HANDLE_DESCRIPTOR_2 handle, IntPtr streamPointer)
         {
             string objectName, typeName;
             typeName = objectName = null;
@@ -146,7 +146,7 @@ namespace WHQ.Core.Handlers.MiniDump
                 typeName = await GetMiniDumpString(handle.TypeNameRva, streamPointer);
             }
 
-            var result = new DumpHandle(handle, objectName, typeName);
+            var result = new MiniDumpHandle (handle, objectName, typeName);
 
             if (handle.HandleCount > 0)
             {
@@ -218,12 +218,12 @@ namespace WHQ.Core.Handlers.MiniDump
         /// fetches module list from the mapped dump file
         /// </summary>
         /// <returns></returns>
-        public async Task<List<DumpModule>> GetModuleList()
+        public async Task<List<MiniDumpModule>> GetModuleList()
         {
             MINIDUMP_MODULE_LIST moduleList;
             IntPtr streamPointer;
             uint streamSize;
-            List<DumpModule> result = null;
+            List<MiniDumpModule> result = null;
 
             if (SafeMemoryMappedViewStreamHandler.ReadStream<MINIDUMP_MODULE_LIST>(MINIDUMP_STREAM_TYPE.ModuleListStream, out moduleList, out streamPointer, out streamSize, _safeMemoryMappedViewHandle))
             {
@@ -231,12 +231,12 @@ namespace WHQ.Core.Handlers.MiniDump
                 var offset = streamPointer + 4;
                 var modules = await SafeMemoryMappedViewStreamHandler.ReadArray<MINIDUMP_MODULE>(offset, (int)moduleList.NumberOfModules, _safeMemoryMappedViewHandle);
 
-                result = new List<DumpModule>();
+                result = new List<MiniDumpModule>();
 
                 foreach (var module in modules)
                 {
                     var name = await SafeMemoryMappedViewStreamHandler.ReadString(module.ModuleNameRva, _safeMemoryMappedViewHandle);
-                    result.Add(new DumpModule(module, name));
+                    result.Add(new MiniDumpModule(module, name));
                 }
             }
             else
