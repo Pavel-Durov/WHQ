@@ -1,0 +1,26 @@
+﻿using DbgHelp;
+
+<<<<<<< HEAD:WHQ/WHQTests.Core/Handlers/MiniDumpHandler/Model/SystemInfo/Cpu/NonX86CpuInfo.cs
+namespace WHQ.Core.Handlers.MiniDumpHandler.SystemInfo.Cpu
+=======
+namespace WinHandlesQuerier.Core.Handlers.DumpHandler.SystemInfo.Cpu
+>>>>>>> c1c8c5d2020d1e827a40c72a0fe49fb3b535bbce:WinHandlesQuerier/WinHandlesQuerier.Core/Handlers/MiniDumpHandler/Model/SystemInfo/Cpu/NonX86CpuInfo.cs
+{
+    public class NonX86CpuInfo
+    {
+        private CPU_INFORMATION _cpuInfo;
+        private ulong[] _processorFeatures;
+
+        internal unsafe NonX86CpuInfo(CPU_INFORMATION cpuInfo)
+        {
+            _cpuInfo = cpuInfo;
+
+            _processorFeatures = new ulong[2];
+            _processorFeatures[0] = cpuInfo.ProcessorFeatures[0];
+            _processorFeatures[1] = cpuInfo.ProcessorFeatures[1];
+        }
+
+        public ulong[] ProcessorFeatures { get { return this._processorFeatures; } }
+    }
+
+}

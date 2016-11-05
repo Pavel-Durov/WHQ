@@ -84,7 +84,7 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         {
             bool result = false;
 
-            if (frame.Handles != null)
+            if (frame.Handles != null && frame.Method.Contains(ENTER_CRITICAL_SECTION_FUNCTION_NAME))
             {
                 blockingObject = GetCriticalSectionBlockingObject(frame, runtime);
                 result = blockingObject != null;
@@ -173,7 +173,7 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 
         protected ulong Convert(byte[] bits)
         {
-            return BitConverter.ToUInt64(bits, 0);
+            return (ulong)BitConverter.ToInt32(bits, 0);
         }
 
 

@@ -10,7 +10,7 @@ namespace WHQ.Core.Model.Unified
 {
     public enum UnifiedBlockingType
     {
-        WaitChainInfoObject, ClrBlockingObject, MiniDumpHandle, CriticalSectionObject, UnmanagedHandleObject
+        WaitChainInfoObject, ClrBlockingObject, DumpHandle, CriticalSectionObject, UnmanagedHandleObject
     }
 
     public enum OriginSource
@@ -31,7 +31,7 @@ namespace WHQ.Core.Model.Unified
             SetOwners(obj);
             SetWaiters(obj);
 
-            WaitReason = (UnifiedBlockingReason)((int)obj.Reason);
+            Reason = (UnifiedBlockingReason)((int)obj.Reason);
             RecursionCount = obj.RecursionCount;
             ManagedObjectAddress = obj.Object;
             KernelObjectName = null;
@@ -40,35 +40,35 @@ namespace WHQ.Core.Model.Unified
 
         }
 
-
-        public UnifiedBlockingObject(WaitChainInfoObject obj) : this(OriginSource.WCT)
+        internal UnifiedBlockingObject(WaitChainInfoObject obj) : this(OriginSource.WCT)
         {
             KernelObjectName = obj.ObjectName;
-            WaitReason = obj.UnifiedType;
+            Reason = obj.UnifiedType;
             Type = UnifiedBlockingType.WaitChainInfoObject;
         }
 
-        public UnifiedBlockingObject(MiniDumpHandle handle) 
+        internal UnifiedBlockingObject(DumpHandle handle)
             : this(OriginSource.MiniDump)
         {
             KernelObjectName = handle.ObjectName;
             KernelObjectTypeName = handle.TypeName;
-            WaitReason = handle.UnifiedType;
-            Type = UnifiedBlockingType.MiniDumpHandle;
+            //TODO: Convertion
+            Reason = ConvertToUnified(handle.Type);
+            Type = UnifiedBlockingType.DumpHandle;
             Handle = handle.Handle;
         }
 
-        public UnifiedBlockingObject(CRITICAL_SECTION section, ulong handle) 
+        internal UnifiedBlockingObject(CRITICAL_SECTION section, ulong handle)
             : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
             Owners.Add(new UnifiedThread((uint)section.OwningThread));
-            WaitReason = UnifiedBlockingReason.CriticalSection;
+            Reason = UnifiedBlockingReason.CriticalSection;
             Type = UnifiedBlockingType.CriticalSectionObject;
             Handle = handle;
         }
 
-        public UnifiedBlockingObject(ulong handle, string objectName, string objectType) 
+        public UnifiedBlockingObject(ulong handle, string objectName, string objectType)
             : this(OriginSource.StackWalker)
         {
             Owners = new List<UnifiedThread>();
@@ -76,10 +76,10 @@ namespace WHQ.Core.Model.Unified
             KernelObjectName = objectName;
             KernelObjectTypeName = objectType;
             Type = UnifiedBlockingType.UnmanagedHandleObject;
-            WaitReason = ConvertToUnified(objectType);
+            Reason = ConvertToUnified(objectType);
         }
 
-        public UnifiedBlockingObject(ulong handle, UnifiedBlockingType type) 
+        public UnifiedBlockingObject(ulong handle, UnifiedBlockingType type)
             : this(OriginSource.ThreadContextRegisters)
         {
             Handle = handle;
@@ -116,13 +116,13 @@ namespace WHQ.Core.Model.Unified
         public OriginSource Origin { get; private set; }
         public UnifiedBlockingType Type { get; private set; }
 
-        public List<UnifiedThread> Owners { get; private set; }
+        internal List<UnifiedThread> Owners { get; private set; }
 
         public bool HasOwnershipInformation { get { return Owners != null && Owners.Count > 0; } }
 
-        public UnifiedBlockingReason WaitReason { get; private set; } = UnifiedBlockingReason.Unknown;
+        public UnifiedBlockingReason Reason { get; private set; } = UnifiedBlockingReason.Unknown;
 
-        public List<UnifiedThread> Waiters { get; private set; }
+        internal List<UnifiedThread> Waiters { get; private set; }
 
         public int RecursionCount { get; private set; }
 
@@ -138,47 +138,22 @@ namespace WHQ.Core.Model.Unified
         private static UnifiedBlockingReason ConvertToUnified(string objectType)
         {
             UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
+
             switch (objectType)
             {
-                case "Thread":
-                    result = UnifiedBlockingReason.Thread;
-                    break;
-                case "Job":
-                    result = UnifiedBlockingReason.Job;
-                    break;
-                case "File":
-                    result = UnifiedBlockingReason.File;
-                    break;
-                case "Semaphore":
-                    result = UnifiedBlockingReason.Semaphore;
-                    break;
-                case "Mutex":
-                    result = UnifiedBlockingReason.Mutex;
-                    break;
-                case "Section":
-                    result = UnifiedBlockingReason.CriticalSection;
-                    break;
-                case "Mutant":
-                    result = UnifiedBlockingReason.Mutex;
-                    break;
-                case "ALPC Port":
-                    result = UnifiedBlockingReason.Alpc;
-                    break;
-                case "Process":
-                    result = UnifiedBlockingReason.ProcessWait;
-                    break;
-                case "Unknown":
-                    result = UnifiedBlockingReason.Unknown;
-                    break;
-                case "None":
-                    result = UnifiedBlockingReason.None;
-                    break;
-                case "Timer":
-                    result = UnifiedBlockingReason.Timer;
-                    break;
-                case "Event":
-                    result = UnifiedBlockingReason.Event;
-                    break;
+                case "Thread": result = UnifiedBlockingReason.Thread; break;
+                case "Job": result = UnifiedBlockingReason.Job; break;
+                case "File": result = UnifiedBlockingReason.File; break;
+                case "Semaphore": result = UnifiedBlockingReason.Semaphore; break;
+                case "Mutex": result = UnifiedBlockingReason.Mutex; break;
+                case "Section": result = UnifiedBlockingReason.CriticalSection; break;
+                case "Mutant": result = UnifiedBlockingReason.Mutex; break;
+                case "ALPC Port": result = UnifiedBlockingReason.Alpc; break;
+                case "Process": result = UnifiedBlockingReason.ProcessWait; break;
+                case "Unknown": result = UnifiedBlockingReason.Unknown; break;
+                case "None": result = UnifiedBlockingReason.None; break;
+                case "Timer": result = UnifiedBlockingReason.Timer; break;
+                case "Event": result = UnifiedBlockingReason.Event; break;
                     //case "Callback": break;
                     //case "Desktop": break;
                     //case "Key": break;
@@ -189,6 +164,25 @@ namespace WHQ.Core.Model.Unified
                     //case "TpWorkerFactory": break;
                     //case "Timer": break;
             }
+            return result;
+        }
+
+        UnifiedBlockingReason ConvertToUnified(DumpHandleType type)
+        {
+            UnifiedBlockingReason result = UnifiedBlockingReason.Unknown;
+
+            switch (type)
+            {
+                case DumpHandleType.NONE: result = UnifiedBlockingReason.None; break;
+                case DumpHandleType.THREAD: result = UnifiedBlockingReason.Thread; break;
+                case DumpHandleType.MUTEX1: result = UnifiedBlockingReason.Mutex; break;
+                case DumpHandleType.MUTEX2: result = UnifiedBlockingReason.Mutex; break;
+                case DumpHandleType.PROCESS1: result = UnifiedBlockingReason.ProcessWait; break;
+                case DumpHandleType.PROCESS2: result = UnifiedBlockingReason.ProcessWait; break;
+                case DumpHandleType.EVENT: result = UnifiedBlockingReason.ThreadWait; break;
+                case DumpHandleType.SECTION: result = UnifiedBlockingReason.MemorySection; break;
+            }
+
             return result;
         }
 

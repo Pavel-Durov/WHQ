@@ -11,9 +11,9 @@ using WHQ.Core.Model;
 
 namespace WHQ
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             ProcessStrategy processStrategy = null;
 #if LIVE_PID_DEBUG
@@ -84,7 +84,7 @@ namespace WHQ
 
             if (options.LivePid != Constants.INVALID_PID)
             {
-                result = new LiveProcessStrategy((uint)options.LivePid);
+                result = new LiveProcessStrategy(options.LivePid);
                 result.Options = (LiveVerb)options;
             }
 

@@ -82,8 +82,8 @@ namespace WHQ.Handlers
 
                 foreach (var block in item.BlockingObjects)
                 {
-                    var key = block.WaitReason.ToString();
-                    if (temp.ContainsKey(block.WaitReason.ToString()))
+                    var key = block.Reason.ToString();
+                    if (temp.ContainsKey(block.Reason.ToString()))
                     {
                         temp[key]++;
                     }

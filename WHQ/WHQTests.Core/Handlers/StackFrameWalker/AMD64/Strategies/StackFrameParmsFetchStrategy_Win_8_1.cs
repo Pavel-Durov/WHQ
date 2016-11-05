@@ -23,7 +23,7 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrameWalker.AMD64
         /* EnterCriticalSection 
         * 
         * 1st: RCX (CRITICAL_SECTION ptr) 
-        * 00007ffd`b57310cb 488bf9          mov     rdi,rcx
+        * 000007fd`949b106b 488bf9          mov     rdi,rcx
         */
 
 
