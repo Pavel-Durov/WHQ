@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 
 namespace WHQ.Handlers
 {
     public enum LOG_LEVELS { INFO, WARNING, DEBUG, VERBOSE }
+
     public class LogHandler
     {
         public const string FILE_NAME = "log";
