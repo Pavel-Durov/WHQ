@@ -1,7 +1,7 @@
 ﻿using WHQ.Core.Handlers;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.Model.Unified.Thread;
-using Microsoft.Diagnostics.Runtime;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,4 @@
 ﻿using WHQ.Core.msos;
-using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;

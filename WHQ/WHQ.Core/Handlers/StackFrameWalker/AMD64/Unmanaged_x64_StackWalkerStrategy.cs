@@ -1,8 +1,8 @@
 ﻿using WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
-using Microsoft.Diagnostics.Runtime;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.Infra;
 using WHQ.Core.Handlers.UnmanagedStackFrameWalker.AMD64;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
 {

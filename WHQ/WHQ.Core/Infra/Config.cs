@@ -1,10 +1,4 @@
 ﻿using WHQ.Core.Handlers;
-using Microsoft.Diagnostics.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WHQ.Core.Handlers.MiniDump;
 using WHQ.Core.Handlers.StackAnalysis.Strategies;
 

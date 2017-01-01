@@ -1,12 +1,12 @@
 ﻿using WHQ.Core.msos;
-using Microsoft.Diagnostics.Runtime;
-using Microsoft.Diagnostics.Runtime.Interop;
+
 using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WinNativeApi.WinNT;
 using WHQ.Core.Model;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Model.Unified
 {

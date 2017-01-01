@@ -8,7 +8,7 @@ using WinNativeApi.WinNT;
 
 namespace WHQ.Core.Model
 {
-    internal class UnifiedThreadContext
+    public class UnifiedThreadContext
     {
         public UnifiedThreadContext(CONTEXT_X86 context, ThreadInfo threadInfo) : this(false)
         {

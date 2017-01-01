@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WHQ.Core.msos;
-using Microsoft.Diagnostics.Runtime;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Model.Unified.Thread
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.Diagnostics.Runtime;
 using WHQ.Core.Model.Unified;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrameWalker.AMD64
 {

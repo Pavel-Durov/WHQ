@@ -14,7 +14,7 @@ namespace DllRefProvider.Providers
     {
         static ClrMdProvider()
         {
-         
+
         }
 
         private OfficialClrMd _officialClrMd;
@@ -27,7 +27,7 @@ namespace DllRefProvider.Providers
         }
     }
 
-    abstract class Base
+    abstract class ClrMdBase
     {
         public abstract string PATH { get; }
 
@@ -37,18 +37,27 @@ namespace DllRefProvider.Providers
         {
             _assembly = Assembly.LoadFrom(PATH);
         }
+
+        internal void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    class OfficialClrMd : Base
+    class OfficialClrMd : ClrMdBase
     {
         public override string PATH => @"..\..\lib\net40\Microsoft.Diagnostics.Runtime.dll";
-        
+
     }
 
-    class ForkedClrMd : Base
+    class ForkedClrMd : ClrMdBase
     {
         public override string PATH => @"..\..\lib\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.dll";
-        
-        
+    }
+
+
+    public interface IClrMdProvider
+    {
+
     }
 }

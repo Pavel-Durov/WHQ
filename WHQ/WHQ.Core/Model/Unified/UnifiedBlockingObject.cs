@@ -1,10 +1,10 @@
 ﻿using WHQ.Core.Model.Unified.Thread;
 using System.Collections.Generic;
-using Microsoft.Diagnostics.Runtime;
 using WHQ.Core.Model.WCT;
 using WHQ.Core.Model.MiniDump;
 using System;
 using WinBase;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Model.Unified
 {

@@ -1,7 +1,6 @@
-﻿using Microsoft.Diagnostics.Runtime;
+﻿
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Diagnostics.Runtime.Interop;
 using WHQ.Core.msos;
 using WHQ.Core.Model.Unified;
 using System;
@@ -12,6 +11,9 @@ using System.Diagnostics;
 using WHQ.Core.Model;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using WHQ.Providers.ClrMd.Model;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers
 {
@@ -25,6 +27,7 @@ namespace WHQ.Core.Handlers
             _pid = pid;
             _processQuerierStrategy = new LiveProcessQuerierStrategy(_debugClient, _dataReader, runtime);
             _globalConfig.Init(_processQuerierStrategy.CPUArchitechture);
+            
         }
 
         /// <summary>

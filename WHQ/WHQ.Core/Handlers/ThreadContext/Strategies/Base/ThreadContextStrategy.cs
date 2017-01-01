@@ -1,7 +1,8 @@
-﻿using Microsoft.Diagnostics.Runtime;
-using Microsoft.Diagnostics.Runtime.Interop;
+﻿
 using System;
 using WHQ.Core.msos;
+using WHQ.Core.Providers.ClrMd.Model;
+using WHQ.Providers.ClrMd.Model;
 using WinNativeApi;
 
 namespace WHQ.Core.Handlers.ThreadContext.Strategies

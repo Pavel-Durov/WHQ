@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Diagnostics.Runtime;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using WHQ.Core.Model.WCT;
 using WHQ.Core.msos;
 using WHQ.Core.Model.MiniDump;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers
 {

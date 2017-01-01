@@ -1,13 +1,13 @@
 ﻿using WHQ.Core.Model.Unified;
 using WHQ.Core.msos;
-using Microsoft.Diagnostics.Runtime;
 using System.Collections.Generic;
 using System;
-using Microsoft.Diagnostics.Runtime.Interop;
 using WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using WHQ.Core.Handlers.UnmanagedStackFrame.Strategies;
 using WHQ.Core.Handlers.ThreadContext.Strategies;
 using System.Threading.Tasks;
+using WHQ.Core.Providers.ClrMd.Model;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.StackAnalysis.Strategies
 {

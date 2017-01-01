@@ -1,9 +1,10 @@
-﻿using WHQ.Core.Infra;
+﻿
+using WHQ.Core.Infra;
 using WHQ.Core.Model;
-using Microsoft.Diagnostics.Runtime;
 using System;
 using System.Threading.Tasks;
 using WHQ.Core.Handlers;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.ProcessStrategies
 {
@@ -20,28 +21,19 @@ namespace WHQ.ProcessStrategies
         {
             ProcessAnalysisResult result = null;
 
-            try
+            using (DataTarget target = DataTarget.AttachToProcess((int)_pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
             {
-                using (DataTarget target = DataTarget.AttachToProcess((int)_pid, Constants.MAX_ATTACH_TO_PPROCESS_TIMEOUT))
+                if (CheckTargetBitness(target))
                 {
-                    if (CheckTargetBitness(target))
+                    Console.WriteLine("Attached To Process Successfully");
+
+                    var runtime = target.CreateRuntime();
+
+                    using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, (uint)_pid))
                     {
-                        Console.WriteLine("Attached To Process Successfully");
-
-                        var clrVer = target.ClrVersions[0];
-
-                        var runtime = clrVer.CreateRuntime();
-
-                        using (ProcessAnalyzer handler = new ProcessAnalyzer(target, runtime, (uint)_pid))
-                        {
-                            result = await handler.Handle();
-                        }
+                        result = await handler.Handle();
                     }
                 }
-            }
-            catch (ClrDiagnosticsException ex)
-            {
-                result = SetError(ex.Message);
             }
 
             return result;

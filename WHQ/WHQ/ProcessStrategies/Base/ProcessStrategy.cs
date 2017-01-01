@@ -1,8 +1,8 @@
 ﻿using WHQ.Core.Model;
 using System.Threading.Tasks;
-using Microsoft.Diagnostics.Runtime;
 using System;
 using WHQ.CmdParams;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.ProcessStrategies
 {

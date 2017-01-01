@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.msos;
-using Microsoft.Diagnostics.Runtime;
-using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using WHQ.Core.Handlers.MiniDump;
 using System.Threading.Tasks;
 using WHQ.Core.Assets;
+using WHQ.Providers.ClrMd.Model;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.StackAnalysis.Strategies
 {

@@ -1,10 +1,10 @@
 ﻿using System;
-using Microsoft.Diagnostics.Runtime;
-using Microsoft.Diagnostics.Runtime.Interop;
 using WHQ.Core.msos;
 using System.Runtime.InteropServices;
 using WinNativeApi;
 using WinNativeApi.WinNT;
+using WHQ.Core.Providers.ClrMd.Model;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.ThreadContext.Strategies
 {

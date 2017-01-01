@@ -1,6 +1,6 @@
 ﻿using WHQ.Core.Model;
-using Microsoft.Diagnostics.Runtime;
 using WinNativeApi.WinNT;
+using WHQ.Providers.ClrMd.Model;
 
 namespace WHQ.Core.msos
 {
@@ -15,7 +15,7 @@ namespace WHQ.Core.msos
 
         public bool IsManagedThread { get { return ManagedThread != null; } }
 
-        internal UnifiedThreadContext ContextStruct { get; set; }
+        public  UnifiedThreadContext ContextStruct { get; set; }
     }
 
 }

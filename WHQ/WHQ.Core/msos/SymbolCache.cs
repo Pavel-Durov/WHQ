@@ -1,6 +1,6 @@
-﻿using Microsoft.Diagnostics.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.msos
 {
@@ -26,7 +26,7 @@ namespace WHQ.Core.msos
 
                 return location;
             }
-            catch (ClrDiagnosticsException)
+            catch (Exception e)
             {
                 _failedToLoadSymbols.Add(moduleName);
                 return null;

@@ -1,6 +1,4 @@
 ﻿using WHQ.Core.Infra;
-using Microsoft.Diagnostics.Runtime;
-using Microsoft.Diagnostics.Runtime.Interop;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -8,6 +6,8 @@ using WHQ.Core.Exceptions;
 using WHQ.Core.Handlers;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.msos;
+using WHQ.Providers.ClrMd.Model;
+using WHQ.Core.Providers.ClrMd.Model;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
 {
