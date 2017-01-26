@@ -1,14 +1,11 @@
 ﻿using WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WHQ.Core.Model.Unified;
 using System.Runtime.InteropServices;
 using WinBase;
 using WHQ.Core.Exceptions;
-using WHQ.Providers.ClrMd.Model;
+using Microsoft.Diagnostics.Runtime;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
 {
