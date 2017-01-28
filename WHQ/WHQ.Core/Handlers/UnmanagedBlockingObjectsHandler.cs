@@ -32,8 +32,9 @@ namespace WHQ.Core.Handlers
                 }
             }
 
-            CheckForCriticalSections(result, unmanagedStack, runtime);
-
+            result.AddRange(GetCriticalSectionBlockingObjects(unmanagedStack, runtime));
+            result.AddRange(GetThreadSleepBlockingObjects(unmanagedStack, runtime));
+            
             foreach (var frame in unmanagedStack)
             {
                 if (frame?.Handles?.Count > 0)
@@ -71,7 +72,6 @@ namespace WHQ.Core.Handlers
 
         internal List<UnifiedBlockingObject> GetUnmanagedBlockingObjects(ThreadInfo thread, List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime, List<MiniDumpHandle> DumpHandles)
         {
-
             List<UnifiedBlockingObject> result = new List<UnifiedBlockingObject>();
 
             result.AddRange(GetUnmanagedBlockingObjects(unmanagedStack));
@@ -81,22 +81,10 @@ namespace WHQ.Core.Handlers
                 result.Add(new UnifiedBlockingObject(item));
             }
 
-            CheckForCriticalSections(result, unmanagedStack, runtime);
-
+            result.AddRange(GetCriticalSectionBlockingObjects(unmanagedStack, runtime));
+            result.AddRange(GetThreadSleepBlockingObjects(unmanagedStack, runtime));
+            
             return result;
-        }
-
-        internal void CheckForCriticalSections(List<UnifiedBlockingObject> list, List<UnifiedStackFrame> stack, ClrRuntime runtime)
-        {
-            var criticalSectionObjects = GetCriticalSectionBlockingObjects(stack, runtime);
-
-            if (criticalSectionObjects.Any())
-            {
-                if (list == null)
-                    list = new List<UnifiedBlockingObject>();
-
-                list.AddRange(criticalSectionObjects);
-            }
         }
 
         public virtual IEnumerable<UnifiedBlockingObject> GetCriticalSectionBlockingObjects(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
@@ -106,6 +94,18 @@ namespace WHQ.Core.Handlers
                 UnifiedBlockingObject blockObject;
 
                 if (_unmanagedStackWalkerStrategy.GetCriticalSectionBlockingObject(item, runtime, out blockObject))
+                {
+                    yield return blockObject;
+                }
+            }
+        }
+
+        public virtual IEnumerable<UnifiedBlockingObject> GetThreadSleepBlockingObjects(List<UnifiedStackFrame> unmanagedStack, ClrRuntime runtime)
+        {
+            foreach (var item in unmanagedStack)
+            {
+                UnifiedBlockingObject blockObject;
+                if (_unmanagedStackWalkerStrategy.GetThreadSleepBlockingObject(item, runtime, out blockObject))
                 {
                     yield return blockObject;
                 }

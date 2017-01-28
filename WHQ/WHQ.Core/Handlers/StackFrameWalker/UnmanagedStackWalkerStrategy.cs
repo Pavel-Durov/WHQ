@@ -15,10 +15,14 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
     {
         #region Constants
 
-        public const string WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME = "WaitForSingleObject";
+        public const string WAIT_FOR_SINGLE_OBJECT_FUNCTION_NAME = "WaitForSingleObject";
+        public const string WAIT_FOR_SINGLE_OBJECT_EX_FUNCTION_NAME = "WaitForSingleObjectEx";
         public const string WAIT_FOR_MULTIPLE_OBJECTS_FUNCTION_NAME = "WaitForMultipleObjects";
-        public const string ENTER_CRITICAL_SECTION_FUNCTION_NAME = "EnterCriticalSection";
+        public const string WAIT_FOR_MULTIPLE_OBJECTS_EX_FUNCTION_NAME = "WaitForMultipleObjectsEx";
+        public const string ENTER_CRITICAL_SECTION_FUNCTION_NAME = "RtlEnterCriticalSection";
+        public const string NTDELAY_EXECUTION_FUNCTION_NAME = "NtDelayExecution";
 
+        protected const int NTDELAY_EXECUTION_FUNCTION_PARAM_COUNT = 2;
         protected const int ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT = 1;
         protected const int WAIT_FOR_SINGLE_OBJECT_PARAM_COUNT = 2;
         protected const int WAIT_FOR_MULTIPLE_OBJECTS_PARAM_COUNT = 4;
@@ -80,31 +84,31 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
             return result;
         }
 
-        internal bool GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
+        internal bool GetThreadSleepBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
         {
-            bool result = false;
+            blockingObject = null;
 
-            if (frame.Handles != null && frame.Method.Contains(ENTER_CRITICAL_SECTION_FUNCTION_NAME))
-            {
-                blockingObject = GetCriticalSectionBlockingObject(frame, runtime);
-                result = blockingObject != null;
-            }
-            else
-            {
-                blockingObject = null;
-            }
+            if (IsMatchingMethod(frame, NTDELAY_EXECUTION_FUNCTION_NAME))
+                blockingObject = GetNtDelayExecutionBlockingObject(frame, runtime);
 
-            return result;
+            return blockingObject != null;
         }
 
+        public bool GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime, out UnifiedBlockingObject blockingObject)
+        {
+            blockingObject = null;
 
+            if (frame.Handles != null && IsMatchingMethod(frame, ENTER_CRITICAL_SECTION_FUNCTION_NAME))
+                blockingObject = GetCriticalSectionBlockingObject(frame, runtime);
 
+            return blockingObject != null;
+        }
 
         protected bool Inpsect(UnifiedStackFrame frame, ClrRuntime runtime, uint pid)
         {
             bool waitCallFound = false;
 
-            if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECTS_FUNCTION_NAME))
+            if (CheckForWinApiCalls(frame, WAIT_FOR_SINGLE_OBJECT_FUNCTION_NAME))
             {
                 DealWithSingle(frame, runtime, pid);
             }
@@ -136,6 +140,11 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
                 result = new UnifiedHandle(handleUint);
             }
             return result;
+        }
+
+        private bool IsMatchingMethod(UnifiedStackFrame frame, string key)
+        {
+            return frame?.Method == key;
         }
 
         protected void EnrichUnifiedStackFrame(UnifiedStackFrame frame, ulong handle, uint pid)
@@ -183,9 +192,12 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies.Base
         protected abstract void DealWithSingle(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
         protected abstract void DealWithMultiple(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
+
         protected abstract void DealWithCriticalSection(UnifiedStackFrame frame, ClrRuntime runtime, uint pid);
 
         protected abstract UnifiedBlockingObject GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime);
+
+        internal abstract UnifiedBlockingObject GetNtDelayExecutionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime);
 
         #endregion
 

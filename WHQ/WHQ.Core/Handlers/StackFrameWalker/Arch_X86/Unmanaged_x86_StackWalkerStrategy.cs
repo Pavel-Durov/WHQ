@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using WHQ.Core.Model.Unified;
 using System.Runtime.InteropServices;
 using WinBase;
-using WHQ.Core.Exceptions;
 using Microsoft.Diagnostics.Runtime;
+using NtDll;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
 {
@@ -17,31 +17,48 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
     /// </summary>
     internal class Unmanaged_x86_StackWalkerStrategy : UnmanagedStackWalkerStrategy
     {
+        internal override UnifiedBlockingObject GetNtDelayExecutionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime)
+        {
+            var parameters = GetNativeParams(frame, runtime, NTDELAY_EXECUTION_FUNCTION_PARAM_COUNT);
+            var largeIntegerAddress = Convert(parameters[1]);
+
+            var largeInt = ReadStructureFromAddress<LARGE_INTEGER>(largeIntegerAddress, runtime);
+
+            //QuadPart is a negated amount of nanoseconds
+            var awaitMs = (-largeInt.QuadPart) / 10000;
+
+            return new UnifiedBlockingObject(awaitMs);
+        }
+
         protected override UnifiedBlockingObject GetCriticalSectionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime)
         {
-            UnifiedBlockingObject result = null;
-            var paramz = GetNativeParams(frame, runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+            var parameters = GetNativeParams(frame,runtime, ENTER_CRITICAL_SECTION_FUNCTION_PARAM_COUNT);
+            var criticalSectionAddress = Convert(parameters[0]);
 
-            var address = Convert(paramz[0]);
+            var section = ReadStructureFromAddress<CRITICAL_SECTION>(criticalSectionAddress, runtime);
+            return new UnifiedBlockingObject(section, criticalSectionAddress);
+        }
 
-            byte[] buffer = new byte[Marshal.SizeOf<CRITICAL_SECTION>()];
+        private T ReadStructureFromAddress<T>(ulong address, ClrRuntime runtime)
+        {
+            T result = default(T);
 
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(T))];
             int read;
 
             if (!runtime.ReadMemory(address, buffer, buffer.Length, out read) || read != buffer.Length)
-                throw new AccessingNonReadableMemmory($"Address : {address}");
+                throw new Exception($"Error reading structure data from address: 0x{address.ToString("X")}");
 
             var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-
             try
             {
-                var section = Marshal.PtrToStructure<CRITICAL_SECTION>(gch.AddrOfPinnedObject());
-                result = new UnifiedBlockingObject(section, address);
+                result = Marshal.PtrToStructure<T>(gch.AddrOfPinnedObject());
             }
             finally
             {
                 gch.Free();
             }
+
             return result;
         }
 

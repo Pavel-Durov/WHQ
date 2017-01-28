@@ -3,6 +3,7 @@ using Microsoft.Diagnostics.Runtime;
 using WHQ.Core.Model.Unified;
 using WHQ.Core.Infra;
 using WHQ.Core.Handlers.UnmanagedStackFrameWalker.AMD64;
+using System;
 
 namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
 {
@@ -105,6 +106,12 @@ namespace WHQ.Core.Handlers.UnmanagedStackFrame.Strategies
         {
             var paramz = Strategy.GetWaitForSingleObjectParams(frame);
             EnrichUnifiedStackFrame(frame, paramz.First, pid);
+        }
+
+        internal override UnifiedBlockingObject GetNtDelayExecutionBlockingObject(UnifiedStackFrame frame, ClrRuntime runtime)
+        {
+            //TODO: Implementation
+            throw new NotImplementedException();
         }
     }
 }

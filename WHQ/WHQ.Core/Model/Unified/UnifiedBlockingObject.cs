@@ -10,7 +10,7 @@ namespace WHQ.Core.Model.Unified
 {
     public enum UnifiedBlockingType
     {
-        WaitChainInfoObject, ClrBlockingObject, DumpHandle, CriticalSectionObject, UnmanagedHandleObject
+        WaitChainInfoObject, ClrBlockingObject, DumpHandle, CriticalSectionObject, UnmanagedHandleObject, ThreadSleep
     }
 
     public enum OriginSource
@@ -20,6 +20,13 @@ namespace WHQ.Core.Model.Unified
 
     public class UnifiedBlockingObject
     {
+        public UnifiedBlockingObject(long msTimeout) : this(OriginSource.StackWalker)
+        {
+            Type = UnifiedBlockingType.ThreadSleep;
+            Reason = UnifiedBlockingReason.ThreadWait;
+            ReasonDescription = $"MsTimeout : {msTimeout}";
+        }
+
         private UnifiedBlockingObject(OriginSource source)
         {
             Origin = source;
@@ -112,7 +119,7 @@ namespace WHQ.Core.Model.Unified
                 }
             }
         }
-
+        public string ReasonDescription { get; set; }
         public OriginSource Origin { get; private set; }
         public UnifiedBlockingType Type { get; private set; }
 
