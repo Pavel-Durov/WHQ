@@ -28,21 +28,6 @@ namespace DbgHelp
             [In] ref MINIDUMP_CALLBACK_INFORMATION CallbackParam
             );
 
-        [DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        public static extern IntPtr OpenProcess(
-            ProcessAccessFlags dwDesiredAccess,
-            bool bInheritHandle,
-            uint dwProcessId
-            );
-
-        [DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool CloseHandle(IntPtr Handle);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
-
-
         [DllImport("DbgHelp.dll", SetLastError = true)]
         public extern static bool MiniDumpWriteDump(
             IntPtr hProcess,
