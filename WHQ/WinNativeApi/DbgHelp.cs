@@ -7,6 +7,38 @@ namespace DbgHelp
     {
         public const int ERR_ELEMENT_NOT_FOUND = 1168;
 
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public delegate bool MINIDUMP_CALLBACK_ROUTINE(
+            [In] IntPtr CallbackParam,
+            [In] ref MINIDUMP_CALLBACK_INPUT CallbackInput,
+            [In, Out] ref MINIDUMP_CALLBACK_OUTPUT CallbackOutput
+            );
+
+        [DllImport("dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool MiniDumpWriteDump(
+            IntPtr hProcess,
+            uint ProcessId,
+            IntPtr hFile,
+            MINIDUMP_TYPE DumpType,
+            [In] ref MINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+            [In] ref MINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+            [In] ref MINIDUMP_CALLBACK_INFORMATION CallbackParam
+            );
+
+        [DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        public static extern IntPtr OpenProcess(
+            ProcessAccessFlags dwDesiredAccess,
+            bool bInheritHandle,
+            uint dwProcessId
+            );
+
+        [DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CloseHandle(IntPtr Handle);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
 
@@ -30,6 +62,260 @@ namespace DbgHelp
     }
 
     #region Structs
+    
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_EXCEPTION_INFORMATION
+    {
+        public uint ThreadId;
+        public IntPtr ExceptionPointers;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool ClientPointers;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_USER_STREAM
+    {
+        public MINIDUMP_STREAM_TYPE Type;
+        public uint BufferSize;
+        public IntPtr Buffer;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_USER_STREAM_INFORMATION
+    {
+        public MINIDUMP_USER_STREAM_INFORMATION(params MINIDUMP_USER_STREAM[] streams)
+        {
+            UserStreamCount = (uint)streams.Length;
+            int sizeOfStream = Marshal.SizeOf(typeof(MINIDUMP_USER_STREAM));
+            UserStreamArray = Marshal.AllocHGlobal((int)(UserStreamCount * sizeOfStream));
+            for (int i = 0; i < streams.Length; ++i)
+            {
+                Marshal.StructureToPtr(streams[i], UserStreamArray + (i * sizeOfStream), false);
+            }
+        }
+
+        public void Delete()
+        {
+            Marshal.FreeHGlobal(UserStreamArray);
+            UserStreamCount = 0;
+            UserStreamArray = IntPtr.Zero;
+        }
+
+        public uint UserStreamCount;
+        public IntPtr UserStreamArray;
+    }
+
+    public enum MINIDUMP_CALLBACK_TYPE : uint
+    {
+        ModuleCallback,
+        ThreadCallback,
+        ThreadExCallback,
+        IncludeThreadCallback,
+        IncludeModuleCallback,
+        MemoryCallback,
+        CancelCallback,
+        WriteKernelMinidumpCallback,
+        KernelMinidumpStatusCallback,
+        RemoveMemoryCallback,
+        IncludeVmRegionCallback,
+        IoStartCallback,
+        IoWriteAllCallback,
+        IoFinishCallback,
+        ReadMemoryFailureCallback,
+        SecondaryFlagsCallback
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public unsafe struct MINIDUMP_THREAD_CALLBACK
+    {
+        public uint ThreadId;
+        public IntPtr ThreadHandle;
+#if X64
+        public fixed byte Context[1232];
+#else
+        public fixed byte Context[716];
+#endif
+        public uint SizeOfContext;
+        public ulong StackBase;
+        public ulong StackEnd;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_THREAD_EX_CALLBACK
+    {
+        public MINIDUMP_THREAD_CALLBACK BasePart;
+        public ulong BackingStoreBase;
+        public ulong BackingStoreEnd;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct VS_FIXEDFILEINFO
+    {
+        public uint dwSignature;
+        public uint dwStrucVersion;
+        public uint dwFileVersionMS;
+        public uint dwFileVersionLS;
+        public uint dwProductVersionMS;
+        public uint dwProductVersionLS;
+        public uint dwFileFlagsMask;
+        public uint dwFileFlags;
+        public uint dwFileOS;
+        public uint dwFileType;
+        public uint dwFileSubtype;
+        public uint dwFileDateMS;
+        public uint dwFileDateLS;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_MODULE_CALLBACK
+    {
+        public IntPtr FullPath; // This is a PCWSTR
+        public ulong BaseOfImage;
+        public uint SizeOfImage;
+        public uint CheckSum;
+        public uint TimeDateStamp;
+        public VS_FIXEDFILEINFO VersionInfo;
+        public IntPtr CvRecord;
+        public uint SizeOfCvRecord;
+        public IntPtr MiscRecord;
+        public uint SizeOfMiscRecord;
+    }
+
+    public struct MINIDUMP_INCLUDE_THREAD_CALLBACK
+    {
+        public uint ThreadId;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_INCLUDE_MODULE_CALLBACK
+    {
+        public ulong BaseOfImage;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_IO_CALLBACK
+    {
+        public IntPtr Handle;
+        public ulong Offset;
+        public IntPtr Buffer;
+        public ulong BufferBytes;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_READ_MEMORY_FAILURE_CALLBACK
+    {
+        public ulong Offset;
+        public uint Bytes;
+        public int FailureStatus; // HRESULT
+    }
+
+    [Flags]
+    public enum MINIDUMP_SECONDARY_FLAGS : uint
+    {
+        MiniSecondaryWithoutPowerInfo = 0x00000001
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct MINIDUMP_CALLBACK_INPUT
+    {
+#if X64
+        const int CallbackTypeOffset = 4 + 8;
+#else
+        const int CallbackTypeOffset = 4 + 4;
+#endif
+        const int UnionOffset = CallbackTypeOffset + 4;
+
+        [FieldOffset(0)]
+        public uint ProcessId;
+        [FieldOffset(4)]
+        public IntPtr ProcessHandle;
+        [FieldOffset(CallbackTypeOffset)]
+        public MINIDUMP_CALLBACK_TYPE CallbackType;
+
+        [FieldOffset(UnionOffset)]
+        public int Status; // HRESULT
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_THREAD_CALLBACK Thread;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_THREAD_EX_CALLBACK ThreadEx;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_MODULE_CALLBACK Module;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_INCLUDE_THREAD_CALLBACK IncludeThread;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_INCLUDE_MODULE_CALLBACK IncludeModule;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_IO_CALLBACK Io;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_READ_MEMORY_FAILURE_CALLBACK ReadMemoryFailure;
+        [FieldOffset(UnionOffset)]
+        public MINIDUMP_SECONDARY_FLAGS SecondaryFlags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MINIDUMP_MEMORY_INFO
+    {
+        public ulong BaseAddress;
+        public ulong AllocationBase;
+        public uint AllocationProtect;
+        public uint __alignment1;
+        public ulong RegionSize;
+        public STATE State;
+        public PROTECT Protect;
+        public TYPE Type;
+        public uint __alignment2;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MemoryCallbackOutput
+    {
+        public ulong MemoryBase;
+        public uint MemorySize;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct CancelCallbackOutput
+    {
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool CheckCancel;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool Cancel;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct MemoryInfoCallbackOutput
+    {
+        public MINIDUMP_MEMORY_INFO VmRegion;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool Continue;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 4)]
+    public struct MINIDUMP_CALLBACK_OUTPUT
+    {
+        [FieldOffset(0)]
+        public MODULE_WRITE_FLAGS ModuleWriteFlags;
+        [FieldOffset(0)]
+        public THREAD_WRITE_FLAGS ThreadWriteFlags;
+        [FieldOffset(0)]
+        public uint SecondaryFlags;
+        [FieldOffset(0)]
+        public MemoryCallbackOutput Memory;
+        [FieldOffset(0)]
+        public CancelCallbackOutput Cancel;
+        [FieldOffset(0)]
+        public IntPtr Handle;
+        [FieldOffset(0)]
+        public MemoryInfoCallbackOutput MemoryInfo;
+        [FieldOffset(0)]
+        public int Status; // HRESULT
+    }
+
+    public struct MINIDUMP_CALLBACK_INFORMATION
+    {
+        public Functions.MINIDUMP_CALLBACK_ROUTINE CallbackRoutine;
+        public IntPtr CallbackParam;
+    }
 
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct MINIDUMP_MODULE
@@ -133,13 +419,6 @@ namespace DbgHelp
         public UInt32 PointerCount;
     }
 
-    public struct MINIDUMP_EXCEPTION_INFORMATION
-    {
-        public uint ThreadId;
-        public IntPtr ExceptionPointers;
-        public int ClientPointers;
-    }
-
     public struct MiniDumpExceptionInformation
     {
         public uint ThreadId;
@@ -163,6 +442,82 @@ namespace DbgHelp
     #endregion
 
     #region Enums
+
+
+    public enum STATE : uint
+    {
+        MEM_COMMIT = 0x1000,
+        MEM_FREE = 0x10000,
+        MEM_RESERVE = 0x2000
+    }
+
+    public enum TYPE : uint
+    {
+        MEM_IMAGE = 0x1000000,
+        MEM_MAPPED = 0x40000,
+        MEM_PRIVATE = 0x20000
+    }
+
+    [Flags]
+    public enum PROTECT : uint
+    {
+        PAGE_EXECUTE = 0x10,
+        PAGE_EXECUTE_READ = 0x20,
+        PAGE_EXECUTE_READWRITE = 0x40,
+        PAGE_EXECUTE_WRITECOPY = 0x80,
+        PAGE_NOACCESS = 0x01,
+        PAGE_READONLY = 0x02,
+        PAGE_READWRITE = 0x04,
+        PAGE_WRITECOPY = 0x08,
+        PAGE_TARGETS_INVALID = 0x40000000,
+        PAGE_TARGETS_NO_UPDATE = 0x40000000,
+
+        PAGE_GUARD = 0x100,
+        PAGE_NOCACHE = 0x200,
+        PAGE_WRITECOMBINE = 0x400
+    }
+
+    [Flags]
+    public enum THREAD_WRITE_FLAGS : uint
+    {
+        ThreadWriteThread = 0x0001,
+        ThreadWriteStack = 0x0002,
+        ThreadWriteContext = 0x0004,
+        ThreadWriteBackingStore = 0x0008,
+        ThreadWriteInstructionWindow = 0x0010,
+        ThreadWriteThreadData = 0x0020,
+        ThreadWriteThreadInfo = 0x0040
+    }
+
+    [Flags]
+    public  enum MODULE_WRITE_FLAGS : uint
+    {
+        ModuleWriteModule = 0x0001,
+        ModuleWriteDataSeg = 0x0002,
+        ModuleWriteMiscRecord = 0x0004,
+        ModuleWriteCvRecord = 0x0008,
+        ModuleReferencedByMemory = 0x0010,
+        ModuleWriteTlsData = 0x0020,
+        ModuleWriteCodeSegs = 0x0040
+    }
+
+    [Flags]
+    public enum ProcessAccessFlags : uint
+    {
+        All = 0x001F0FFF,
+        Terminate = 0x00000001,
+        CreateThread = 0x00000002,
+        VirtualMemoryOperation = 0x00000008,
+        VirtualMemoryRead = 0x00000010,
+        VirtualMemoryWrite = 0x00000020,
+        DuplicateHandle = 0x00000040,
+        CreateProcess = 0x000000080,
+        SetQuota = 0x00000100,
+        SetInformation = 0x00000200,
+        QueryInformation = 0x00000400,
+        QueryLimitedInformation = 0x00001000,
+        Synchronize = 0x00100000
+    }
 
     public enum MINIDUMP_STREAM_TYPE : uint
     {

@@ -277,6 +277,70 @@ namespace WHQ.Core.Handlers.MiniDump
             }
         }
 
+        public enum DumpType
+        {
+            Minimal,
+            MinimalWithFullCLRHeap,
+            FullMemory,
+            FullMemoryExcludingSafeRegions
+        }
+
+        private static bool CallbackRoutine(IntPtr CallbackParam,
+            ref MINIDUMP_CALLBACK_INPUT CallbackInput,
+            ref MINIDUMP_CALLBACK_OUTPUT CallbackOutput)
+        {
+            //TODO: Check CallbackInput.CallbackType and act accordingly
+            return true;
+        }
+
+        public static void Dump(int pid, DumpType dumpType, string fileName, string dumpComment = null)
+        {
+            dumpComment = dumpComment ?? ("DumpWriter: " + dumpType.ToString());
+
+            var access = Kernel32.ProcessAccessFlags.QueryInformation | Kernel32.ProcessAccessFlags.VirtualMemoryRead | Kernel32.ProcessAccessFlags.DuplicateHandle;
+
+            IntPtr hProcess = Kernel32.Functions.OpenProcess(access, false,(uint)pid);
+
+            if (hProcess == IntPtr.Zero)
+                throw new ArgumentException($"Unable to open process {pid}, error {Marshal.GetLastWin32Error().ToString("X")}");
+
+            FileStream dumpFileStream = new FileStream(fileName, FileMode.Create);
+
+            var exceptionParam = new MINIDUMP_EXCEPTION_INFORMATION();
+            var userStreamParam = PrepareUserStream(dumpComment);
+            var callbackParam = new DbgHelp.MINIDUMP_CALLBACK_INFORMATION();
+            if (dumpType == DumpType.FullMemoryExcludingSafeRegions || dumpType == DumpType.MinimalWithFullCLRHeap)
+            {
+                callbackParam.CallbackRoutine = CallbackRoutine;
+            }
+
+            MINIDUMP_TYPE nativeDumpType =
+                (dumpType == DumpType.FullMemory || dumpType == DumpType.FullMemoryExcludingSafeRegions) ?
+                MINIDUMP_TYPE.MiniDumpWithFullMemory | MINIDUMP_TYPE.MiniDumpWithHandleData | MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo :
+                MINIDUMP_TYPE.MiniDumpWithHandleData | MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo;
+
+            bool success = DbgHelp.Functions.MiniDumpWriteDump(
+                hProcess,(uint)pid,
+                dumpFileStream.SafeFileHandle.DangerousGetHandle(),
+                nativeDumpType,
+                ref exceptionParam,ref userStreamParam,ref callbackParam);
+
+            if (!success)
+                throw new ApplicationException($"Error writing dump, error {Marshal.GetLastWin32Error()}");
+
+            userStreamParam.Delete();
+            Kernel32.Functions.CloseHandle(hProcess);
+            dumpFileStream.Close();
+        }
+
+        private static MINIDUMP_USER_STREAM_INFORMATION PrepareUserStream(string dumpComment)
+        {
+            MINIDUMP_USER_STREAM userStream = new MINIDUMP_USER_STREAM();
+            userStream.Type = MINIDUMP_STREAM_TYPE.CommentStreamW;
+            userStream.Buffer = Marshal.StringToHGlobalUni(dumpComment);
+            userStream.BufferSize = (uint)(dumpComment.Length + 1) * 2;
+            return new MINIDUMP_USER_STREAM_INFORMATION(userStream);
+        }
         public void Dispose()
         {
             if (!_isDispsed)
