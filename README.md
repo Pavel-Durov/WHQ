@@ -1,6 +1,7 @@
 
-This Project uses various technologies for extracting handles data from a given context (.Net applications).
-It uses ClrMd, WCT, MiniDump and other Windows APIs at its core.
+# WHQ 
+
+This Project uses various technologies for extracting Windows process handles data from a given context. Based on ClrMd, WCT, MiniDump and other Windows APIs at its core.
 
 There is two possible sources : live process, dump file
 
